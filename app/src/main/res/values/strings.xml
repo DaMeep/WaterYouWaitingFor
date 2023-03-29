@@ -3,4 +3,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
+    <string name="stringContaminate">Contaminations</string>
+    <string name="conA">contaminant A</string>
+    <string name="con1">Contaminant 1</string>
+    <string name="conB">Contaminant B</string>
+    <string name="conC">Contaminant C</string>
+    <string name="welcome">Welcome back, User!</string>
+    <string name="update_last">Last Updated:</string>
+    <string name="water_image">Image of Water</string>
 </resources>
