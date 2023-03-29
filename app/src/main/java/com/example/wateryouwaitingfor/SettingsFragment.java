@@ -1,15 +1,23 @@
 package com.example.wateryouwaitingfor;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +34,16 @@ public class SettingsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private SharedPreferences sharedpreferences;
+
+    private ToggleButton unitsButton;
+
+    private TextView weightSettingsText;
+    private EditText userNameText;
+    private EditText userWeightText;
+
+    private SwitchCompat notificationSwitch;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -57,6 +75,7 @@ public class SettingsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -64,5 +83,53 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //General
+        unitsButton = (ToggleButton) view.findViewById(R.id.unitToggleButton);
+        unitsButton.setActivated(sharedpreferences.getBoolean("metricUnits", false));
+
+        //Personal
+        userNameText = (EditText) view.findViewById(R.id.editUserNameText);
+        userNameText.setText(sharedpreferences.getString("username", "User"));
+
+        weightSettingsText = (TextView) view.findViewById(R.id.weightSettingsText);
+        userWeightText = (EditText) view.findViewById(R.id.editWeightText);
+        userWeightText.setText(sharedpreferences.getString("userWeight", "100"));
+
+        //Notifications
+        notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
+        notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
+    }
+    @Override
+    public void onDestroyView() {
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        //General
+        editor.putBoolean("metricUnits", unitsButton.isChecked());
+
+        //Personal
+        editor.putString("username", userNameText.getText().toString());
+        editor.putString("userWeight", userWeightText.getText().toString());
+
+        //Notifications
+        editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
+
+
+        editor.apply();
+        super.onDestroyView();
+    }
+
+    public void onUnitSwitch(View view) {
+        if (unitsButton.isActivated()){
+            weightSettingsText.setText(R.string.weightSettingsTextMetric);
+        }
+        else{
+            weightSettingsText.setText(R.string.weightSettingsTextImperial);
+        }
     }
 }
