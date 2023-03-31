@@ -11,4 +11,14 @@
     <string name="welcome">Welcome back, User!</string>
     <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
+    <string name="timestamp">Enter the Time</string>
+    <string name="amtConsume">How much was consumed?</string>
+    <string name="newDrink">Add Drink</string>
+    <string name="general">General</string>
+    <string name="location">Location :</string>
+    <string name="personal">Personal</string>
+    <string name="name">Name:</string>
+    <string name="weight">Weight:</string>
+    <string name="activity_level">Activity Level:</string>
+    <string name="notifications">Notifications</string>
 </resources>

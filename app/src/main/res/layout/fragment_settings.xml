@@ -29,7 +29,7 @@
                 android:id="@+id/generalSettingsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="General"
+                android:text="@string/general"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
                         android:id="@+id/locationText"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="Location : "
+                        android:text="@string/location"
                         android:textSize="26sp" />
 
                     <ImageButton
@@ -55,7 +55,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:contentDescription="Choose another"
-                        android:src="@android:drawable/stat_notify_sync" />
+                        android:src="@android:drawable/stat_notify_sync"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
                 <TableRow
@@ -75,7 +76,7 @@
                 android:id="@+id/personalSettingsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Personal"
+                android:text="@string/personal"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -92,7 +93,7 @@
                         android:id="@+id/nameSettingsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Name:"
+                        android:text="@string/name"
                         android:textSize="26sp" />
                 </TableRow>
 
@@ -104,7 +105,7 @@
                         android:id="@+id/weightSettingsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Weight:"
+                        android:text="@string/weight"
                         android:textSize="26sp" />
                 </TableRow>
 
@@ -116,7 +117,7 @@
                         android:id="@+id/activitySettingsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Activity Level:"
+                        android:text="@string/activity_level"
                         android:textSize="26sp" />
                 </TableRow>
 
@@ -129,7 +130,8 @@
                 android:id="@+id/notificationSwitch"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Notifications"
+                android:minHeight="48dp"
+                android:text="@string/notifications"
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:thumb="@drawable/customswitchselector"

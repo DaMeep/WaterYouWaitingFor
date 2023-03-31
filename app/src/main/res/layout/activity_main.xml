@@ -13,62 +13,45 @@
 
         <!--Edit text to enter course name-->
         <EditText
-            android:id="@+id/idEdtCourseName"
+            android:id="@+id/idEdtTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="Enter course Name"
-            android:minHeight="48dp" />
+            android:hint="@string/timestamp"
+            android:minHeight="48dp"
+            android:inputType="time"
+            android:importantForAutofill="no"/>
 
         <!--edit text to enter course duration-->
         <EditText
-            android:id="@+id/idEdtCourseDuration"
+            android:id="@+id/idEdtAmtConsumed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="Enter Course Duration"
-            android:minHeight="48dp" />
+            android:hint="@string/amtConsume"
+            android:minHeight="48dp"
+            android:inputType="numberDecimal"
+            android:importantForAutofill="no" />
 
-        <!--edit text to display course tracks-->
-        <EditText
-            android:id="@+id/idEdtCourseTracks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="Enter Course Tracks"
-            android:minHeight="48dp" />
-
-        <!--edit text for course description-->
-        <EditText
-            android:id="@+id/idEdtCourseDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="Enter Course Description"
-            android:minHeight="48dp" />
 
         <!--button for adding new course-->
         <Button
-            android:id="@+id/idBtnAddCourse"
+            android:id="@+id/idBtnAddWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Add Course"
+            android:text="@string/newDrink"
             android:textAllCaps="false" />
+
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
 
     </LinearLayout>
 
-
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
