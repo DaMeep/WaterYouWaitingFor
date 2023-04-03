@@ -49,7 +49,7 @@ import android.database.sqlite.SQLiteOpenHelper;
                     + TIME_COL + " TEXT,"
                     + AMOUNT_COL + " REAL )";
 
-            String query2 = "CREATE TABLE "+ SECONDTABLE_NAME + " ("
+            String querytwo = "CREATE TABLE "+ SECONDTABLE_NAME + " ("
             + DATE_COL + "TEXT, "
             + DAYTOT_COL+ "REAL )";
 
@@ -59,7 +59,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             // at last we are calling a exec sql
             // method to execute above sql query
             db.execSQL(query);
-            db.execSQL(query2);
+            db.execSQL(querytwo);
         }
 
         // this method is use to add new drinks to our sqlite database.
@@ -95,7 +95,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             // on below line we are creating a variable for
             // our sqlite database and calling writable method
             // as we are writing data in our database.
-            SQLiteDatabase datab = this.getWritableDatabase();
+            SQLiteDatabase db = this.getWritableDatabase();
 
             // on below line we are creating a
             // variable for content values.
@@ -108,7 +108,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
             // after adding all values we are passing
             // content values to our table.
-            datab.insert(SECONDTABLE_NAME, null, values2);
+            db.insert(SECONDTABLE_NAME, null, values2);
 
 
             // at last we are closing our
