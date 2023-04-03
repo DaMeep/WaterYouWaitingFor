@@ -12,8 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +27,7 @@ import android.widget.ToggleButton;
  * Use the {@link SettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,6 +45,10 @@ public class SettingsFragment extends Fragment {
     private TextView weightSettingsText;
     private EditText userNameText;
     private EditText userWeightText;
+
+    private Spinner activityDropdown;
+    private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
+    private String curActivityLevel;
 
     private SwitchCompat notificationSwitch;
 
@@ -101,6 +108,13 @@ public class SettingsFragment extends Fragment {
         userWeightText = (EditText) view.findViewById(R.id.editWeightText);
         userWeightText.setText(sharedpreferences.getString("userWeight", "100"));
 
+        activityDropdown = (Spinner)view.findViewById(R.id.settingsActivityDropdown);
+        ArrayAdapter<String> activityAdapter = new ArrayAdapter<String>(view.getContext(),
+                android.R.layout.simple_spinner_dropdown_item,activityLevels);
+        activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        activityDropdown.setAdapter(activityAdapter);
+        activityDropdown.setOnItemSelectedListener(this);
+
         //Notifications
         notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
         notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
@@ -115,6 +129,7 @@ public class SettingsFragment extends Fragment {
         //Personal
         editor.putString("username", userNameText.getText().toString());
         editor.putString("userWeight", userWeightText.getText().toString());
+        editor.putString("activityLevel", curActivityLevel);
 
         //Notifications
         editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
@@ -131,5 +146,15 @@ public class SettingsFragment extends Fragment {
         else{
             weightSettingsText.setText(R.string.weightSettingsTextImperial);
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+        curActivityLevel = activityLevels[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // TODO Auto-generated method stub
     }
 }

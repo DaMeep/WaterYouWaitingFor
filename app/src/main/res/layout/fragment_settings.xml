@@ -29,7 +29,7 @@
                 android:id="@+id/generalSettingsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="General"
+                android:text="@string/generalSettingsTitle"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -68,7 +68,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:onClick="onUnitSwitch"
-                        android:text="Units:"
+                        android:text="@string/unitSettingsText"
                         android:textOff="@string/imperialUnitsToggle"
                         android:textOn="@string/metricUnitsToggle"
                         android:textSize="20sp" />
@@ -87,7 +87,7 @@
                 android:id="@+id/personalSettingsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Personal"
+                android:text="@string/personalSettingsTitle"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -146,6 +146,13 @@
                         android:layout_height="wrap_content"
                         android:text="Activity Level:"
                         android:textSize="26sp" />
+
+                    <Spinner
+                        android:id="@+id/settingsActivityDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/activityLevels"
+                        android:spinnerMode="dropdown" />
                 </TableRow>
 
                 <TableRow
