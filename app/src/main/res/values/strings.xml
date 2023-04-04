@@ -3,6 +3,19 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
+    <string name="stringContaminate">Contaminations</string>
+    <string name="conA">contaminant A</string>
+    <string name="con1">Contaminant 1</string>
+    <string name="conB">Contaminant B</string>
+    <string name="conC">Contaminant C</string>
+    <string name="welcome">Welcome back, User!</string>
+    <string name="update_last">Last Updated:</string>
+    <string name="water_image">Image of Water</string>
+    <string name="timestamp">Enter the Time</string>
+    <string name="amtConsume">How much was consumed?</string>
+    <string name="newDrink">Add Drink</string>
+    <string name="activity_level">Activity Level:</string>
+    <string name="notifications">Notifications</string>
     <string name="generalSettingsTitle">General</string>
     <string name="personalSettingsTitle">Personal</string>
     <string name="nameSettingsText">Name:</string>
