@@ -3,4 +3,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
+    <string name="generalSettingsTitle">General</string>
+    <string name="personalSettingsTitle">Personal</string>
+    <string name="nameSettingsText">Name:</string>
+    <string name="locationSettingsText">Location:</string>
+    <string name="weightSettingsTextImperial">Weight(lbs):</string>
+    <string name="weightSettingsTextMetric">Weight(kgs):</string>
+    <string name="unitSettingsText">Units:</string>
+    <string name="imperialUnitsToggle">IMPERIAL</string>
+    <string name="metricUnitsToggle">METRIC</string>
+
+    <string-array name="activityLevels">
+        <item>None</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
 </resources>
