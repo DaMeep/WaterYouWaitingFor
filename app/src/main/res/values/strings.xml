@@ -5,5 +5,33 @@
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
     <string name="start_scan">Start Scan</string>
+    <string name="stringContaminate">Contaminations</string>
+    <string name="conA">contaminant A</string>
+    <string name="con1">Contaminant 1</string>
+    <string name="conB">Contaminant B</string>
+    <string name="conC">Contaminant C</string>
+    <string name="welcome">Welcome back, User!</string>
+    <string name="update_last">Last Updated:</string>
+    <string name="water_image">Image of Water</string>
+    <string name="timestamp">Enter the Time</string>
+    <string name="amtConsume">How much was consumed?</string>
+    <string name="newDrink">Add Drink</string>
+    <string name="activity_level">Activity Level:</string>
+    <string name="notifications">Notifications</string>
+    <string name="generalSettingsTitle">General</string>
+    <string name="personalSettingsTitle">Personal</string>
+    <string name="nameSettingsText">Name:</string>
+    <string name="locationSettingsText">Location:</string>
+    <string name="weightSettingsTextImperial">Weight(lbs):</string>
+    <string name="weightSettingsTextMetric">Weight(kgs):</string>
+    <string name="unitSettingsText">Units:</string>
+    <string name="imperialUnitsToggle">IMPERIAL</string>
+    <string name="metricUnitsToggle">METRIC</string>
 
+    <string-array name="activityLevels">
+        <item>None</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
 </resources>

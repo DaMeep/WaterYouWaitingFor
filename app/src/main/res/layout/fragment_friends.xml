@@ -12,5 +12,33 @@
         android:text="Friends Fragment"
         android:textSize="26sp"
         android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="ExtraText">
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"/>
+<!--            android:inputType=-->
+
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="User ID"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/buttonAddUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add User" />
+
+    </LinearLayout>
 
 </FrameLayout>
