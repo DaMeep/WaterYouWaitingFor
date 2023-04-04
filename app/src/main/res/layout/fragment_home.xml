@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,14 +10,16 @@
         android:id="@+id/welcomeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome back, User!"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/welcome"
         android:textSize="26sp" />
 
     <TextView
         android:id="@+id/updateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Last Updated:"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/update_last"
         android:textSize="20sp" />
 
     <ImageView
@@ -26,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
-        android:contentDescription="Image of Water"
+        android:contentDescription="@string/water_image"
         android:scaleType="centerInside"
         android:scaleX="10"
         android:scaleY="10"

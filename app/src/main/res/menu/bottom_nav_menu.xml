@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Contamination"
-        android:icon="@drawable/baseline_warning_24"
+        android:icon="@drawable/ic_contaminant_foreground"
         android:id="@+id/contamination"/>
     <item android:title="Stats"
         android:icon="@drawable/baseline_bar_chart_24"
@@ -11,7 +11,7 @@
         android:icon="@drawable/baseline_home_24"
         android:id="@+id/home"/>
     <item android:title="Friends"
-        android:icon="@drawable/baseline_groups_24"
+        android:icon="@drawable/ic_friends_foreground"
         android:id="@+id/friends"/>
     <item android:title="Settings"
         android:icon="@drawable/baseline_settings_24"
