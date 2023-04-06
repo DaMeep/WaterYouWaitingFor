@@ -16,6 +16,19 @@
         app:layout_constraintStart_toStartOf="parent">
 
 
+        <Button
+            android:id="@+id/btn_scan"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:text="@string/start_scan" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:fillViewport="true"></ScrollView>
     </FrameLayout>
 
     <LinearLayout
@@ -27,21 +40,6 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
         tools:context="android.kaviles.bletutorial.MainActivity">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8"
-            android:fillViewport="true"
-            android:id="@+id/scrollView">
-        </ScrollView>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/start_scan"
-            android:id="@+id/btn_scan"/>
 
     </LinearLayout>
 
