@@ -1,6 +1,7 @@
 package com.example.wateryouwaitingfor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -10,14 +11,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.io.Serializable;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements Serializable {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +32,7 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Button btn_Scan;
 
     private SharedPreferences sharedpreferences;
 
@@ -68,13 +74,27 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
+
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        TextView userNameDisplay = (TextView) view.findViewById(R.id.welcomeText);
-        userNameDisplay.setText("Welcome back, " + sharedpreferences.getString("username", "User"));
+        btn_Scan = (Button) view.findViewById(R.id.btn_scan);
+         ScrollView scroll = (ScrollView) view.findViewById(R.id.scrollView);
+
+
+        btn_Scan.setOnClickListener((MainActivity)getActivity());
+
+
+        TextView userNameDisplay = view.findViewById(R.id.welcomeText);
+        String welcomeback= "Welcome back,";
+        userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
+    }
+
+    public void changeButtonText(String text){
+        btn_Scan.setText(text);
     }
 }

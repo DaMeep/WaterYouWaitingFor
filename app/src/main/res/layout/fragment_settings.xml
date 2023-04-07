@@ -75,7 +75,6 @@
                         android:id="@+id/unitToggleButton"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="onUnitSwitch"
                         android:text="@string/unitSettingsText"
                         android:textOff="@string/imperialUnitsToggle"
                         android:textOn="@string/metricUnitsToggle"

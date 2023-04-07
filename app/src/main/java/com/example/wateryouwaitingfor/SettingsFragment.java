@@ -3,31 +3,26 @@ package com.example.wateryouwaitingfor;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,19 +92,19 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         super.onViewCreated(view, savedInstanceState);
 
         //General
-        unitsButton = (ToggleButton) view.findViewById(R.id.unitToggleButton);
+        unitsButton = view.findViewById(R.id.unitToggleButton);
         unitsButton.setActivated(sharedpreferences.getBoolean("metricUnits", false));
 
         //Personal
-        userNameText = (EditText) view.findViewById(R.id.editUserNameText);
+        userNameText = view.findViewById(R.id.editUserNameText);
         userNameText.setText(sharedpreferences.getString("username", "User"));
 
-        weightSettingsText = (TextView) view.findViewById(R.id.weightSettingsText);
-        userWeightText = (EditText) view.findViewById(R.id.editWeightText);
+        weightSettingsText = view.findViewById(R.id.weightSettingsText);
+        userWeightText = view.findViewById(R.id.editWeightText);
         userWeightText.setText(sharedpreferences.getString("userWeight", "100"));
 
-        activityDropdown = (Spinner)view.findViewById(R.id.settingsActivityDropdown);
-        ArrayAdapter<String> activityAdapter = new ArrayAdapter<String>(view.getContext(),
+        activityDropdown = view.findViewById(R.id.settingsActivityDropdown);
+        ArrayAdapter<String> activityAdapter = new ArrayAdapter(view.getContext(),
                 android.R.layout.simple_spinner_dropdown_item,activityLevels);
         activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityDropdown.setAdapter(activityAdapter);
@@ -139,7 +134,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         super.onDestroyView();
     }
 
-    public void onUnitSwitch(View view) {
+    public void onClick(View v) {
         if (unitsButton.isActivated()){
             weightSettingsText.setText(R.string.weightSettingsTextMetric);
         }
