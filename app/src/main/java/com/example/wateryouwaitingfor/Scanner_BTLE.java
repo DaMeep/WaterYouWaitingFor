@@ -23,6 +23,8 @@ public class Scanner_BTLE {
     private long scanPeriod;
     private int signalStrength;
 
+
+
     public Scanner_BTLE(MainActivity mainActivity, long scanPeriod, int signalStrength) {
         ma = mainActivity;
 

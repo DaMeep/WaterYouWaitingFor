@@ -5,5 +5,7 @@
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
     <string name="start_scan">Start Scan</string>
+    <string name="Average_Water_Intake">Average Water Intake Is: </string>
+    <string name="Week">Week: </string>
 
 </resources>
