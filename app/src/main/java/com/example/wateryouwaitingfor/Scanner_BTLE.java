@@ -83,7 +83,7 @@ public class Scanner_BTLE{
     // you can instead call startLeScan(UUID[], BluetoothAdapter.LeScanCallback),
     // providing an array of UUID objects that specify the GATT services your app supports.
     private void scanLeDevice(final boolean enable) {
-        checkPermissions();
+        checkPermissions(ma, ma.getApplicationContext());
         final BluetoothLeScanner mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
         if (enable && !mScanning) {
@@ -91,6 +91,7 @@ public class Scanner_BTLE{
 
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void run() {
                     Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");

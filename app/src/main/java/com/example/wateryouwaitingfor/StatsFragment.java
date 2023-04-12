@@ -4,9 +4,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,19 +28,12 @@ public class StatsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private String time ;
+    private String Consumed;
+
     public StatsFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StatsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static StatsFragment newInstance(String param1, String param2) {
         StatsFragment fragment = new StatsFragment();
         Bundle args = new Bundle();
@@ -45,10 +42,12 @@ public class StatsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    private Button waterButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Ashwina", "inOnCreate" );
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -56,9 +55,37 @@ public class StatsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("Ashwina", "inOnCreateView");
+        DBHandler db = new DBHandler(getContext());
+        View v = getView();
+            waterButton = (Button)v.findViewById(R.id.btnAddWater);
+            waterButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    Log.d("Ashwina", "inOnClick");
+                    // Inflate the layout for this fragment
+                    // below line is to get data from all edit text fields.
+                    time = ((EditText) view.findViewById(R.id.timeEdt)).getText().toString();
+                    Consumed = ((EditText) view.findViewById(R.id.AmtConsumedEdt)).getText().toString();
+
+                    // validating if the text fields are empty or not.
+                    if (time.isEmpty() && Consumed.isEmpty()) {
+                        Toast.makeText(getContext(), "Please enter all the data...", Toast.LENGTH_SHORT).show();
+                        System.out.println(inflater.inflate(R.layout.fragment_stats, container, false));
+                    }
+
+                    // on below line we are calling a method to add the new
+                    // drink to sqlite data and pass all our values to it.
+                    db.addNewDrink(time, Consumed);
+
+                    // after adding the data we are displaying a toast message.
+                    Toast.makeText(getContext(), "Drink has been added.", Toast.LENGTH_SHORT).show();
+                    ((EditText) view.findViewById(R.id.timeEdt)).setText("");
+                    ((EditText) view.findViewById(R.id.AmtConsumedEdt)).setText("");
+                }
+            });
         return inflater.inflate(R.layout.fragment_stats, container, false);
-    }
+
+        }
+
 }

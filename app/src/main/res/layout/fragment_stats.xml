@@ -20,7 +20,7 @@
 
         <!--Edit text to enter course name-->
         <EditText
-            android:id="@+id/idEdtTime"
+            android:id="@+id/timeEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,7 +31,7 @@
 
         <!--edit text to enter course duration-->
         <EditText
-            android:id="@+id/idEdtAmtConsumed"
+            android:id="@+id/AmtConsumedEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -43,7 +43,7 @@
 
         <!--button for adding new course-->
         <Button
-            android:id="@+id/idBtnAddWater"
+            android:id="@+id/btnAddWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
