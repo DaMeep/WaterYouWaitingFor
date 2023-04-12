@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,12 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
         this.activity = activity;
         layoutResourceID = resource;
         devices = objects;
+    }
+
+    @Override
+    public void notifyDataSetChanged(){
+        super.notifyDataSetChanged();
+        Log.e("ADAPTER UPDATED", devices.toString());
     }
 
     @Override

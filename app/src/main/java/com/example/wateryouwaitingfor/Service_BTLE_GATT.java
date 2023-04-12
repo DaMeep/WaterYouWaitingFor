@@ -105,11 +105,11 @@ public class Service_BTLE_GATT extends Service {
             broadcastUpdate(characteristic);
         }
 
-//        @Override
-//        public void onCharacteristicWrite(BluetoothGatt gatt,
-//                                          BluetoothGattCharacteristic characteristic, int status) {
-//
-//        }
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt,
+                                          BluetoothGattCharacteristic characteristic, int status) {
+
+        }
     };
 
     private void broadcastUpdate(final String action) {
@@ -225,18 +225,6 @@ public class Service_BTLE_GATT extends Service {
             return false;
         }
 
-        // We want to directly connect to the device, so we are setting the autoConnect
-        // parameter to false.
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED && mBluetoothGatt.connect()) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return false;
-        }
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;

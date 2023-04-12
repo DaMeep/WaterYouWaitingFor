@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,15 +8,21 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ListAdapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +40,7 @@ public class HomeFragment extends Fragment implements Serializable {
     private String mParam1;
     private String mParam2;
     private Button btn_Scan;
-
+    private ScrollView scroll;
     private SharedPreferences sharedpreferences;
 
     public HomeFragment() {
@@ -83,11 +90,18 @@ public class HomeFragment extends Fragment implements Serializable {
         super.onViewCreated(view, savedInstanceState);
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
-         ScrollView scroll = (ScrollView) view.findViewById(R.id.scrollView);
+        scroll = (ScrollView) view.findViewById(R.id.scrollView);
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
+        ListView listView = new ListView(getActivity().getApplicationContext());
+        listView.setAdapter(((MainActivity)getActivity()).getAdapter());
+        listView.setOnItemClickListener((MainActivity)getActivity());
 
+//        ListView lView = new ListView(getActivity().getApplicationContext());
+//        ArrayList<BTLE_Device> list = new ArrayList<BTLE_Device>();
+//        list.add(new BTLE_Device(new BluetoothDevice()));
+//        lView.setAdapter(new ArrayAdapter<BTLE_Device>(getActivity().getApplicationContext(), R.layout.btle_device_list_item, new ArrayList<BTLE_Device>()));
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
         String welcomeback= "Welcome back,";

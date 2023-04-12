@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,7 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -38,18 +45,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private HashMap<String, BTLE_Device> mBTDevicesHashMap;
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
-    private ListView listView;
+//    private ListView listView;
 
-    private Button btn_Scan;
+//    private Button btn_Scan;
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
+    private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        checkPermissions(this, getApplicationContext());
         replaceFragment((new HomeFragment()));
 
         // Use this check to determine whether BLE is supported on the device. Then
@@ -65,15 +74,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
 
+        Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
+
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        listView = new ListView(this);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+//        listView = new ListView(this);
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener(this);
 
 //        btn_Scan = (Button) findViewById(R.id.btn_scan);
-        ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
+//        ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
 //        findViewById(R.id.btn_scan).setOnClickListener(this);
+
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent data = result.getData();
+                            Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
+                        }
+                        else if (result.getResultCode() == Activity.RESULT_CANCELED){
+                            Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
+                        }
+                    }
+                });
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
@@ -141,26 +168,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Check which request we're responding to
-        if (requestCode == REQUEST_ENABLE_BT) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-//                Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-            } else if (resultCode == RESULT_CANCELED) {
-                Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-            }
-        } else if (requestCode == BTLE_SERVICES) {
-            // Do something
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        // Check which request we're responding to
+//        if (requestCode == REQUEST_ENABLE_BT) {
+//            // Make sure the request was successful
+//            if (resultCode == RESULT_OK) {
+////                Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
+//            } else if (resultCode == RESULT_CANCELED) {
+//                Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
+//            }
+//        } else if (requestCode == BTLE_SERVICES) {
+//            // Do something
+//        }
+//    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -178,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, Activity_BTLE_Services.class);
         intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
         intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-        startActivityForResult(intent, BTLE_SERVICES);
+//        startActivityForResult(intent, BTLE_SERVICES);
+        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -211,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             mBTDevicesHashMap.put(address, btleDevice);
             mBTDevicesArrayList.add(btleDevice);
+//            Log.e("Device Stored", btleDevice.getAddress());
         }
         else {
             mBTDevicesHashMap.get(address).setRSSI(rssi);
@@ -232,5 +256,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        btn_Scan.setText("Scan Again");
 
         mBTLeScanner.stop();
+    }
+
+    public ListAdapter_BTLE_Devices getAdapter(){
+        return adapter;
+    }
+
+    public static void checkPermissions(Activity activity, Context context){
+        int PERMISSION_ALL = 1;
+        Log.e("BLUETOOTH PERMS", "HI");
+        String[] PERMISSIONS = {
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                android.Manifest.permission.BLUETOOTH,
+                android.Manifest.permission.BLUETOOTH_ADMIN,
+                android.Manifest.permission.BLUETOOTH_CONNECT,
+                android.Manifest.permission.BLUETOOTH_ADVERTISE,
+                android.Manifest.permission.BLUETOOTH_SCAN
+
+        };
+
+        if(!hasPermissions(context, PERMISSIONS)){
+            ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
+            Log.e("BLUETOOTH PERMS", "NO PERMS");
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions){
+        Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
+        if(context != null && permissions != null){
+            for (String permission : permissions){
+                if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

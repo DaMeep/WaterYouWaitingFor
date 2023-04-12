@@ -22,11 +22,11 @@
 <!--            android:layout_height="70dp"-->
 <!--            android:text="@string/start_scan" />-->
 
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true" />
+<!--        <ScrollView-->
+<!--            android:id="@+id/scrollView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:fillViewport="true" />-->
     </FrameLayout>
 
 
