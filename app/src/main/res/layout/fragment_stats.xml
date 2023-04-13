@@ -50,6 +50,16 @@
             android:text="@string/newDrink"
             android:textAllCaps="false" />
 
+        <!--new button for opening our drink list activity-->
+        <Button
+            android:id="@+id/btnReadDrink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Read All Drinks"
+            android:textAllCaps="false" />
+
+
         <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="match_parent"
