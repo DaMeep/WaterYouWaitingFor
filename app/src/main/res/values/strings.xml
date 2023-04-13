@@ -8,5 +8,6 @@
     <string name="Average_Water_Intake">Average Water Intake Is: </string>
     <string name="Week">Week: </string>
     <string name="contamination">Contamination</string>
+    <string name="goal"> You are 10oz away from your goal.</string>
 
 </resources>

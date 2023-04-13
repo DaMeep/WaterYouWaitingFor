@@ -93,9 +93,8 @@ public class StatsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_stats, container, false);
     }
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-       // BarChart barChart = ((BarChart) view.findViewById(R.id.barchart));
 
-        barChart= (BarChart) view.findViewById(R.id.barchart);
+        barChart= view.findViewById(R.id.barchart);
         getData();
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Bar Chart");
         BarData barData = new BarData(barDataSet);

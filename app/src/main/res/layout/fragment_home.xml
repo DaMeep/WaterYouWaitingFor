@@ -21,14 +21,13 @@
         android:text="Last Updated:"
         android:textSize="20sp" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <TextView
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:clickable="true"
-        android:contentDescription="Image of Water"
-        android:scaleType="centerInside"
-        android:scaleX="10"
-        android:scaleY="10"
-        android:src="@drawable/baseline_water_drop_24" />
+        android:layout_height="wrap_content"
+        android:text="@string/goal"
+        android:textSize="19sp"
+        android:translationX="70dp"
+        android:translationY="500dp" />
+
 </LinearLayout>
