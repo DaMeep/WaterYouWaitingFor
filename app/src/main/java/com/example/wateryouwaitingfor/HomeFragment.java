@@ -94,9 +94,10 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
-        ListView listView = new ListView(getActivity().getApplicationContext());
+        ListView listView = new ListView(getActivity());
         listView.setAdapter(((MainActivity)getActivity()).getAdapter());
         listView.setOnItemClickListener((MainActivity)getActivity());
+        Log.e("VISIBILITY", String.valueOf(listView.getVisibility() == View.GONE));
 
 //        ListView lView = new ListView(getActivity().getApplicationContext());
 //        ArrayList<BTLE_Device> list = new ArrayList<BTLE_Device>();
@@ -111,4 +112,5 @@ public class HomeFragment extends Fragment implements Serializable {
     public void changeButtonText(String text){
         btn_Scan.setText(text);
     }
+
 }
