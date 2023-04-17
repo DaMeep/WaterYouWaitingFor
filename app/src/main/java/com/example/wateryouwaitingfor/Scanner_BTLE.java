@@ -18,6 +18,7 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Kelvin on 4/20/16.
@@ -31,30 +32,12 @@ public class Scanner_BTLE {
         @SuppressLint("MissingPermission")
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-//            Log.e("BLUETOOTH HERE", "HELLO");
             super.onScanResult(callbackType, result);
             final int rssi = result.getRssi();
             if (rssi > signalStrength) {
                 mHandler.post(() -> ma.addDevice(result.getDevice(), rssi));
-                if (result.getDevice().getName() != null){
-//                    Log.e("BLUETOOTH Name", result.getDevice().getName());
-                }
-                else{
-//                    Log.e("BLUETOOTH HERE", "Its null");
-                }
             }
         }
-
-//        @Override
-//        public void onBatchScanResults(List<ScanResult> results) {
-//            super.onBatchScanResults(results);
-//            for (ScanResult result : results){
-//                final int rssi = result.getRssi();
-//                if (rssi > signalStrength){
-//                    mHandler.post(() -> ma.addDevice(result.getDevice(), rssi));
-//                }
-//            }
-//        }
 
         @Override
         public void onScanFailed(int errorCode) {
@@ -108,7 +91,6 @@ public class Scanner_BTLE {
         final BluetoothLeScanner mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
         if (enable && !mScanning) {
             Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
-            Log.e("Scanner", "Starting BLE SCAN");
 
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
@@ -137,23 +119,7 @@ public class Scanner_BTLE {
         }
         else {
             mScanning = false;
-            //mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mBluetoothScanner.stopScan(mLeScanCallback);
         }
     }
-
-    // Device scan callback.
-//    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-//            new BluetoothAdapter.LeScanCallback() {
-//
-//                @Override
-//                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-//
-//                    final int new_rssi = rssi;
-//                    if (rssi > signalStrength) {
-//                        mHandler.post(() -> ma.addDevice(device, new_rssi));
-//                    }
-//                }
-//            };
-
 }

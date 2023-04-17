@@ -1,11 +1,20 @@
 package com.example.wateryouwaitingfor;
 
+import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +24,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 
 import androidx.activity.result.ActivityResult;
@@ -42,12 +53,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_ENABLE_BT = 1;
     public static final int BTLE_SERVICES = 2;
 
+
+    private SharedPreferences sharedpreferences;
+    private String deviceName, deviceAddress;
+
     private HashMap<String, BTLE_Device> mBTDevicesHashMap;
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
-//    private ListView listView;
 
-//    private Button btn_Scan;
+    UUID SERVICE_UUID = convertFromInteger(0x181C);
+    UUID CHAR_UUID = convertFromInteger(0x2A37);
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
@@ -59,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
+        sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
         replaceFragment((new HomeFragment()));
 
         // Use this check to determine whether BLE is supported on the device. Then
@@ -77,14 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
 
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
-
-//        listView = new ListView(this);
-//        listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(this);
-
-//        btn_Scan = (Button) findViewById(R.id.btn_scan);
-//        ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
-//        findViewById(R.id.btn_scan).setOnClickListener(this);
 
         someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -149,14 +157,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 
-//        registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-//        unregisterReceiver(mBTStateUpdateReceiver);
         stopScan();
     }
 
@@ -168,40 +174,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        // Check which request we're responding to
-//        if (requestCode == REQUEST_ENABLE_BT) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-////                Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-//            } else if (resultCode == RESULT_CANCELED) {
-//                Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-//            }
-//        } else if (requestCode == BTLE_SERVICES) {
-//            // Do something
-//        }
-//    }
-
+    @SuppressLint("MissingPermission")
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Context context = view.getContext();
 
-//        Utils.toast(context, "List Item clicked");
-
-        // do something with the text views and start the next activity.
-
         stopScan();
 
-        String name = mBTDevicesArrayList.get(position).getName();
-        String address = mBTDevicesArrayList.get(position).getAddress();
+        BTLE_Device currentDevice = mBTDevicesArrayList.get(position);
 
-        Intent intent = new Intent(this, Activity_BTLE_Services.class);
-        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
-        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-//        startActivityForResult(intent, BTLE_SERVICES);
-        someActivityResultLauncher.launch(intent);
+        deviceName = currentDevice.getName();
+        deviceAddress = currentDevice.getAddress();
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("currentDeviceName", deviceName);
+        editor.putString("currentDeviceAddress", deviceAddress);
+        editor.apply();
+
+        BluetoothGatt gatt;
+        BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                if (newState == STATE_CONNECTED){
+                    gatt.discoverServices();
+                }
+            }
+
+            @Override
+            // New services discovered
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    BluetoothGattService mBluetoothGattService = gatt.getService(SERVICE_UUID);
+                    if (mBluetoothGattService != null) {
+                        Log.i(TAG, "Service characteristic UUID found: " + mBluetoothGattService.getUuid().toString());
+                    } else {
+                        Log.i(TAG, "Service characteristic not found for UUID: " + SERVICE_UUID);
+                    }
+                }
+                else{
+                    Log.e(TAG, "Gatt failed");
+                }
+            }
+        };
+
+        gatt = currentDevice.connect(gattCallback);
+
+//        Log.e("Characteristic MAYBE: ", gatt.getServices().toString());
+//        Log.e("Characteristic MAYBE: ", gatt.getDevice().getName());
+
+//        Intent intent = new Intent(this, Activity_BTLE_Services.class);
+//        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
+//        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
+//        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -211,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_scan:
                 Utils.toast(getApplicationContext(), "Scan Button Pressed");
+                replaceFragment(new DeviceListFragment());
 
                 if (!mBTLeScanner.isScanning()) {
                     startScan();
@@ -293,5 +319,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         return true;
+    }
+
+    public static UUID convertFromInteger(int i) { // ex "0x180D" for heart rate services
+        final long MSB = 0x0000000000001000L;
+        final long LSB = 0x800000805f9b34fbL;
+        long value = i & 0xFFFFFFFF;
+        return new UUID(MSB | (value << 32), LSB);
+    }
+
+    public String getDeviceName(){
+        return deviceName;
+    }
+
+    public String getDeviceAddress(){
+        return deviceAddress;
     }
 }

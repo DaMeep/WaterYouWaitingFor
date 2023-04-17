@@ -5,33 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".HomeFragment"
+    tools:context=".DeviceListFragment"
     app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="1.0"
     app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/btn_scan"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="@string/change_device" />
-
-
     <TextView
-        android:id="@+id/welcomeText"
+        android:id="@+id/curDeviceNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="@string/welcome"
-        android:textSize="26sp" />
+        android:text="Current Device: "
+        android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/updateText"
+        android:id="@+id/curDeviceAddressText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/update_last"
+        android:text="Device Address: "
         android:textSize="20sp" />
 
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/otherDevicesText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Other Devices:"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/deviceListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
