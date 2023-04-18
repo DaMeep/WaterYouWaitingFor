@@ -1,12 +1,21 @@
 package com.example.wateryouwaitingfor;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,9 +23,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 
 import androidx.activity.result.ActivityResult;
@@ -33,74 +46,53 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.wateryouwaitingfor.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.welie.blessed.BluetoothCentralManager;
+import com.welie.blessed.BluetoothPeripheral;
+
+import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     ActivityMainBinding binding;
     public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences";
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    public static final int REQUEST_ENABLE_BT = 1;
-    public static final int BTLE_SERVICES = 2;
+    private TextView measurementValue;
+    private static final int REQUEST_ENABLE_BT = 1;
+    private static final int ACCESS_LOCATION_REQUEST = 2;
 
-    private HashMap<String, BTLE_Device> mBTDevicesHashMap;
-    private ArrayList<BTLE_Device> mBTDevicesArrayList;
-    private ListAdapter_BTLE_Devices adapter;
+    private int waterAmt = -1;
+
+
+//    private HashMap<String, BTLE_Device> mBTDevicesHashMap;
+//    private ArrayList<BTLE_Device> mBTDevicesArrayList;
+//    private ListAdapter_BTLE_Devices adapter;
 //    private ListView listView;
 
 //    private Button btn_Scan;
-
-    private BroadcastReceiver_BTState mBTStateUpdateReceiver;
-    private Scanner_BTLE mBTLeScanner;
-    private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        checkPermissions(this, getApplicationContext());
+        measurementValue = (TextView) findViewById(R.id.bloodPressureValue);
+//        checkPermissions(this, getApplicationContext());
+
+        registerReceiver(locationServiceStateReceiver, new IntentFilter((LocationManager.MODE_CHANGED_ACTION)));
+        registerReceiver(waterDataReceiver, new IntentFilter( BluetoothHandler.MEASUREMENT_WATER ));
+
         replaceFragment((new HomeFragment()));
 
-        // Use this check to determine whether BLE is supported on the device. Then
-        // you can selectively disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Utils.toast(getApplicationContext(), "BLE not supported");
-            finish();
-        }
 
-        mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
-        mBTLeScanner = new Scanner_BTLE(this, 5000, -75);
+//        mBTDevicesHashMap = new HashMap<>();
+//        mBTDevicesArrayList = new ArrayList<>();
 
-        mBTDevicesHashMap = new HashMap<>();
-        mBTDevicesArrayList = new ArrayList<>();
+//        adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
 
-        adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
-
-//        listView = new ListView(this);
-//        listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(this);
-
-//        btn_Scan = (Button) findViewById(R.id.btn_scan);
-//        ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
-//        findViewById(R.id.btn_scan).setOnClickListener(this);
-
-        someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-                        }
-                        else if (result.getResultCode() == Activity.RESULT_CANCELED){
-                            Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-                        }
-                    }
-                });
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
@@ -138,51 +130,193 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentTransaction.commit();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-    }
-
+    @SuppressLint("MissingPermission")
     @Override
     protected void onResume() {
         super.onResume();
 
-//        registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        if (getBluetoothManager().getAdapter() != null) {
+            if (!isBluetoothEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                checkPermissions();
+            }
+        } else {
+            Timber.e("This device has no Bluetooth hardware");
+        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(locationServiceStateReceiver);
+        unregisterReceiver(waterDataReceiver);
+    }
 
-//        unregisterReceiver(mBTStateUpdateReceiver);
-        stopScan();
+    private boolean isBluetoothEnabled() {
+        BluetoothAdapter bluetoothAdapter = getBluetoothManager().getAdapter();
+        if(bluetoothAdapter == null) return false;
+
+        return bluetoothAdapter.isEnabled();
+    }
+
+    private void initBluetoothHandler()
+    {
+        BluetoothHandler.getInstance(getApplicationContext());
+    }
+
+    @NotNull
+    private BluetoothManager getBluetoothManager() {
+        return Objects.requireNonNull((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE),"cannot get BluetoothManager");
+    }
+
+    private final BroadcastReceiver locationServiceStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null && action.equals(LocationManager.MODE_CHANGED_ACTION)) {
+                boolean isEnabled = areLocationServicesEnabled();
+                Timber.i("Location service state changed to: %s", isEnabled ? "on" : "off");
+                checkPermissions();
+            }
+        }
+    };
+
+    private final BroadcastReceiver waterDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BluetoothPeripheral peripheral = getPeripheral(intent.getStringExtra(BluetoothHandler.MEASUREMENT_EXTRA_PERIPHERAL));
+            waterAmt = intent.getIntExtra(BluetoothHandler.MEASUREMENT_WATER_EXTRA, -1);
+            if (waterAmt == -1) return;
+
+            measurementValue.setText(String.format(Locale.ENGLISH, "%.0f from %s", waterAmt, peripheral.getName()));
+        }
+    };
+
+    private BluetoothPeripheral getPeripheral(String peripheralAddress) {
+        BluetoothCentralManager central = BluetoothHandler.getInstance(getApplicationContext()).central;
+        return central.getPeripheral(peripheralAddress);
+    }
+
+    private void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] missingPermissions = getMissingPermissions(getRequiredPermissions());
+            if (missingPermissions.length > 0) {
+                requestPermissions(missingPermissions, ACCESS_LOCATION_REQUEST);
+            } else {
+                permissionsGranted();
+            }
+        }
+    }
+
+    private String[] getMissingPermissions(String[] requiredPermissions) {
+        List<String> missingPermissions = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String requiredPermission : requiredPermissions) {
+                if (getApplicationContext().checkSelfPermission(requiredPermission) != PackageManager.PERMISSION_GRANTED) {
+                    missingPermissions.add(requiredPermission);
+                }
+            }
+        }
+        return missingPermissions.toArray(new String[0]);
+    }
+
+
+    private String[] getRequiredPermissions() {
+        int targetSdkVersion = getApplicationInfo().targetSdkVersion;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && targetSdkVersion >= Build.VERSION_CODES.S) {
+            return new String[]{android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT};
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && targetSdkVersion >= Build.VERSION_CODES.Q) {
+            return new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION};
+        } else return new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION};
+    }
+
+    private void permissionsGranted() {
+        // Check if Location services are on because they are required to make scanning work for SDK < 31
+        int targetSdkVersion = getApplicationInfo().targetSdkVersion;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && targetSdkVersion < Build.VERSION_CODES.S) {
+            if (checkLocationServices()) {
+                initBluetoothHandler();
+            }
+        } else {
+            initBluetoothHandler();
+        }
+    }
+
+    private boolean areLocationServicesEnabled() {
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null) {
+            Timber.e("could not get location manager");
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return locationManager.isLocationEnabled();
+        } else {
+            boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            return isGpsEnabled || isNetworkEnabled;
+        }
+    }
+
+    private boolean checkLocationServices() {
+        if (!areLocationServicesEnabled()) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Location services are not enabled")
+                    .setMessage("Scanning for Bluetooth peripherals requires locations services to be enabled.") // Want to enable?
+                    .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    })
+                    .create()
+                    .show();
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        unregisterReceiver(mBTStateUpdateReceiver);
-        stopScan();
+        // Check if all permission were granted
+        boolean allGranted = true;
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+                break;
+            }
+        }
+
+        if (allGranted) {
+            permissionsGranted();
+        } else {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Permission is required for scanning Bluetooth peripherals")
+                    .setMessage("Please grant permissions")
+                    .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                            checkPermissions();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        // Check which request we're responding to
-//        if (requestCode == REQUEST_ENABLE_BT) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-////                Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-//            } else if (resultCode == RESULT_CANCELED) {
-//                Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-//            }
-//        } else if (requestCode == BTLE_SERVICES) {
-//            // Do something
-//        }
-//    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -192,16 +326,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // do something with the text views and start the next activity.
 
-        stopScan();
+//        stopScan();
 
-        String name = mBTDevicesArrayList.get(position).getName();
-        String address = mBTDevicesArrayList.get(position).getAddress();
-
-        Intent intent = new Intent(this, Activity_BTLE_Services.class);
-        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
-        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-//        startActivityForResult(intent, BTLE_SERVICES);
-        someActivityResultLauncher.launch(intent);
+//        String name = mBTDevicesArrayList.get(position).getName();
+//        String address = mBTDevicesArrayList.get(position).getAddress();
+//
+//        Intent intent = new Intent(this, Activity_BTLE_Services.class);
+//        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
+//        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
+////        startActivityForResult(intent, BTLE_SERVICES);
+//        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -210,14 +344,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
 
             case R.id.btn_scan:
-                Utils.toast(getApplicationContext(), "Scan Button Pressed");
-
-                if (!mBTLeScanner.isScanning()) {
-                    startScan();
-                }
-                else {
-                    stopScan();
-                }
+//                Utils.toast(getApplicationContext(), "Scan Button Pressed");
+//
+//                if (!mBTLeScanner.isScanning()) {
+//                    startScan();
+//                }
+//                else {
+//                    stopScan();
+//                }
                 break;
             default:
                 break;
@@ -225,73 +359,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void addDevice(BluetoothDevice device, int rssi) {
-
-        String address = device.getAddress();
-        if (!mBTDevicesHashMap.containsKey(address)) {
-            BTLE_Device btleDevice = new BTLE_Device(device);
-            btleDevice.setRSSI(rssi);
-
-            mBTDevicesHashMap.put(address, btleDevice);
-            mBTDevicesArrayList.add(btleDevice);
-//            Log.e("Device Stored", btleDevice.getAddress());
-        }
-        else {
-            mBTDevicesHashMap.get(address).setRSSI(rssi);
-        }
-
-        adapter.notifyDataSetChanged();
-    }
-
-    public void startScan(){
-//        btn_Scan.setText("Scanning...");
-
-        mBTDevicesArrayList.clear();
-        mBTDevicesHashMap.clear();
-
-        mBTLeScanner.start();
-    }
-
-    public void stopScan() {
-//        btn_Scan.setText("Scan Again");
-
-        mBTLeScanner.stop();
-    }
-
-    public ListAdapter_BTLE_Devices getAdapter(){
-        return adapter;
-    }
-
-    public static void checkPermissions(Activity activity, Context context){
-        int PERMISSION_ALL = 1;
-        Log.e("BLUETOOTH PERMS", "HI");
-        String[] PERMISSIONS = {
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-                android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_ADVERTISE,
-                android.Manifest.permission.BLUETOOTH_SCAN
-
-        };
-
-        if(!hasPermissions(context, PERMISSIONS)){
-            ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
-            Log.e("BLUETOOTH PERMS", "NO PERMS");
-        }
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions){
-        Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
-        if(context != null && permissions != null){
-            for (String permission : permissions){
-                if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
-                    return false;
-                }
-            }
-        }
-        return true;
+    public int getWater(){
+        return waterAmt;
     }
 }

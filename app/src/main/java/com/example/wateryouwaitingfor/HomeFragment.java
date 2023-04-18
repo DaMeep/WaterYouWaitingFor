@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
         ListView listView = new ListView(getActivity());
-        listView.setAdapter(((MainActivity)getActivity()).getAdapter());
+//        listView.setAdapter(((MainActivity)getActivity()).getAdapter());
         listView.setOnItemClickListener((MainActivity)getActivity());
         Log.e("VISIBILITY", String.valueOf(listView.getVisibility() == View.GONE));
 
