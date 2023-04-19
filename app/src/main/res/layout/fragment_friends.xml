@@ -9,8 +9,45 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Friends Fragment"
+        android:text="@string/friends_fragment"
         android:textSize="26sp"
         android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="ExtraText">
+
+        <!--            android:inputType=-->
+
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_id"
+            android:minHeight="48dp"
+            android:layout_gravity="center"
+            android:importantForAutofill="no"
+            android:inputType="textWebEmailAddress" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/name_Input"
+            android:minHeight="48dp"
+            android:autofillHints=""
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/buttonAddUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_user_friends"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
 </FrameLayout>

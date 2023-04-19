@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1036951491695",
+    "project_id": "wateryouwaitingfor-6e52e",
+    "storage_bucket": "wateryouwaitingfor-6e52e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036951491695:android:1f3b0844f519ee203de99a",
+        "android_client_info": {
+          "package_name": "com.example.wateryouwaitingfor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036951491695-5sukqkod2krgs9bhah5286fg07912qdh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7kSxPVJU8D8DuWMAc7PilzvyC1rjiAF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036951491695-5sukqkod2krgs9bhah5286fg07912qdh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

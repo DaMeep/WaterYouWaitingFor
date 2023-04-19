@@ -4,10 +4,40 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
-    <string name="start_scan">Start Scan</string>
     <string name="Average_Water_Intake">Average Water Intake Is: </string>
     <string name="Week">Week: </string>
     <string name="contamination">Contamination</string>
-    <string name="goal"> You are 10oz away from your goal.</string>
-
+    <string name="change_device">Change Device</string>
+    <string name="stringContaminate">Contaminations</string>
+    <string name="con2">contaminant 2</string>
+    <string name="con1">Contaminant 1</string>
+    <string name="con3">Contaminant 3</string>
+    <string name="con4">Contaminant 4</string>
+    <string name="welcome">Welcome back, User!</string>
+    <string name="update_last">Last Updated:</string>
+    <string name="water_image">Image of Water</string>
+    <string name="timestamp">Enter the Time</string>
+    <string name="amtConsume">How much was consumed?</string>
+    <string name="newDrink">Add Drink</string>
+    <string name="activity_level">Activity Level:</string>
+    <string name="notifications">Notifications</string>
+    <string name="generalSettingsTitle">General</string>
+    <string name="personalSettingsTitle">Personal</string>
+    <string name="nameSettingsText">Name:</string>
+    <string name="locationSettingsText">Location:</string>
+    <string name="weightSettingsTextImperial">Weight(lbs):</string>
+    <string name="weightSettingsTextMetric">Weight(kgs):</string>
+    <string name="unitSettingsText">Units:</string>
+    <string name="imperialUnitsToggle">IMPERIAL</string>
+    <string name="metricUnitsToggle">METRIC</string>
+    <string name="user_id">User ID</string>
+    <string name="friends_fragment">Friends Fragment</string>
+    <string name="name_Input">Name</string>
+    <string name="add_user_friends">Add User</string>
+    <string-array name="activityLevels">
+        <item>None</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
 </resources>

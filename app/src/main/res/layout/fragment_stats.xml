@@ -6,8 +6,6 @@
     tools:context=".StatsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -63,6 +61,67 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stats Fragment"
+        android:textSize="26sp"
+        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+        <!--Edit text to enter course name-->
+        <EditText
+            android:id="@+id/timeEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="@string/timestamp"
+            android:minHeight="48dp"
+            android:inputType="time"
+            android:importantForAutofill="no"/>
+
+        <!--edit text to enter course duration-->
+        <EditText
+            android:id="@+id/AmtConsumedEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="@string/amtConsume"
+            android:minHeight="48dp"
+            android:inputType="numberDecimal"
+            android:importantForAutofill="no" />
+
+
+        <!--button for adding new course-->
+        <Button
+            android:id="@+id/btnAddWater"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/newDrink"
+            android:textAllCaps="false" />
+
+        <!--new button for opening our drink list activity-->
+        <Button
+            android:id="@+id/btnReadDrink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Read All Drinks"
+            android:textAllCaps="false" />
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 
 </FrameLayout>

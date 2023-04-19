@@ -1,6 +1,9 @@
 package com.example.wateryouwaitingfor;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -39,7 +42,7 @@ import java.io.InputStream;
  * A wrapper class for the Bluetooth Device Objects you need to store the RSSI values when the scanner
  * detects the device
  */
-public class BTLE_Device extends android.content.Context{
+public class BTLE_Device extends android.content.Context {
 
     private final BluetoothDevice bluetoothDevice;
     private int rssi;
@@ -52,6 +55,10 @@ public class BTLE_Device extends android.content.Context{
         return bluetoothDevice.getAddress();
     }
 
+    /**
+     * Get the name of the Device
+     * @return The name of the BTLE_Device
+     */
     public String getName() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -64,15 +71,28 @@ public class BTLE_Device extends android.content.Context{
             return bluetoothDevice.getName();
         }
         return bluetoothDevice.getName();
-        }
+    }
 
-        public void setRSSI(int rssi) {
-            this.rssi = rssi;
-        }
+    /**
+     * Set the RSSI for the Device
+     * @param rssi RSSI of the BTLE_Device
+     */
+    public void setRSSI(int rssi) {
+        this.rssi = rssi;
+    }
 
-        public int getRSSI() {
-            return rssi;
-        }
+    /**
+     * Get the RSSI for the Device
+     * @return The RSSI of the BTLE_Device
+     */
+    public int getRSSI() {
+        return rssi;
+    }
+
+    @SuppressLint("MissingPermission")
+    public BluetoothGatt connect(BluetoothGattCallback gattCallback) {
+        return bluetoothDevice.connectGatt(getApplicationContext(), true, gattCallback);
+    }
 
     @Override
     public AssetManager getAssets() {
