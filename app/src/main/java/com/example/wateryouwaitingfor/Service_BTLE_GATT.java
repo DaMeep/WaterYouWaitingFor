@@ -94,7 +94,7 @@ public class Service_BTLE_GATT extends Service {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(characteristic);
-                Log.e("CHARACTERISTIC", MainActivity.bytesToString(getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue()));
+                Log.e("CHARACTERISTIC", String.valueOf(MainActivity.bytesToDouble(getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue())));
             }
         }
 

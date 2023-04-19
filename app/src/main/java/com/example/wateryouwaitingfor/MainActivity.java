@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
 
-    public static UUID SERVICE_UUID = convertFromInteger(0x1810);
-    public static UUID CHAR_UUID = convertFromInteger(0x2A37);
+    public static UUID SERVICE_UUID = convertFromInteger(0xC201);
+    public static UUID CHAR_UUID = convertFromInteger(0x483E);
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
@@ -402,6 +403,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static String bytesToString(byte[] bytes){
         return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static double bytesToDouble(byte[] bytes){
+        return ByteBuffer.wrap(bytes).getDouble();
     }
 
     public String getDeviceName(){

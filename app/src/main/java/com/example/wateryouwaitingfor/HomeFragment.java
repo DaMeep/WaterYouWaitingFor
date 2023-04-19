@@ -95,24 +95,24 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
 
-        waterText = (TextView) view.findViewById(R.id.waterText);
-        Service_BTLE_GATT service = ((MainActivity)getActivity()).getService();
-
-        if (service != null){
-            Log.e("SERVICES", service.getSupportedGattServices().toString());
-            for (BluetoothGattCharacteristic characteristic : service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristics()){
-                waterText.setText(waterText.getText() + " \n " + characteristic.getUuid().toString());
-                if (characteristic.getValue() != null && characteristic.getValue().length > 0){
-                    waterText.setText(waterText.getText() + " \n " + MainActivity.bytesToString(characteristic.getValue()));
-                }
-                else{
-                    waterText.setText(waterText.getText() + " \n BAD ARRAY");
-                }
-            }
-            service.readCharacteristic(service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID));
-
-
-        }
+//        waterText = (TextView) view.findViewById(R.id.waterText);
+//        Service_BTLE_GATT service = ((MainActivity)getActivity()).getService();
+//
+//        if (service != null){
+//            Log.e("SERVICES", service.getSupportedGattServices().toString());
+//            for (BluetoothGattCharacteristic characteristic : service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristics()){
+//                waterText.setText(waterText.getText() + " \n " + characteristic.getUuid().toString());
+//                if (characteristic.getValue() != null && characteristic.getValue().length > 0){
+//                    waterText.setText(waterText.getText() + " \n " + MainActivity.bytesToString(characteristic.getValue()));
+//                }
+//                else{
+//                    waterText.setText(waterText.getText() + " \n BAD ARRAY");
+//                }
+//            }
+//            service.readCharacteristic(service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID));
+//
+//
+//        }
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
