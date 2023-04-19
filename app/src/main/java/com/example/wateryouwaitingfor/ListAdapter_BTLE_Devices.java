@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Kelvin on 5/7/16.
- */
 public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
 
     Activity activity;

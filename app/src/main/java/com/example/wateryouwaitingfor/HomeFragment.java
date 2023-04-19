@@ -43,7 +43,6 @@ public class HomeFragment extends Fragment implements Serializable {
     private String mParam1;
     private String mParam2;
     private Button btn_Scan;
-    private ScrollView scroll;
     private SharedPreferences sharedpreferences;
 
     private TextView waterText;
@@ -95,28 +94,22 @@ public class HomeFragment extends Fragment implements Serializable {
         super.onViewCreated(view, savedInstanceState);
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
-        scroll = (ScrollView) view.findViewById(R.id.scrollView);
 
         waterText = (TextView) view.findViewById(R.id.waterText);
         Service_BTLE_GATT service = ((MainActivity)getActivity()).getService();
 
         if (service != null){
             Log.e("SERVICES", service.getSupportedGattServices().toString());
-//            if (service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue().length != 0){
-//                waterText.setText(MainActivity.bytesToString(service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue()));
-//            }
-//            else{
-                for (BluetoothGattCharacteristic characteristic : service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristics()){
-                    waterText.setText(waterText.getText() + " \n " + characteristic.getUuid().toString());
-                    if (characteristic.getValue() != null && characteristic.getValue().length > 0){
-                        waterText.setText(waterText.getText() + " \n " + MainActivity.bytesToString(characteristic.getValue()));
-                    }
-                    else{
-                        waterText.setText(waterText.getText() + " \n BAD ARRAY");
-                    }
+            for (BluetoothGattCharacteristic characteristic : service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristics()){
+                waterText.setText(waterText.getText() + " \n " + characteristic.getUuid().toString());
+                if (characteristic.getValue() != null && characteristic.getValue().length > 0){
+                    waterText.setText(waterText.getText() + " \n " + MainActivity.bytesToString(characteristic.getValue()));
                 }
+                else{
+                    waterText.setText(waterText.getText() + " \n BAD ARRAY");
+                }
+            }
             service.readCharacteristic(service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID));
-//            }
 
 
         }

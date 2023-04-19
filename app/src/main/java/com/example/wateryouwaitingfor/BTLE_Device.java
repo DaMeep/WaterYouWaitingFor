@@ -55,6 +55,10 @@ public class BTLE_Device extends android.content.Context {
         return bluetoothDevice.getAddress();
     }
 
+    /**
+     * Get the name of the Device
+     * @return The name of the BTLE_Device
+     */
     public String getName() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -69,10 +73,18 @@ public class BTLE_Device extends android.content.Context {
         return bluetoothDevice.getName();
     }
 
+    /**
+     * Set the RSSI for the Device
+     * @param rssi RSSI of the BTLE_Device
+     */
     public void setRSSI(int rssi) {
         this.rssi = rssi;
     }
 
+    /**
+     * Get the RSSI for the Device
+     * @return The RSSI of the BTLE_Device
+     */
     public int getRSSI() {
         return rssi;
     }

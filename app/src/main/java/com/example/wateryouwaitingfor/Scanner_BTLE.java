@@ -20,9 +20,6 @@ import androidx.core.app.ActivityCompat;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by Kelvin on 4/20/16.
- */
 public class Scanner_BTLE {
 
     private final MainActivity ma;
@@ -69,6 +66,10 @@ public class Scanner_BTLE {
         return mScanning;
     }
 
+
+    /**
+     * Initiates a scan for new BTLE_Devices
+     */
     public void start() {
         if (!Utils.checkBluetooth(mBluetoothAdapter)) {
             Utils.requestUserBluetooth(ma);
@@ -78,6 +79,9 @@ public class Scanner_BTLE {
         }
     }
 
+    /**
+     * Stops the current scan
+     */
     public void stop() {
         scanLeDevice(false);
     }
@@ -85,6 +89,7 @@ public class Scanner_BTLE {
     // If you want to scan for only specific types of peripherals,
     // you can instead call startLeScan(UUID[], BluetoothAdapter.LeScanCallback),
     // providing an array of UUID objects that specify the GATT services your app supports.
+
 
     @SuppressLint("MissingPermission")
     private void scanLeDevice(final boolean enable) {

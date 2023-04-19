@@ -145,6 +145,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    /**
+     * Use this method to put the application's focus on a new Fragment
+     * @param fragment Replacement Fragment
+     */
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -247,9 +251,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
-
     }
 
+    /**
+     * Use this method to add a potential device to the list of devices
+     * @param device New Device
+     * @param rssi Device's RSSI
+     */
     public void addDevice(BluetoothDevice device, int rssi) {
 
         String address = device.getAddress();
@@ -268,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Prompts the Scanner_BTLE to begin its scan
+     */
     public void startScan(){
 //        btn_Scan.setText("Scanning...");
 
@@ -277,6 +288,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTLeScanner.start();
     }
 
+    /**
+     * Prompts the Scanner_BTLE to stop its scan
+     */
     public void stopScan() {
 //        btn_Scan.setText("Scan Again");
 
@@ -370,6 +384,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    /**
+     * Converts an inputted hex value into its corresponding BLE UUID
+     * @param i Hex Value
+     */
     public static UUID convertFromInteger(int i) { // ex "0x180D" for heart rate services
         final long MSB = 0x0000000000001000L;
         final long LSB = 0x800000805f9b34fbL;
@@ -377,6 +395,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return new UUID(MSB | (value << 32), LSB);
     }
 
+    /**
+     * Converts a received byte array to its corresponding String value
+     * @param bytes Byte Array
+     * @return String Representation of bytes
+     */
     public static String bytesToString(byte[] bytes){
         return new String(bytes, StandardCharsets.UTF_8);
     }

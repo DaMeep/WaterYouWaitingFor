@@ -35,7 +35,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".Activity_BTLE_Services" />
 
         <service
             android:name=".Service_BTLE_GATT"

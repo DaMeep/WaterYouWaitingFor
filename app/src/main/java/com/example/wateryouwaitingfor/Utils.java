@@ -39,9 +39,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-/**
- * Created by Kelvin on 5/8/16.
- */
 public class Utils {
 
     public static boolean checkBluetooth(BluetoothAdapter bluetoothAdapter) {
