@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.graphics.Color;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +13,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +42,9 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private String mParam1;
     private String mParam2;
 
+    ArrayList barArrayList;
+    private BarChart barChart;
+    
     private String time ;
     private String consumed;
 
@@ -87,7 +103,57 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         return myView;
     }
 
+    private void getData() {
+
+        barArrayList = new ArrayList();
+        barArrayList.add(new BarEntry(2f, 7));
+        barArrayList.add(new BarEntry(3f, 8));
+        barArrayList.add(new BarEntry(4f, 6));
+        barArrayList.add(new BarEntry(5f, 10));
+        barArrayList.add(new BarEntry(6f, 7));
+        barArrayList.add(new BarEntry(7f, 4));
+        barArrayList.add(new BarEntry(8f, 10));
+        barArrayList.add(new BarEntry(9f, 3));
+    }
+
+
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_stats, container, false);
+    }
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+
+        barChart= view.findViewById(R.id.barchart);
+        getData();
+        BarDataSet barDataSet = new BarDataSet(barArrayList, "Bar Chart");
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+        barDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+        barChart.getDescription().setEnabled(true);
+        barChart.getXAxis().setDrawGridLines(false); // disable grid lines for the XAxis
+        barChart.getAxisLeft().setDrawGridLines(false); // disable grid lines for the left YAxis
+        barChart.getAxisRight().setDrawGridLines(false); // disable grid lines for the right YAxis
+        YAxis rightYAxis = barChart.getAxisRight();
+        rightYAxis.setEnabled(false);
+
+
+
+
+
+
+
+
+
+    }
+
+
+}
+
     public void onClick(View view) {
         Log.d("Ashwina", "In StatsFragment: onClick");
 

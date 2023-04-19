@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ContaminationFragment">
 
+    <com.github.mikephil.charting.charts.PieChart
+        android:id ="@+id/pieChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
@@ -169,6 +176,5 @@
 
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </FrameLayout>

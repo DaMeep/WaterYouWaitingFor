@@ -39,4 +39,12 @@
         android:text="@string/update_last"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/goal"
+        android:textSize="19sp"
+        android:translationX="70dp"
+        android:translationY="500dp" />
 </LinearLayout>

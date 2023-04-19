@@ -4,6 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
+    <string name="Average_Water_Intake">Average Water Intake Is: </string>
+    <string name="Week">Week: </string>
+    <string name="contamination">Contamination</string>
     <string name="change_device">Change Device</string>
     <string name="stringContaminate">Contaminations</string>
     <string name="con2">contaminant 2</string>
