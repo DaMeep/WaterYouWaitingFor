@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
 
+
     public static UUID SERVICE_UUID = convertFromInteger(0xC201);
     public static UUID CHAR_UUID = convertFromInteger(0x483E);
 
@@ -88,6 +89,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+
+        mGattUpdateReceiver = new BroadcastReceiver(){
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+
+                if (Service_BTLE_GATT.ACTION_GATT_CONNECTED.equals(action)) {
+                    Utils.toast(getApplicationContext(), "Connected To Device");
+                }
+                else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
+                    Utils.toast(getApplicationContext(), "Disconnected From Device");
+                }
+
+            }
+        };
+
         replaceFragment((new HomeFragment()));
 
 
@@ -200,6 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
 
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+
+        registerReceiver(mGattUpdateReceiver, Utils.makeGattUpdateIntentFilter());
     }
 
     @Override
@@ -223,7 +243,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
 
         unregisterReceiver(mGattUpdateReceiver);
-        unbindService(mBTLE_ServiceConnection);
+        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound){
+            unbindService(mBTLE_ServiceConnection);
+        }
         mBTLE_Service_Intent = null;
     }
 
@@ -243,23 +265,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("currentDeviceName", deviceName);
         editor.putString("currentDeviceAddress", deviceAddress);
         editor.apply();
-
-        mGattUpdateReceiver = new BroadcastReceiver(){
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
-
-                if (Service_BTLE_GATT.ACTION_GATT_CONNECTED.equals(action)) {
-                    Utils.toast(getApplicationContext(), "Connected To Device");
-                }
-                else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
-                    Utils.toast(getApplicationContext(), "Disconnected From Device");
-                }
-
-            }
-        };
-        registerReceiver(mGattUpdateReceiver, Utils.makeGattUpdateIntentFilter());
 
         mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
         bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
@@ -353,7 +358,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             mBTLE_Service.connect(deviceAddress);
-
             // Automatically connects to the device upon successful start-up initialization.
 //            mBTLeService.connect(mBTLeDeviceAddress);
 
@@ -366,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onServiceDisconnected(ComponentName arg0) {
             mBTLE_Service = null;
             mBTLE_Service_Bound = false;
-
 //            mBluetoothGatt = null;
 //            mGattUpdateReceiver.setBluetoothGatt(null);
 //            mGattUpdateReceiver.setBTLeService(null);

@@ -112,7 +112,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             // after adding all values we are passing
             // content values to our table.
-            db.insert(SECONDTABLE_NAME, null, values2);
+          //  db.insert(SECONDTABLE_NAME, null, values2);
 
 
             // at last we are closing our

@@ -116,14 +116,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barArrayList.add(new BarEntry(9f, 3));
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stats, container, false);
-    }
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
 
         barChart= view.findViewById(R.id.barchart);
@@ -151,8 +143,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
-}
 
     public void onClick(View view) {
         Log.d("Ashwina", "In StatsFragment: onClick");
