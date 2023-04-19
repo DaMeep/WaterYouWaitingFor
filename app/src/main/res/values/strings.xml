@@ -4,12 +4,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
-    <string name="start_scan">Start Scan</string>
+    <string name="change_device">Change Device</string>
     <string name="stringContaminate">Contaminations</string>
-    <string name="conA">contaminant A</string>
+    <string name="con2">contaminant 2</string>
     <string name="con1">Contaminant 1</string>
-    <string name="conB">Contaminant B</string>
-    <string name="conC">Contaminant C</string>
+    <string name="con3">Contaminant 3</string>
+    <string name="con4">Contaminant 4</string>
     <string name="welcome">Welcome back, User!</string>
     <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
@@ -27,7 +27,10 @@
     <string name="unitSettingsText">Units:</string>
     <string name="imperialUnitsToggle">IMPERIAL</string>
     <string name="metricUnitsToggle">METRIC</string>
-
+    <string name="user_id">User ID</string>
+    <string name="friends_fragment">Friends Fragment</string>
+    <string name="name_Input">Name</string>
+    <string name="add_user_friends">Add User</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>

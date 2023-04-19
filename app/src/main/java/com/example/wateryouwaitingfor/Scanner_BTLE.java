@@ -1,22 +1,47 @@
 package com.example.wateryouwaitingfor;
 
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
 
+import java.util.List;
+import java.util.UUID;
 
-/**
- * Created by Kelvin on 4/20/16.
- */
 public class Scanner_BTLE {
 
-    private MainActivity ma;
+    private final MainActivity ma;
 
     private BluetoothAdapter mBluetoothAdapter;
+    private ScanCallback mLeScanCallback = new ScanCallback() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            final int rssi = result.getRssi();
+            if (rssi > signalStrength) {
+                mHandler.post(() -> ma.addDevice(result.getDevice(), rssi));
+            }
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.e("SCAN ERROR", String.valueOf(errorCode));
+            super.onScanFailed(errorCode);
+        }
+    };
     private boolean mScanning;
     private Handler mHandler;
 
@@ -26,7 +51,7 @@ public class Scanner_BTLE {
     public Scanner_BTLE(MainActivity mainActivity, long scanPeriod, int signalStrength) {
         ma = mainActivity;
 
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.myLooper());
 
         this.scanPeriod = scanPeriod;
         this.signalStrength = signalStrength;
@@ -34,12 +59,17 @@ public class Scanner_BTLE {
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) ma.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+
     }
 
     public boolean isScanning() {
         return mScanning;
     }
 
+
+    /**
+     * Initiates a scan for new BTLE_Devices
+     */
     public void start() {
         if (!Utils.checkBluetooth(mBluetoothAdapter)) {
             Utils.requestUserBluetooth(ma);
@@ -49,6 +79,9 @@ public class Scanner_BTLE {
         }
     }
 
+    /**
+     * Stops the current scan
+     */
     public void stop() {
         scanLeDevice(false);
     }
@@ -56,7 +89,11 @@ public class Scanner_BTLE {
     // If you want to scan for only specific types of peripherals,
     // you can instead call startLeScan(UUID[], BluetoothAdapter.LeScanCallback),
     // providing an array of UUID objects that specify the GATT services your app supports.
+
+
+    @SuppressLint("MissingPermission")
     private void scanLeDevice(final boolean enable) {
+        final BluetoothLeScanner mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
         if (enable && !mScanning) {
             Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
 
@@ -67,34 +104,27 @@ public class Scanner_BTLE {
                     Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
 
                     mScanning = false;
-                  //  mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mBluetoothScanner.stopScan(mLeScanCallback);
 
                     ma.stopScan();
                 }
             }, scanPeriod);
 
             mScanning = true;
-
-           // mBluetoothAdapter.startLeScan(mLeScanCallback);
+            mBluetoothScanner.startScan(mLeScanCallback);
+//            mBluetoothAdapter.startLeScan(mLeScanCallback);
 //            mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
+
+            Log.e("PERMS: FINE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED));
+            Log.e("PERMS: COARSE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED));
+            Log.e("PERMS: BLUETOOTH", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED));
+            Log.e("PERMS: BLUETOOTH SCAN", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED));
+            Log.e("PERMS: BLUETOOTH ADMIN", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED));
+            Log.e("PERMS: BACKGROUND LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED));
         }
         else {
             mScanning = false;
-            //mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothScanner.stopScan(mLeScanCallback);
         }
     }
-
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-
-                    final int new_rssi = rssi;
-                    if (rssi > signalStrength) {
-                        mHandler.post(() -> ma.addDevice(device, new_rssi));
-                    }
-                }
-            };
 }

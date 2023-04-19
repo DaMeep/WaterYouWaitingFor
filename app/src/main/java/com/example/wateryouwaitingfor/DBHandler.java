@@ -62,7 +62,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             db.execSQL(querytwo);
         }
 
-        // this method is use to add new drinks to our sqlite database.
+        // this method is used to add new drinks to our sqlite database.
         public void addNewDrink(String time, String Consumed) {
 
             // on below line we are creating a variable for
@@ -89,7 +89,7 @@ import android.database.sqlite.SQLiteOpenHelper;
             addNewDayTot(time, Consumed);
         }
 
-        // this method is use to add new drinks to our sqlite database.
+        // this method is used to add new daily totals to our sqlite database.
         public void addNewDayTot(String date, String Totals) {
 
             // on below line we are creating a variable for

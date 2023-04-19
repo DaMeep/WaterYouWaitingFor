@@ -6,10 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-    /**
-     * Created by Kelvin on 4/18/16.
-     */
-
 /**
  * This class detects when the bluetooth on the device changes state
  */
