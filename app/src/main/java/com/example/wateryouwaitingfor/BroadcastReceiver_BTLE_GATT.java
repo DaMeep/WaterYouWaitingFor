@@ -34,7 +34,6 @@ public class BroadcastReceiver_BTLE_GATT extends BroadcastReceiver {
         else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
             mConnected = false;
             Utils.toast(activity.getApplicationContext(), "Disconnected From Device");
-            activity.finish();
         }
         else if (Service_BTLE_GATT.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
             activity.updateServices();

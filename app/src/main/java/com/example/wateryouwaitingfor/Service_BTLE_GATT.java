@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -42,17 +43,18 @@ public class Service_BTLE_GATT extends Service {
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
 
-    public final static String ACTION_GATT_CONNECTED = "android.kaviles.bletutorial.Service_BTLE_GATT.ACTION_GATT_CONNECTED";
-    public final static String ACTION_GATT_DISCONNECTED = "android.kaviles.bletutorial.Service_BTLE_GATT.ACTION_GATT_DISCONNECTED";
-    public final static String ACTION_GATT_SERVICES_DISCOVERED = "android.kaviles.bletutorial.Service_BTLE_GATT.ACTION_GATT_SERVICES_DISCOVERED";
-    public final static String ACTION_DATA_AVAILABLE = "android.kaviles.bletutorial.Service_BTLE_GATT.ACTION_DATA_AVAILABLE";
-    public final static String EXTRA_UUID = "android.kaviles.bletutorial.Service_BTLE_GATT.EXTRA_UUID";
-    public final static String EXTRA_DATA = "android.kaviles.bletutorial.Service_BTLE_GATT.EXTRA_DATA";
+    public final static String ACTION_GATT_CONNECTED = "com.example.wateryouwaitingfor.Service_BTLE_GATT.ACTION_GATT_CONNECTED";
+    public final static String ACTION_GATT_DISCONNECTED = "com.example.wateryouwaitingfor.Service_BTLE_GATT.ACTION_GATT_DISCONNECTED";
+    public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.wateryouwaitingfor.Service_BTLE_GATT.ACTION_GATT_SERVICES_DISCOVERED";
+    public final static String ACTION_DATA_AVAILABLE = "com.example.wateryouwaitingfor.Service_BTLE_GATT.ACTION_DATA_AVAILABLE";
+    public final static String EXTRA_UUID = "com.example.wateryouwaitingfor.Service_BTLE_GATT.EXTRA_UUID";
+    public final static String EXTRA_DATA = "com.example.wateryouwaitingfor.Service_BTLE_GATT.EXTRA_DATA";
 
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
@@ -65,7 +67,7 @@ public class Service_BTLE_GATT extends Service {
 
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
-
+                mBluetoothGatt.discoverServices();
                 Log.i(TAG, "Attempting to start service discovery");
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
@@ -95,6 +97,7 @@ public class Service_BTLE_GATT extends Service {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(characteristic);
+                Log.e("CHARACTERISTIC", MainActivity.bytesToString(getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue()));
             }
         }
 
@@ -385,5 +388,13 @@ public class Service_BTLE_GATT extends Service {
         }
 
         return mBluetoothGatt.getServices();
+    }
+
+    public BluetoothGattService getSupportedGattService(UUID uuid){
+        if (mBluetoothGatt == null) {
+            return null;
+        }
+
+        return mBluetoothGatt.getService(uuid);
     }
 }

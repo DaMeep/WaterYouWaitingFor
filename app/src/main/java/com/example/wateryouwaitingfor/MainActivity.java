@@ -6,17 +6,16 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,12 +60,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
 
-    UUID SERVICE_UUID = convertFromInteger(0x181C);
-    UUID CHAR_UUID = convertFromInteger(0x2A37);
+    public static UUID SERVICE_UUID = convertFromInteger(0x1810);
+    public static UUID CHAR_UUID = convertFromInteger(0x2A37);
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
     private ActivityResultLauncher<Intent> someActivityResultLauncher;
+
+
+    //Service Stuff
+    private Intent mBTLE_Service_Intent;
+    private Service_BTLE_GATT mBTLE_Service;
+    private boolean mBTLE_Service_Bound;
+    private BroadcastReceiver mGattUpdateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +178,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         unregisterReceiver(mBTStateUpdateReceiver);
         stopScan();
+
+        unregisterReceiver(mGattUpdateReceiver);
+        unbindService(mBTLE_ServiceConnection);
+        mBTLE_Service_Intent = null;
     }
 
     @SuppressLint("MissingPermission")
@@ -191,37 +201,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("currentDeviceAddress", deviceAddress);
         editor.apply();
 
-        BluetoothGatt gatt;
-        BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                if (newState == STATE_CONNECTED){
-                    gatt.discoverServices();
-                }
-            }
+        mGattUpdateReceiver = new BroadcastReceiver(){
 
             @Override
-            // New services discovered
-            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    BluetoothGattService mBluetoothGattService = gatt.getService(SERVICE_UUID);
-                    if (mBluetoothGattService != null) {
-                        Log.i(TAG, "Service characteristic UUID found: " + mBluetoothGattService.getUuid().toString());
-                    } else {
-                        Log.i(TAG, "Service characteristic not found for UUID: " + SERVICE_UUID);
-                    }
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+
+                if (Service_BTLE_GATT.ACTION_GATT_CONNECTED.equals(action)) {
+                    Utils.toast(getApplicationContext(), "Connected To Device");
                 }
-                else{
-                    Log.e(TAG, "Gatt failed");
+                else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
+                    Utils.toast(getApplicationContext(), "Disconnected From Device");
                 }
+
             }
         };
+        registerReceiver(mGattUpdateReceiver, Utils.makeGattUpdateIntentFilter());
 
-        gatt = currentDevice.connect(gattCallback);
-
-//        Log.e("Characteristic MAYBE: ", gatt.getServices().toString());
-//        Log.e("Characteristic MAYBE: ", gatt.getDevice().getName());
+        mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
+        bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
+        startService(mBTLE_Service_Intent);
 
 //        Intent intent = new Intent(this, Activity_BTLE_Services.class);
 //        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
@@ -284,6 +283,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTLeScanner.stop();
     }
 
+
+
+    //Services Start
+
+    private ServiceConnection mBTLE_ServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            Service_BTLE_GATT.BTLeServiceBinder binder = (Service_BTLE_GATT.BTLeServiceBinder) service;
+            mBTLE_Service = binder.getService();
+            mBTLE_Service_Bound = true;
+
+            if (!mBTLE_Service.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+            }
+
+            mBTLE_Service.connect(deviceAddress);
+
+            // Automatically connects to the device upon successful start-up initialization.
+//            mBTLeService.connect(mBTLeDeviceAddress);
+
+//            mBluetoothGatt = mBTLeService.getmBluetoothGatt();
+//            mGattUpdateReceiver.setBluetoothGatt(mBluetoothGatt);
+//            mGattUpdateReceiver.setBTLeService(mBTLeService);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBTLE_Service = null;
+            mBTLE_Service_Bound = false;
+
+//            mBluetoothGatt = null;
+//            mGattUpdateReceiver.setBluetoothGatt(null);
+//            mGattUpdateReceiver.setBTLeService(null);
+        }
+    };
+
+
+
+
+
+
+
+    //Services Stop
+
+
+
+
     public ListAdapter_BTLE_Devices getAdapter(){
         return adapter;
     }
@@ -328,11 +377,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return new UUID(MSB | (value << 32), LSB);
     }
 
+    public static String bytesToString(byte[] bytes){
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
     public String getDeviceName(){
         return deviceName;
     }
 
     public String getDeviceAddress(){
         return deviceAddress;
+    }
+
+    public Service_BTLE_GATT getService(){
+        return mBTLE_Service;
     }
 }

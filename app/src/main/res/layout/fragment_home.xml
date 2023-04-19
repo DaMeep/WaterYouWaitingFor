@@ -34,4 +34,13 @@
         android:text="@string/update_last"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/waterText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="SERVICES"
+        android:textSize="30sp" />
+
 </LinearLayout>
