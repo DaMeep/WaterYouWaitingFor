@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -53,6 +54,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
     private Button waterButton;
+    private Button readDrinkButton;
     private EditText timeEditText;
     private EditText consumedEditText;
 
@@ -79,6 +81,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         waterButton.setOnClickListener(this);
         timeEditText = myView.findViewById(R.id.timeEdt);
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
+        readDrinkButton = myView.findViewById(R.id.btnReadDrink);
+        readDrinkButton.setOnClickListener(this);
 
         return myView;
     }
@@ -86,6 +90,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         Log.d("Ashwina", "In StatsFragment: onClick");
+
 
         switch (view.getId()) {
             case R.id.btnAddWater:
@@ -111,6 +116,15 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 consumedEditText.setText("");
 
                 break;
+            case R.id.btnReadDrink:
+                Log.d("Ashwina", "InStatsFrag: readdrink");
+        Intent i = new Intent(getContext(), ViewDrinks.class);
+        startActivity(i);
+                break;
         }
+
     }
+
+
+
 }
