@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settingsTitle">Settings</string>
     <string name="CLIENT_CHARACTERISTIC_CONFIG" />
-    <string name="start_scan">Start Scan</string>
+    <string name="change_device">Change Device</string>
     <string name="stringContaminate">Contaminations</string>
     <string name="con2">contaminant 2</string>
     <string name="con1">Contaminant 1</string>
