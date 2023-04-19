@@ -99,6 +99,7 @@ public class Scanner_BTLE {
 
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void run() {
                     Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
@@ -112,8 +113,6 @@ public class Scanner_BTLE {
 
             mScanning = true;
             mBluetoothScanner.startScan(mLeScanCallback);
-//            mBluetoothAdapter.startLeScan(mLeScanCallback);
-//            mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
 
             Log.e("PERMS: FINE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED));
             Log.e("PERMS: COARSE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED));

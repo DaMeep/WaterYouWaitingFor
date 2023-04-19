@@ -297,9 +297,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBTLeScanner.stop();
     }
-
-
-
+    
+    
     //Services Start
 
     private ServiceConnection mBTLE_ServiceConnection = new ServiceConnection() {

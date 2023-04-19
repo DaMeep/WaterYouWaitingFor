@@ -20,7 +20,7 @@
 
         <!--Edit text to enter course name-->
         <EditText
-            android:id="@+id/idEdtTime"
+            android:id="@+id/timeEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,7 +31,7 @@
 
         <!--edit text to enter course duration-->
         <EditText
-            android:id="@+id/idEdtAmtConsumed"
+            android:id="@+id/AmtConsumedEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -43,13 +43,21 @@
 
         <!--button for adding new course-->
         <Button
-            android:id="@+id/idBtnAddWater"
+            android:id="@+id/btnAddWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/newDrink"
             android:textAllCaps="false" />
 
+        <!--new button for opening our drink list activity-->
+        <Button
+            android:id="@+id/btnReadDrink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Read All Drinks"
+            android:textAllCaps="false" />
         <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="match_parent"

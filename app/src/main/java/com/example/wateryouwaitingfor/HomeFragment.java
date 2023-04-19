@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment implements Serializable {
     private String mParam1;
     private String mParam2;
     private Button btn_Scan;
+    
     private SharedPreferences sharedpreferences;
 
     private TextView waterText;
