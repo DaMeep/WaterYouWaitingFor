@@ -1,15 +1,13 @@
 package com.example.wateryouwaitingfor;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -37,9 +35,9 @@ public class ContaminationFragment extends Fragment {
 
     private PieChart pieChart;
 
-    public ContaminationFragment() {
+/*    public ContaminationFragment() {
         // Required empty public constructor
-    }
+    }*/
 
     /**
      * Use this factory method to create a new instance of

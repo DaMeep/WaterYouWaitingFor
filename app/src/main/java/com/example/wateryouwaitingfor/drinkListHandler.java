@@ -63,7 +63,11 @@ public class drinkListHandler {
     {
         this.time = time;
         this.amtConsumed = amtConsumed;
-        }
     }
 
-
+    // constructor
+    public drinkListHandler(double amtConsumed)
+    {
+        this.amtConsumed = amtConsumed;
+    }
+}

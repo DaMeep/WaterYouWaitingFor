@@ -1,6 +1,8 @@
 package com.example.wateryouwaitingfor;
 
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,9 @@ import java.util.ArrayList;
             // getting our course array
             // list from db handler class.
             courseModalArrayList = dbHandler.drinkList();
+
+            double tot = dbHandler.getDailyTot();
+            Log.i("Total::::::::::::: ", " " + tot);
 
             // on below line passing our array list to our adapter class.
             courseRVAdapter = new drinkRVAdapter(courseModalArrayList, ViewDrinks.this);
