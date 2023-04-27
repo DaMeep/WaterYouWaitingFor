@@ -25,7 +25,7 @@
                 android:id="@id/barchart"
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
-                android:translationY="-100dp" >
+                android:translationY="-100dp">
 
             </com.github.mikephil.charting.charts.BarChart>
 
@@ -68,6 +68,7 @@
         android:text="Stats Fragment"
         android:textSize="26sp"
         android:layout_gravity="center"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -75,15 +76,15 @@
         tools:context=".MainActivity">
 
         <!--Edit text to enter course name-->
-        <EditText
-            android:id="@+id/timeEdt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="@string/timestamp"
-            android:minHeight="48dp"
-            android:inputType="time"
-            android:importantForAutofill="no"/>
+        <!--        <EditText-->
+        <!--            android:id="@+id/timeEdt"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="10dp"-->
+        <!--            android:hint="@string/timestamp"-->
+        <!--            android:minHeight="48dp"-->
+        <!--            android:inputType="time"-->
+        <!--            android:importantForAutofill="no"/>-->
 
         <!--edit text to enter course duration-->
         <EditText
@@ -92,9 +93,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:hint="@string/amtConsume"
-            android:minHeight="48dp"
+            android:importantForAutofill="no"
             android:inputType="numberDecimal"
-            android:importantForAutofill="no" />
+            android:minHeight="48dp" />
 
 
         <!--button for adding new course-->
@@ -114,6 +115,7 @@
             android:layout_margin="10dp"
             android:text="Read All Drinks"
             android:textAllCaps="false" />
+
         <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="match_parent"
