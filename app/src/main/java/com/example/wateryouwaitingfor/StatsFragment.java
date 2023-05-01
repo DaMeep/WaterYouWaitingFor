@@ -46,7 +46,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     ArrayList barArrayList;
     private BarChart barChart;
 
-    private String time;
+    private String time ;
+
     private String consumed;
 
     private Button total;
@@ -102,7 +103,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.fragment_stats, container, false);
         waterButton = (Button) myView.findViewById(R.id.btnAddWater);
         waterButton.setOnClickListener(this);
-        timeEditText = myView.findViewById(R.id.timeEdt);
+       // timeEditText = myView.findViewById(R.id.timeEdt);
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
@@ -155,22 +156,22 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Log.d("Ashwina", "In StatsFragment: onClick: btnAddWater");
 
                 // below line is to get data from all edit text fields.
-                time = timeEditText.getText().toString();
+               // time = timeEditText.getText().toString();
                 consumed = consumedEditText.getText().toString();
 
                 // validating if the text fields are empty or not.
-                if (time.isEmpty() && consumed.isEmpty()) {
+                if (consumed.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter all the data..", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
-                db.addNewDrink(time, consumed);
+                db.addNewDrink(Double.parseDouble(consumed));
 
                 // after adding the data we are displaying a toast message.
-                Toast.makeText(getContext(), "Course has been added.", Toast.LENGTH_SHORT).show();
-                timeEditText.setText("");
+                Toast.makeText(getContext(), "Drink has been added.", Toast.LENGTH_SHORT).show();
+              //  timeEditText.setText("");
                 consumedEditText.setText("");
 
                 break;

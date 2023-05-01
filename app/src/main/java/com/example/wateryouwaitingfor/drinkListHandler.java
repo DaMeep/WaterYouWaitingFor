@@ -1,28 +1,31 @@
 package com.example.wateryouwaitingfor;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class drinkListHandler {
 
-        // variables for our coursename,
+        // variables for our drink tracking,
         // description, tracks and duration, id.
+
+
+    // below variable is used to store the time of the drink
         private String time;
+
+        // below variable is used to store the amount of water consumed
         private double amtConsumed;
-
+        // below variable is used to store the date of consumption
         private String date;
-
+        // below variable is used to store the total amount of water consumed in a day
         private double dailyTotals;
         private int id;
 
     // creating getter and setter methods
-    public String getTime() { return time; }
+    public String getTime() {return time; }
 
     public void setTime(String time)
     {
-        this.time = time;
+        this.time=time;
     }
 
     public String getAmtConsumed()
@@ -35,22 +38,21 @@ public class drinkListHandler {
         this.amtConsumed = amtConsumed;
     }
 
-    public String getDate() { return date; }
+    public String getDate() {return date; }
 
-    public void setDate(String date)
-    {
-        this.date = date;
+    public void setDate(String date) {
+        date = date;
     }
-
     public double getDailyTotals()
     {
         return dailyTotals;
     }
 
     public void
-    setDailyTotals(double dailyTotals)
+    setDailyTotals()
     {
-        this.dailyTotals = dailyTotals;
+        double amt = Double.parseDouble(getAmtConsumed());
+        this.dailyTotals += amt;
     }
 
     public int getId() { return id; }
@@ -58,12 +60,13 @@ public class drinkListHandler {
     public void setId(int id) { this.id = id; }
 
     // constructor
-    public drinkListHandler(String time,
-                       double amtConsumed)
+    public drinkListHandler(String time, double amtConsumed, String date, double dailyTotals)
     {
-        this.time = time;
+        this.time=time;
         this.amtConsumed = amtConsumed;
-    }
+        this.date=date;
+        this.dailyTotals= dailyTotals;
+        }
 
     // constructor
     public drinkListHandler(double amtConsumed)
