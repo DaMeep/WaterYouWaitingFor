@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,6 +44,10 @@ public class DBHandler extends SQLiteOpenHelper {
         public DBHandler(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
         }
+
+        public static Integer totWater = 5;
+
+
 
         // below method is for creating a database by running a sqlite query
         @Override
@@ -98,7 +103,7 @@ public class DBHandler extends SQLiteOpenHelper {
             db.close();
         }
 
-//        }
+
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // this method is called to check if the table exists already.
@@ -143,6 +148,47 @@ public class DBHandler extends SQLiteOpenHelper {
             // and returning our array list.
             cursor.close();
             return courseModalArrayList;
+        }
+
+        // Get total consumed per day
+        // we have created a new method for reading all the courses.
+        @SuppressLint("Range")
+        public double getDailyTot()
+        {
+            // on below line we are creating a
+            // database for reading our database.
+            SQLiteDatabase db = this.getReadableDatabase();
+
+            // on below line we are creating a cursor with query to
+            // read data from database.
+            Cursor cursor
+                    = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+            // on below line we are creating a new array list.
+            ArrayList<drinkListHandler> waterLog
+                    = new ArrayList<>();
+
+            int amtConsumind = 0;
+            double amtConsumed = 0;
+            // moving our cursor to first position.
+            if (cursor.moveToFirst()) {
+                do {
+
+                    amtConsumind =  cursor.getColumnIndex(AMOUNT_COL);
+                    amtConsumed = amtConsumed + cursor.getDouble(amtConsumind);
+                    Log.i("Amount consumed: ", " " + amtConsumed);
+                    // on below line we are adding the data from
+                    // cursor to our array list.
+                    //waterLog.add(new drinkListHandler(
+                            //cursor.getDouble(amtConsumed)));
+                    // cursor.getDouble(3)));
+                } while (cursor.moveToNext());
+                // moving our cursor to next.
+            }
+            // at last closing our cursor
+            // and returning our array list.
+            cursor.close();
+            return amtConsumed;
         }
 
 

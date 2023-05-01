@@ -67,6 +67,10 @@ public class drinkListHandler {
         this.date=date;
         this.dailyTotals= dailyTotals;
         }
+
+    // constructor
+    public drinkListHandler(double amtConsumed)
+    {
+        this.amtConsumed = amtConsumed;
     }
-
-
+}

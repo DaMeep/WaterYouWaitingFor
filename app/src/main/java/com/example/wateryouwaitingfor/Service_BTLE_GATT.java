@@ -82,6 +82,7 @@ public class Service_BTLE_GATT extends Service {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+                setCharacteristicNotification(gatt.getService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID), true);
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }
@@ -94,7 +95,7 @@ public class Service_BTLE_GATT extends Service {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(characteristic);
-                Log.e("CHARACTERISTIC", String.valueOf(MainActivity.bytesToDouble(getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID).getValue())));
+                Log.e("CHARACTERISTIC", String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
             }
         }
 
@@ -103,6 +104,7 @@ public class Service_BTLE_GATT extends Service {
                                             BluetoothGattCharacteristic characteristic) {
 
             broadcastUpdate(characteristic);
+            Log.e("Char Changed",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
         }
 
         @Override
@@ -360,7 +362,7 @@ public class Service_BTLE_GATT extends Service {
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
         BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                UUID.fromString(getString(R.string.CLIENT_CHARACTERISTIC_CONFIG)));
+                MainActivity.CCCD_UUID);
 
         if (enabled) {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);

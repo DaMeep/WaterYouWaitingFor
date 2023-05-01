@@ -29,6 +29,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static UUID SERVICE_UUID = convertFromInteger(0xC201);
     public static UUID CHAR_UUID = convertFromInteger(0x483E);
+    public static UUID CCCD_UUID = convertFromInteger(0x2902);
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         showStartDialog();
 
+
     }
 
     private void showStartDialog() {
@@ -279,6 +282,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+
+/*
+        DBHandler dbHandler = new DBHandler(ViewDrinks.this);
+
+        // getting our course array
+        // list from db handler class.
+        int tot = dbHandler.getDailyTot();
+        Log.i("Total: ", "blah");
+*/
+        /*
         switch (v.getId()) {
 
             case R.id.btn_scan:
@@ -295,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+        */
     }
 
     /**
@@ -445,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public static double bytesToDouble(byte[] bytes){
-        return ByteBuffer.wrap(bytes).getDouble();
+        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getDouble();
     }
 
     public String getDeviceName(){

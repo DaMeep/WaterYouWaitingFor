@@ -29,24 +29,9 @@
 
             </com.github.mikephil.charting.charts.BarChart>
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Average Daily Water Intake" />
-
-            <EditText
-                android:id="@+id/editTextNumber2"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number"
-                android:textSize="24sp"
-                tools:text="8" />
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Weekly Water Intake Total" />
 
@@ -117,13 +102,84 @@
             android:textAllCaps="false" />
 
         <FrameLayout
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".MainActivity">
+
+                <!--Edit text to enter course name-->
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@id/barchart"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:translationY="-100dp">
+
+                </com.github.mikephil.charting.charts.BarChart>
+
+
+                <EditText
+                    android:id="@+id/timeEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="@string/timestamp"
+                    android:importantForAutofill="no"
+                    android:inputType="time"
+                    android:minHeight="48dp" />
+
+                <!--edit text to enter course duration-->
+                <EditText
+                    android:id="@+id/AmtConsumedEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="@string/amtConsume"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp" />
+
+
+
+                <!--button for adding new course-->
+                <Button
+                    android:id="@+id/btnAddWater"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/newDrink"
+                    android:textAllCaps="false" />
+
+                <!--new button for opening our drink list activity-->
+                <Button
+                    android:id="@+id/btnReadDrink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Read All Drinks"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btnTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Total"
+                    android:textAllCaps="false" />
+
+
+
+
+                <!--<FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </FrameLayout>
+        </FrameLayout>-->
 
-    </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
 
 
 </FrameLayout>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,7 +47,12 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private BarChart barChart;
 
     private String time ;
+
     private String consumed;
+
+    private Button total;
+
+    public static double waterTot;
 
     public StatsFragment() {
         // Required empty public constructor
@@ -69,6 +75,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         fragment.setArguments(args);
         return fragment;
     }
+
     private Button waterButton;
     private Button readDrinkButton;
     private EditText timeEditText;
@@ -76,10 +83,11 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
     private DBHandler db;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Ashwina", "In StatsFragment: onCreate" );
+        Log.d("Ashwina", "In StatsFragment: onCreate");
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -91,7 +99,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("Ashwina", "In StatsFragment: onCreateView" );
+        Log.d("Ashwina", "In StatsFragment: onCreateView");
         View myView = inflater.inflate(R.layout.fragment_stats, container, false);
         waterButton = (Button) myView.findViewById(R.id.btnAddWater);
         waterButton.setOnClickListener(this);
@@ -99,6 +107,10 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
+
+        total = myView.findViewById(R.id.btnTotal);
+        total.setOnClickListener(this);
+
 
         return myView;
     }
@@ -116,9 +128,9 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barArrayList.add(new BarEntry(9f, 3));
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
-        barChart= view.findViewById(R.id.barchart);
+        barChart = view.findViewById(R.id.barchart);
         getData();
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Bar Chart");
         BarData barData = new BarData(barDataSet);
@@ -132,15 +144,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barChart.getAxisRight().setDrawGridLines(false); // disable grid lines for the right YAxis
         YAxis rightYAxis = barChart.getAxisRight();
         rightYAxis.setEnabled(false);
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -174,10 +177,21 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btnReadDrink:
                 Log.d("Ashwina", "InStatsFrag: readdrink");
-        Intent i = new Intent(getContext(), ViewDrinks.class);
-        startActivity(i);
+                Intent i = new Intent(getContext(), ViewDrinks.class);
+                startActivity(i);
                 break;
         }
+
+        switch (view.getId()) {
+            case R.id.btnTotal:
+                Log.d("Naga", "In StatsFragment: onClick: btnTotal!!!!!!!!!!!!!!" + db.getDailyTot());
+
+                Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
+
+                waterTot = db.getDailyTot();
+
+        }
+
 
     }
 
