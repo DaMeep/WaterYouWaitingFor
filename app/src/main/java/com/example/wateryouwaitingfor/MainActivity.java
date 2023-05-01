@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         showStartDialog();
 
+
     }
 
     private void showStartDialog() {
@@ -281,6 +282,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+
+/*
+        DBHandler dbHandler = new DBHandler(ViewDrinks.this);
+
+        // getting our course array
+        // list from db handler class.
+        int tot = dbHandler.getDailyTot();
+        Log.i("Total: ", "blah");
+*/
+        /*
         switch (v.getId()) {
 
             case R.id.btn_scan:
@@ -297,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+        */
     }
 
     /**

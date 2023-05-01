@@ -1,31 +1,21 @@
 package com.example.wateryouwaitingfor;
 
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCharacteristic;
+
+import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ListAdapter;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,10 +33,11 @@ public class HomeFragment extends Fragment implements Serializable {
     private String mParam1;
     private String mParam2;
     private Button btn_Scan;
-    
+
+
+
     private SharedPreferences sharedpreferences;
 
-    private TextView waterText;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -117,9 +108,20 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
+      //  DBHandler totTest = new DBHandler();
+
+      //  btn_total.setOnClickListener((DBHandler)addNewDayTot());
+
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
         String welcomeback= "Welcome back,";
         userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
+
+        TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
+        watDisplay.setText("Total Amount Consumed: " + waterTot);
+
     }
+
+
+
 
 }
