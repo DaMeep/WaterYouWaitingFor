@@ -16,7 +16,7 @@ public class DBHandler extends SQLiteOpenHelper {
         private static final String DB_NAME = "waterconsumedb";
 
         // below int is our database version
-        private static final int DB_VERSION = 1;
+        private static final int DB_VERSION = 4;
 
         // below variable is for our table name.
         private static final String TABLE_NAME = "dailywater";
@@ -56,11 +56,9 @@ public class DBHandler extends SQLiteOpenHelper {
             String query = "CREATE TABLE " + TABLE_NAME + " ("
                     + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + TIME_COL + " TEXT,"
-                    + AMOUNT_COL + " REAL )";
-
-            String querytwo = "CREATE TABLE "+ SECONDTABLE_NAME + " ("
-            + DATE_COL + "TEXT, "
-            + DAYTOT_COL+ "REAL )";
+                    + AMOUNT_COL + " REAL, "
+                    + DATE_COL + "TEXT, "
+                    + DAYTOT_COL+ "REAL )";
 
 
 
@@ -68,7 +66,7 @@ public class DBHandler extends SQLiteOpenHelper {
             // at last we are calling a exec sql
             // method to execute above sql query
             db.execSQL(query);
-            db.execSQL(querytwo);
+           // db.execSQL(querytwo);
         }
 
         // this method is used to add new drinks to our sqlite database.
