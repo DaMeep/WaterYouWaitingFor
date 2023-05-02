@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
@@ -72,7 +74,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // this method is used to add new drinks to our sqlite database.
         public void addNewDrink(double Consumed) {
-
+            DecimalFormat meep = new DecimalFormat("0.00");
             // on below line we are creating a variable for
             // our sqlite database and calling writable method
             // as we are writing data in our database.
@@ -84,10 +86,10 @@ public class DBHandler extends SQLiteOpenHelper {
 
             // on below line we are passing all values
             // along with its key and value pair.
-
-            //String time = LocalTime.now().toString();
-            //String date = LocalDate.now().toString();
+            String consume = meep.format(Consumed);
+            Consumed= Double.parseDouble(consume);
              dailyTot += Consumed;
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
             values.put(TIME_COL, LocalTime.now().toString());
             values.put(AMOUNT_COL, Consumed);
@@ -168,8 +170,9 @@ public class DBHandler extends SQLiteOpenHelper {
             ArrayList<drinkListHandler> waterLog
                     = new ArrayList<>();
 
-            int amtConsumind = 0;
+            int amtConsumind;
             double amtConsumed = 0;
+
             // moving our cursor to first position.
             if (cursor.moveToFirst()) {
                 do {
@@ -179,8 +182,8 @@ public class DBHandler extends SQLiteOpenHelper {
                     Log.i("Amount consumed: ", " " + amtConsumed);
                     // on below line we are adding the data from
                     // cursor to our array list.
-                    //waterLog.add(new drinkListHandler(
-                            //cursor.getDouble(amtConsumed)));
+                    waterLog.add(new drinkListHandler(
+                            cursor.getDouble(amtConsumind)));
                     // cursor.getDouble(3)));
                 } while (cursor.moveToNext());
                 // moving our cursor to next.

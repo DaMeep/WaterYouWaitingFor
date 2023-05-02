@@ -103,7 +103,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.fragment_stats, container, false);
         waterButton = (Button) myView.findViewById(R.id.btnAddWater);
         waterButton.setOnClickListener(this);
-       // timeEditText = myView.findViewById(R.id.timeEdt);
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
@@ -114,7 +113,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
         return myView;
     }
-
+    
     private void getData() {
 
         barArrayList = new ArrayList();
@@ -142,6 +141,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barChart.getXAxis().setDrawGridLines(false); // disable grid lines for the XAxis
         barChart.getAxisLeft().setDrawGridLines(false); // disable grid lines for the left YAxis
         barChart.getAxisRight().setDrawGridLines(false); // disable grid lines for the right YAxis
+
         YAxis rightYAxis = barChart.getAxisRight();
         rightYAxis.setEnabled(false);
     }

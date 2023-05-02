@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,6 +13,10 @@
         android:layout_margin="3dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <!--text view for our course name-->
         <TextView
             android:id="@+id/timeTV"
@@ -29,40 +32,40 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <!--text view for our course tracks-->
+            <!--text view for our amount consumed -->
             <TextView
-                android:id="@+id/amtConsumedTV"
+                android:id="@+id/dailyTotalTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
-                android:text="Amount Consumed"
+                android:text="Daily Total"
                 android:textColor="@color/black" />
 
 
-<!--            &lt;!&ndash;text view for our course duration&ndash;&gt;-->
-<!--            <TextView-->
-<!--                android:id="@+id/dat"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:padding="3dp"-->
-<!--                android:text="Duration"-->
-<!--                android:textColor="@color/black" />-->
+            <!--text view for our date variable-->
+            <TextView
+                android:id="@+id/dateTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:text="Date"
+                android:textColor="@color/black" />
 
-       </LinearLayout>
-
-<!--        &lt;!&ndash;text view for our course description&ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/idTVCourseDescription"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:padding="3dp"-->
-<!--            android:text="Description"-->
-<!--            android:textColor="@color/black" />-->
-
+        </LinearLayout>
+        <!--text view for our amount consumed -->
+        <TextView
+            android:id="@+id/amtConsumedTV"
+            android:layout_width="410dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dp"
+            android:text="Amount Consumed"
+            android:textColor="@color/black" />
     </LinearLayout>
+    </LinearLayout>
+
 
 </androidx.cardview.widget.CardView>
 

@@ -43,13 +43,12 @@ public class drinkListHandler {
     public void setDate(String date) {
         date = date;
     }
-    public double getDailyTotals()
+    public String getDailyTotals()
     {
-        return dailyTotals;
+        return Double.toString(dailyTotals);
     }
 
-    public void
-    setDailyTotals()
+    public void setDailyTotals()
     {
         double amt = Double.parseDouble(getAmtConsumed());
         this.dailyTotals += amt;

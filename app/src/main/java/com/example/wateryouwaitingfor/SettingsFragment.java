@@ -43,7 +43,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
     private Spinner activityDropdown;
     private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
-    private String curActivityLevel;
+    private int curActivityLevel;
 
     private SwitchCompat notificationSwitch;
 
@@ -109,6 +109,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityDropdown.setAdapter(activityAdapter);
         activityDropdown.setOnItemSelectedListener(this);
+        curActivityLevel = sharedpreferences.getInt("activityLevel", 0);
+        activityDropdown.setSelection(curActivityLevel);
 
         //Notifications
         notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
@@ -124,7 +126,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         //Personal
         editor.putString("username", userNameText.getText().toString());
         editor.putString("userWeight", userWeightText.getText().toString());
-        editor.putString("activityLevel", curActivityLevel);
+        editor.putInt("activityLevel", curActivityLevel);
+
 
         //Notifications
         editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
@@ -145,7 +148,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-        curActivityLevel = activityLevels[position];
+        curActivityLevel = position;
     }
 
     @Override

@@ -33,6 +33,7 @@ public class HomeFragment extends Fragment implements Serializable {
     private String mParam1;
     private String mParam2;
     private Button btn_Scan;
+    private WaterIntakeHandler waterIntakeHandler;
 
 
 
@@ -87,30 +88,14 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
 
-//        waterText = (TextView) view.findViewById(R.id.waterText);
-//        Service_BTLE_GATT service = ((MainActivity)getActivity()).getService();
-//
-//        if (service != null){
-//            Log.e("SERVICES", service.getSupportedGattServices().toString());
-//            for (BluetoothGattCharacteristic characteristic : service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristics()){
-//                waterText.setText(waterText.getText() + " \n " + characteristic.getUuid().toString());
-//                if (characteristic.getValue() != null && characteristic.getValue().length > 0){
-//                    waterText.setText(waterText.getText() + " \n " + MainActivity.bytesToString(characteristic.getValue()));
-//                }
-//                else{
-//                    waterText.setText(waterText.getText() + " \n BAD ARRAY");
-//                }
-//            }
-//            service.readCharacteristic(service.getSupportedGattService(MainActivity.SERVICE_UUID).getCharacteristic(MainActivity.CHAR_UUID));
-//
-//
-//        }
+        waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
+       waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
+       waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
+       waterIntakeHandler.updateIdealIntake();
+
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
-      //  DBHandler totTest = new DBHandler();
-
-      //  btn_total.setOnClickListener((DBHandler)addNewDayTot());
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
         String welcomeback= "Welcome back,";
@@ -118,6 +103,13 @@ public class HomeFragment extends Fragment implements Serializable {
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
         watDisplay.setText("Total Amount Consumed: " + waterTot);
+
+        TextView waterGoal = view.findViewById(R.id.waterGoal);
+        waterGoal.setText("Goal: "+ waterIntakeHandler.getIdealIntake());
+
+
+
+
 
     }
 

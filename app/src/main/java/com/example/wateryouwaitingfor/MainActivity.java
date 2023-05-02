@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_ENABLE_BT = 1;
     public static final int BTLE_SERVICES = 2;
 
+    public WaterIntakeHandler waterIntakeHandler;
 
     private SharedPreferences sharedpreferences;
     private String deviceName, deviceAddress;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        waterIntakeHandler = new WaterIntakeHandler();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
@@ -283,15 +285,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
 
-/*
-        DBHandler dbHandler = new DBHandler(ViewDrinks.this);
-
-        // getting our course array
-        // list from db handler class.
-        int tot = dbHandler.getDailyTot();
-        Log.i("Total: ", "blah");
-*/
-        /*
         switch (v.getId()) {
 
             case R.id.btn_scan:
@@ -308,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
-        */
+
     }
 
     /**
@@ -473,4 +466,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public Service_BTLE_GATT getService(){
         return mBTLE_Service;
     }
+    public WaterIntakeHandler getIntakeHandler (){
+        return waterIntakeHandler;
+    }
 }
+

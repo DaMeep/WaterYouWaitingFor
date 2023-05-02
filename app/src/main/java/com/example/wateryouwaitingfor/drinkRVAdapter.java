@@ -36,6 +36,8 @@ public class drinkRVAdapter extends RecyclerView.Adapter<drinkRVAdapter.ViewHold
         drinkListHandler modal= drinkArrayList.get(position);
         holder.timeTV.setText(modal.getTime());
         holder.amtConsumedTV.setText(modal.getAmtConsumed());
+        holder.dateTV.setText(modal.getDate());
+        holder.dailyTotalTV.setText(modal.getDailyTotals());
     }
 
 
@@ -47,13 +49,15 @@ public class drinkRVAdapter extends RecyclerView.Adapter<drinkRVAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         // creating variables for our text views.
-        private TextView timeTV, amtConsumedTV;
+        private TextView timeTV, amtConsumedTV, dateTV, dailyTotalTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // initializing our text views
             timeTV = itemView.findViewById(R.id.timeTV);
             amtConsumedTV = itemView.findViewById(R.id.amtConsumedTV);
+            dateTV= itemView.findViewById(R.id.dateTV);
+            dailyTotalTV=itemView.findViewById(R.id.dailyTotalTV);
         }
 
         }
