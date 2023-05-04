@@ -47,6 +47,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wateryouwaitingfor.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mBTLE_Service_Bound;
     private BroadcastReceiver mGattUpdateReceiver;
 
+    private DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+
+        String userId = "5GIUR78K";
+        //Just for testing
+        User user = new User("Kyle");
+        mDatabase.child("users").child(userId).setValue(user);
+        //TESTING
 
         mGattUpdateReceiver = new BroadcastReceiver(){
 
