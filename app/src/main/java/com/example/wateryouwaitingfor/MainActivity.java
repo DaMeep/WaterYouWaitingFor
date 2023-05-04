@@ -47,8 +47,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wateryouwaitingfor.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mBTLE_Service_Bound;
     private BroadcastReceiver mGattUpdateReceiver;
 
-    private DatabaseReference mDatabase;
+
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +99,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference  = FirebaseDatabase.getInstance().getReference();
 
+        ValueEventListener updateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user.username != null){
+                    Log.e("FIREBASE UPDATED", user.username);
+                }
+            }
 
-        String userId = "5GIUR78K";
-        //Just for testing
-        User user = new User("Kyle");
-        mDatabase.child("users").child(userId).setValue(user);
-        //TESTING
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
+            }
+        };
+
+        mDatabaseReference.addValueEventListener(updateListener);
 
         mGattUpdateReceiver = new BroadcastReceiver(){
 
@@ -220,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Use this method to put the application's focus on a new Fragment
      * @param fragment Replacement Fragment
      */
-    private void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
@@ -473,4 +488,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public Service_BTLE_GATT getService(){
         return mBTLE_Service;
     }
+
+    public DatabaseReference getFirebaseReference() { return mDatabaseReference; }
 }

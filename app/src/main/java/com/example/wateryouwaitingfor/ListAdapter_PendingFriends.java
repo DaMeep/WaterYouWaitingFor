@@ -11,18 +11,18 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
+public class ListAdapter_PendingFriends extends ArrayAdapter<User> {
 
-    Activity activity;
-    int layoutResourceID;
-    ArrayList<BTLE_Device> devices;
+    private Activity activity;
+    private int layoutResourceID;
+    private ArrayList<User> pendingFriendsList;
 
-    public ListAdapter_BTLE_Devices(Activity activity, int resource, ArrayList<BTLE_Device> objects) {
+    public ListAdapter_PendingFriends (Activity activity, int resource, ArrayList<User> objects){
         super(activity.getApplicationContext(), resource, objects);
 
         this.activity = activity;
         layoutResourceID = resource;
-        devices = objects;
+        pendingFriendsList = objects;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
 
     @Override
     public int getCount() {
-        return devices.size();
+        return pendingFriendsList.size();
     }
 
     @Override
@@ -43,32 +43,29 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
             convertView = inflater.inflate(layoutResourceID, parent, false);
         }
 
-        BTLE_Device device = devices.get(position);
-        String name = device.getName();
-        String address = device.getAddress();
-        int rssi = device.getRSSI();
+        User pendingFriend = pendingFriendsList.get(position);
+        String name = pendingFriend.username;
+        String userID = pendingFriend.userID;
 
         TextView tv = null;
 
-        tv = (TextView) convertView.findViewById(R.id.tv_name);
+        tv = (TextView) convertView.findViewById(R.id.pendingFriendName);
         if (name != null && name.length() > 0) {
-            tv.setText(device.getName());
+            tv.setText(name);
         }
         else {
-            tv.setText("No Name");
+            tv.setText("User");
         }
 
-        tv = (TextView) convertView.findViewById(R.id.tv_rssi);
-        tv.setText("RSSI: " + Integer.toString(rssi));
-
-        tv = (TextView) convertView.findViewById(R.id.tv_macaddr);
-        if (address != null && address.length() > 0) {
-            tv.setText(device.getAddress());
+        tv = (TextView) convertView.findViewById(R.id.pendingFriendID);
+        if (userID != null && userID.length() > 0) {
+            tv.setText(userID);
         }
         else {
-            tv.setText("No Address");
+            tv.setText("UserID");
         }
 
         return convertView;
     }
+
 }

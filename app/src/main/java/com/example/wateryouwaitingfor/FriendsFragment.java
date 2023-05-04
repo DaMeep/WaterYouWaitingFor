@@ -1,19 +1,24 @@
 package com.example.wateryouwaitingfor;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseReference;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +28,9 @@ public class FriendsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private SharedPreferences sharedpreferences;
+    private DatabaseReference mDatabaseReference;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -53,6 +61,21 @@ public class FriendsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+        mDatabaseReference = ((MainActivity)getActivity()).getFirebaseReference();
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("userID", "53289HDUIW8932");
+        editor.apply();
+
+        String userId = sharedpreferences.getString("userID", "null");
+        User userTest = new User(sharedpreferences.getString("username", "User"), userId);
+        mDatabaseReference.child("users").child(userId).setValue(userTest);
     }
 
     @Override
@@ -62,4 +85,16 @@ public class FriendsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_friends, container, false);
     }
 
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.pendingFriendsButton:
+                MainActivity ma = ((MainActivity)getActivity());
+                ma.replaceFragment(new PendingFriendsFragment());
+                break;
+            default:
+                break;
+        }
+    }
 }
