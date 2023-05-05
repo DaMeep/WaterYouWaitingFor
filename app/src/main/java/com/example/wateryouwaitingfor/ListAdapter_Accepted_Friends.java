@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +46,9 @@ public class ListAdapter_Accepted_Friends extends ArrayAdapter<User> {
         }
 
         User friend = friendsList.get(position);
-        String name = friend.getUsername();
+        String name = friend.username;
         String userID = userIDs.get(position);
+        int userScore = friend.points;
 
         TextView tv = null;
 
@@ -65,6 +67,9 @@ public class ListAdapter_Accepted_Friends extends ArrayAdapter<User> {
         else {
             tv.setText("UserID");
         }
+
+        tv = (TextView) convertView.findViewById(R.id.friendScoreText);
+        tv.setText(String.valueOf(userScore));
 
         ImageButton deleteFriendButton = (ImageButton) convertView.findViewById(R.id.deleteFriendButton);
 

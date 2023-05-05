@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,21 +126,21 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
             case R.id.sendFriendRequestButton:
                 String userID = friendRequestEdit.getText().toString();
                 friendRequestEdit.setText("");
-                ArrayList<String> pendingFriendsList = listOfUsers.get(userID).getPendingFriends();
-                if (!pendingFriendsList.contains(currentUserID) && !listOfUsers.get(userID).getAcceptedFriends().contains(currentUserID)){
+                ArrayList<String> pendingFriendsList = listOfUsers.get(userID).pendingFriendsList;
+                if (!pendingFriendsList.contains(currentUserID) && !listOfUsers.get(userID).acceptedFriendsList.contains(currentUserID)){
                     pendingFriendsList.add(currentUserID);
                     mUsersReference.child(userID).child("pendingFriendsList").setValue(pendingFriendsList);
                 }
                 break;
             case R.id.acceptFriendButton:
                 currentUser.acceptFriend(targetUser);
-                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.getPendingFriends());
-                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.getAcceptedFriends());
+                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.pendingFriendsList);
+                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updatePendingFriends();
                 break;
             case R.id.denyFriendButton:
                 currentUser.denyFriend(targetUser);
-                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.getPendingFriends());
+                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.pendingFriendsList);
                 updatePendingFriends();
                 break;
             default:
@@ -152,11 +153,15 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
         pendingFriendIDs.clear();
 
         for(String key : listOfUsers.keySet()){
-            if (currentUser.getPendingFriends().contains(key)){
+            Log.e("TESTING", currentUser.pendingFriendsList.toString());
+            if (currentUser.pendingFriendsList.contains(key)){
+                Log.e("TESTING", "WE GODEM");
                 pendingFriendList.add(listOfUsers.get(key));
                 pendingFriendIDs.add(key);
             }
         }
+
+        Log.e("TESTING", listOfUsers.keySet().toString());
 
         adapter.notifyDataSetChanged();
     }

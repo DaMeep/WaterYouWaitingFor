@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,21 +86,14 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
 
         currentUser = ((MainActivity)getActivity()).getCurrentUser();
 
+        friendList = new ArrayList<>();
+        friendIDs = new ArrayList<>();
+
         adapter = new ListAdapter_Accepted_Friends(getActivity(), R.layout.accepted_friends_item, friendList, friendIDs);
         ListView friendView = (ListView) view.findViewById(R.id.friendsView);
         friendView.setAdapter(adapter);
 
         updateFriendList();
-
-//        SharedPreferences.Editor editor = sharedpreferences.edit();
-//        editor.putString("userID", "53289HDUIW8932");
-//        editor.apply();
-
-//        String userId = sharedpreferences.getString("userID", "null");
-//        User userTest = new User(sharedpreferences.getString("username", "User"));
-//        mUsersReference.child(userId).setValue(userTest);
-
-
 
         view.findViewById(R.id.pendingFriendsButton).setOnClickListener(this);
     }
@@ -123,7 +117,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.deleteFriendButton:
                 currentUser.deleteFriend(targetUser);
-                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.getAcceptedFriends());
+                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updateFriendList();
                 break;
             default:
@@ -136,7 +130,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         friendIDs.clear();
 
         for(String key : listOfUsers.keySet()){
-            if (currentUser.getAcceptedFriends().contains(key)){
+            if (currentUser.acceptedFriendsList.contains(key)){
                 friendList.add(listOfUsers.get(key));
                 friendIDs.add(key);
             }

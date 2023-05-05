@@ -108,6 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDatabaseReference  = FirebaseDatabase.getInstance().getReference();
         mUsersReference = mDatabaseReference.child("users");
 
+        //TESTING CODE
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("userID", "TEST1"); //53289HDUIW8932
+        editor.apply();
+
+//        String userId = sharedpreferences.getString("userID", "null");
+//        User userTest = new User(sharedpreferences.getString("username", "User"));
+//        mUsersReference.child(userId).setValue(userTest);
+
+        //TESTING CODE
+
+
          updateListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -157,8 +170,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
-
-        Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
 
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 

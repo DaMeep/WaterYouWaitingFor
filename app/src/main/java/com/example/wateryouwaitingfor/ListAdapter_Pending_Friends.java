@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,9 +47,8 @@ public class ListAdapter_Pending_Friends extends ArrayAdapter<User> {
         }
 
         User pendingFriend = pendingFriendsList.get(position);
-        String name = pendingFriend.getUsername();
+        String name = pendingFriend.username;
         String userID = userIDs.get(position);
-        int userScore = pendingFriend.getPoints();
 
         TextView tv = null;
 
@@ -67,9 +67,6 @@ public class ListAdapter_Pending_Friends extends ArrayAdapter<User> {
         else {
             tv.setText("UserID");
         }
-
-        tv = (TextView) convertView.findViewById(R.id.friendScoreText);
-        tv.setText(userScore);
 
         ImageButton acceptRequestButton = (ImageButton) convertView.findViewById(R.id.acceptFriendButton);
         ImageButton denyRequestButton = (ImageButton) convertView.findViewById(R.id.denyFriendButton);
