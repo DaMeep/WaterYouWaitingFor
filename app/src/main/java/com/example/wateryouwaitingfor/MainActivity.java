@@ -28,17 +28,20 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -91,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private DatabaseReference mDatabaseReference;
+    private DatabaseReference mUsersReference;
+    private ValueEventListener updateListener;
+    private HashMap<String, User> listOfUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,24 +106,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
         mDatabaseReference  = FirebaseDatabase.getInstance().getReference();
+        mUsersReference = mDatabaseReference.child("users");
 
-        ValueEventListener updateListener = new ValueEventListener() {
+         updateListener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user.username != null){
-                    Log.e("FIREBASE UPDATED", user.username);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listOfUsers = new HashMap<>();
+                for(DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    listOfUsers.put(userSnapshot.getKey(), user);
                 }
-            }
 
+            }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
             }
         };
 
-        mDatabaseReference.addValueEventListener(updateListener);
+        mUsersReference.addValueEventListener(updateListener);
 
         mGattUpdateReceiver = new BroadcastReceiver(){
 
@@ -238,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
 
@@ -298,11 +305,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
         bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
         startService(mBTLE_Service_Intent);
-
-//        Intent intent = new Intent(this, Activity_BTLE_Services.class);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-//        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -406,14 +408,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
-
-
-
-
-
     //Services Stop
-
-
 
 
     public ListAdapter_BTLE_Devices getAdapter(){
@@ -489,5 +484,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return mBTLE_Service;
     }
 
-    public DatabaseReference getFirebaseReference() { return mDatabaseReference; }
+    public DatabaseReference getUserReference() { return mUsersReference; }
+    public HashMap<String, User> getUsers(){ return listOfUsers; }
+
+    public User getCurrentUser(){
+        String userID = sharedpreferences.getString("userID", "null");
+        return listOfUsers.get(userID);
+    }
 }

@@ -10,8 +10,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +34,15 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     private String mParam2;
 
     private SharedPreferences sharedpreferences;
-    private DatabaseReference mDatabaseReference;
+    private DatabaseReference mUsersReference;
+
+    private User currentUser;
+    private HashMap<String, User> listOfUsers;
+
+    private ArrayList<User> friendList;
+    private ArrayList<String> friendIDs;
+
+    private ListAdapter_Accepted_Friends adapter;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -67,15 +79,29 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        mDatabaseReference = ((MainActivity)getActivity()).getFirebaseReference();
+        mUsersReference = ((MainActivity)getActivity()).getUserReference();
 
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString("userID", "53289HDUIW8932");
-        editor.apply();
+        listOfUsers = ((MainActivity)getActivity()).getUsers();
 
-        String userId = sharedpreferences.getString("userID", "null");
-        User userTest = new User(sharedpreferences.getString("username", "User"), userId);
-        mDatabaseReference.child("users").child(userId).setValue(userTest);
+        currentUser = ((MainActivity)getActivity()).getCurrentUser();
+
+        adapter = new ListAdapter_Accepted_Friends(getActivity(), R.layout.accepted_friends_item, friendList, friendIDs);
+        ListView friendView = (ListView) view.findViewById(R.id.friendsView);
+        friendView.setAdapter(adapter);
+
+        updateFriendList();
+
+//        SharedPreferences.Editor editor = sharedpreferences.edit();
+//        editor.putString("userID", "53289HDUIW8932");
+//        editor.apply();
+
+//        String userId = sharedpreferences.getString("userID", "null");
+//        User userTest = new User(sharedpreferences.getString("username", "User"));
+//        mUsersReference.child(userId).setValue(userTest);
+
+
+
+        view.findViewById(R.id.pendingFriendsButton).setOnClickListener(this);
     }
 
     @Override
@@ -88,13 +114,34 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        String currentUserID = sharedpreferences.getString("userID", "null");
+        String targetUser = (String)view.getTag();
         switch (view.getId()){
             case R.id.pendingFriendsButton:
                 MainActivity ma = ((MainActivity)getActivity());
                 ma.replaceFragment(new PendingFriendsFragment());
                 break;
+            case R.id.deleteFriendButton:
+                currentUser.deleteFriend(targetUser);
+                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.getAcceptedFriends());
+                updateFriendList();
+                break;
             default:
                 break;
         }
+    }
+
+    private void updateFriendList(){
+        friendList.clear();
+        friendIDs.clear();
+
+        for(String key : listOfUsers.keySet()){
+            if (currentUser.getAcceptedFriends().contains(key)){
+                friendList.add(listOfUsers.get(key));
+                friendIDs.add(key);
+            }
+        }
+
+        adapter.notifyDataSetChanged();
     }
 }

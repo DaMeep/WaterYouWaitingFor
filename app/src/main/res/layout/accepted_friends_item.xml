@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -16,11 +17,11 @@
 
         <!--text view for our course name-->
         <TextView
-            android:id="@+id/pendingFriendName"
+            android:id="@+id/acceptedFriendName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="3dp"
-            android:text="Name of Pending Friend"
+            android:text="Name of Accepted Friend"
             android:textColor="@color/black" />
 
         <LinearLayout
@@ -31,12 +32,12 @@
 
             <!--text view for our course tracks-->
             <TextView
-                android:id="@+id/pendingFriendID"
+                android:id="@+id/acceptedFriendID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
-                android:text="UserID of Pending Friend"
+                android:text="UserID of Accepted Friend"
                 android:textColor="@color/black" />
 
 
@@ -47,25 +48,36 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
+        android:layout_gravity="center_vertical|end"
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/denyFriendButton"
+            android:id="@+id/deleteFriendButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="DenyFriendButton"
+            android:contentDescription="DeleteFriendButton"
             android:src="@android:drawable/ic_delete" />
 
-
-        <ImageButton
-            android:id="@+id/acceptFriendButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="AcceptFriendButton"
-            android:src="@android:drawable/ic_input_add" />
-
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/friendScoreText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="100dp"
+            android:layout_weight="1"
+            android:text="#"
+            android:textAlignment="center"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

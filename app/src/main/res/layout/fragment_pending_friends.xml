@@ -17,6 +17,31 @@
         android:layout_height="wrap_content"
         android:text="Back To Friends" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <EditText
+        android:id="@+id/editTextID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/user_id"
+        android:importantForAutofill="no"
+        android:inputType="textCapCharacters"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/sendFriendRequestButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/add_user_friends" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
     <TextView
         android:id="@+id/pendingFriendsText"
         android:layout_width="match_parent"

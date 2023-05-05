@@ -31,9 +31,9 @@
     <string name="imperialUnitsToggle">IMPERIAL</string>
     <string name="metricUnitsToggle">METRIC</string>
     <string name="user_id">User ID</string>
-    <string name="friends_fragment">Friends Fragment</string>
+    <string name="friendsTitleText">Friends</string>
     <string name="name_Input">Name</string>
-    <string name="add_user_friends">Add User</string>
+    <string name="add_user_friends">Send Friend Request</string>
     <string name="goal">NAME</string>
     <string name="backToHomeText">Back To Home</string>
     <string-array name="activityLevels">

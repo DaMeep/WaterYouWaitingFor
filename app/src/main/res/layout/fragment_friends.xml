@@ -1,63 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FriendsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/friends_fragment"
-        android:textSize="26sp"
-        android:layout_gravity="center"/>
+    android:orientation="vertical"
+    tools:context=".FriendsFragment"
+    app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="parent">
 
     <ImageButton
         android:id="@+id/pendingFriendsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:contentDescription="PendingFriendsButton"
         android:src="@android:drawable/ic_menu_recent_history" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/friendMenuText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        tools:ignore="ExtraText">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/friendsTitleText"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
-        <!--            android:inputType=-->
+    <ListView
+        android:id="@+id/friendsView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-
-        <EditText
-            android:id="@+id/editTextEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/user_id"
-            android:importantForAutofill="no"
-            android:inputType="textWebEmailAddress"
-            android:minHeight="48dp" />
-
-        <EditText
-            android:id="@+id/editTextName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:autofillHints=""
-            android:hint="@string/name_Input"
-            android:inputType="textPersonName"
-            android:minHeight="48dp" />
-
-        <Button
-            android:id="@+id/buttonAddUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/add_user_friends" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

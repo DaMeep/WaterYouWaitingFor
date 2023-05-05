@@ -2,27 +2,29 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ListAdapter_PendingFriends extends ArrayAdapter<User> {
+public class ListAdapter_Pending_Friends extends ArrayAdapter<User> {
 
     private Activity activity;
     private int layoutResourceID;
     private ArrayList<User> pendingFriendsList;
+    private ArrayList<String> userIDs;
 
-    public ListAdapter_PendingFriends (Activity activity, int resource, ArrayList<User> objects){
+    public ListAdapter_Pending_Friends(Activity activity, int resource, ArrayList<User> objects, ArrayList<String> ids){
         super(activity.getApplicationContext(), resource, objects);
 
         this.activity = activity;
         layoutResourceID = resource;
         pendingFriendsList = objects;
+        userIDs = ids;
     }
 
     @Override
@@ -44,8 +46,9 @@ public class ListAdapter_PendingFriends extends ArrayAdapter<User> {
         }
 
         User pendingFriend = pendingFriendsList.get(position);
-        String name = pendingFriend.username;
-        String userID = pendingFriend.userID;
+        String name = pendingFriend.getUsername();
+        String userID = userIDs.get(position);
+        int userScore = pendingFriend.getPoints();
 
         TextView tv = null;
 
@@ -64,6 +67,26 @@ public class ListAdapter_PendingFriends extends ArrayAdapter<User> {
         else {
             tv.setText("UserID");
         }
+
+        tv = (TextView) convertView.findViewById(R.id.friendScoreText);
+        tv.setText(userScore);
+
+        ImageButton acceptRequestButton = (ImageButton) convertView.findViewById(R.id.acceptFriendButton);
+        ImageButton denyRequestButton = (ImageButton) convertView.findViewById(R.id.denyFriendButton);
+
+        PendingFriendsFragment pendingFriendsFragment = (PendingFriendsFragment)((MainActivity)activity).getSupportFragmentManager().findFragmentByTag("PendingFriendsFragment");
+        if (pendingFriendsFragment != null && pendingFriendsFragment.isVisible()) {
+            acceptRequestButton.setOnClickListener(pendingFriendsFragment);
+            acceptRequestButton.setTag(new String(userID));
+            denyRequestButton.setOnClickListener(pendingFriendsFragment);
+            denyRequestButton.setTag(new String(userID));
+        }
+
+
+
+
+
+
 
         return convertView;
     }

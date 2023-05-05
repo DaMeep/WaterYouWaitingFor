@@ -7,21 +7,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,8 +35,18 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
     private String mParam1;
     private String mParam2;
 
+    private EditText friendRequestEdit;
+
     private SharedPreferences sharedpreferences;
-    private DatabaseReference mDatabaseReference;
+    private DatabaseReference mUsersReference;
+
+    private User currentUser;
+    private HashMap<String, User> listOfUsers;
+
+    private ArrayList<User> pendingFriendList;
+    private ArrayList<String> pendingFriendIDs;
+
+    private ListAdapter_Pending_Friends adapter;
 
     public PendingFriendsFragment() {
         // Required empty public constructor
@@ -86,46 +92,72 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<User> pendingFriendsList = new ArrayList<>();
+        mUsersReference = ((MainActivity)getActivity()).getUserReference();
 
-        String userId = sharedpreferences.getString("userID", "null");
+        listOfUsers = ((MainActivity)getActivity()).getUsers();
 
-        mDatabaseReference = ((MainActivity)getActivity()).getFirebaseReference();
+        currentUser = ((MainActivity)getActivity()).getCurrentUser();
 
-        mDatabaseReference.child("users").child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    User currentUser = (User) task.getResult().getValue();
-                    for(String id : currentUser.pendingFriendsList){
+        pendingFriendList = new ArrayList<>();
+        pendingFriendIDs = new ArrayList<>();
 
-                    }
-//                    pendingFriendsList.addAll(currentUser.pendingFriendsList());
-                }
-            }
-        });
+        adapter = new ListAdapter_Pending_Friends(getActivity(), R.layout.pending_friends_item, pendingFriendList, pendingFriendIDs);
+        ListView pendingFriendsView = (ListView) view.findViewById(R.id.pendingFriendsView);
+        pendingFriendsView.setAdapter(adapter);
 
-        ListAdapter_PendingFriends pendingFriendsAdapter = new ListAdapter_PendingFriends(getActivity(), R.layout.pending_friends_item, pendingFriendsList);
-
-        ListView listView = (ListView) view.findViewById(R.id.pendingFriendsView);
-        listView.setAdapter(pendingFriendsAdapter);
+        updatePendingFriends();
 
         ((Button) view.findViewById(R.id.backToFriendsButton)).setOnClickListener(this);
+
+        friendRequestEdit = (EditText) view.findViewById(R.id.editTextID);
+        ((Button) view.findViewById(R.id.sendFriendRequestButton)).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+        String currentUserID = sharedpreferences.getString("userID", "null");
+        String targetUser = (String)view.getTag();
         switch (view.getId()){
             case R.id.backToFriendsButton:
                 MainActivity ma = ((MainActivity)getActivity());
                 ma.replaceFragment(new FriendsFragment());
                 break;
+            case R.id.sendFriendRequestButton:
+                String userID = friendRequestEdit.getText().toString();
+                friendRequestEdit.setText("");
+                ArrayList<String> pendingFriendsList = listOfUsers.get(userID).getPendingFriends();
+                if (!pendingFriendsList.contains(currentUserID) && !listOfUsers.get(userID).getAcceptedFriends().contains(currentUserID)){
+                    pendingFriendsList.add(currentUserID);
+                    mUsersReference.child(userID).child("pendingFriendsList").setValue(pendingFriendsList);
+                }
+                break;
+            case R.id.acceptFriendButton:
+                currentUser.acceptFriend(targetUser);
+                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.getPendingFriends());
+                mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.getAcceptedFriends());
+                updatePendingFriends();
+                break;
+            case R.id.denyFriendButton:
+                currentUser.denyFriend(targetUser);
+                mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.getPendingFriends());
+                updatePendingFriends();
+                break;
             default:
                 break;
         }
+    }
+
+    private void updatePendingFriends(){
+        pendingFriendList.clear();
+        pendingFriendIDs.clear();
+
+        for(String key : listOfUsers.keySet()){
+            if (currentUser.getPendingFriends().contains(key)){
+                pendingFriendList.add(listOfUsers.get(key));
+                pendingFriendIDs.add(key);
+            }
+        }
+
+        adapter.notifyDataSetChanged();
     }
 }
