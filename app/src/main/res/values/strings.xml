@@ -41,4 +41,20 @@
         <item>Medium</item>
         <item>High</item>
     </string-array>
+
+
+        <string name="Water_you_waiting_for">Onboarding Practice</string>
+        <string name="screen1">Upload a Video</string>
+        <string name="screen2">Create a Short</string>
+        <string name="screen3">Go Live</string>
+        <string name="screen1desc">Record a new video or select a video you already have on your phone.
+        Watch YouTube Videos for Free</string>
+        <string name="screen2desc">Create, edit, and upload your own short videos.
+        All you need is an idea and a phone to record and share Shorts. </string>
+        <string name="screen3desc">YouTube live streaming allows you to reach your community in real time.
+    Go live on YouTube from webcam, mobile and encoder streaming.</string>
+        <string name="startDesc">Create a long video or shorts and upload on youtube. Interact with your subscribers on youtube live.</string>
+
+
+
 </resources>

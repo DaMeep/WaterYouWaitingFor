@@ -16,4 +16,7 @@
     <color name="bar_title_txt_selected_color">#eaa</color>
     <color name="progress_disable">@android:color/darker_gray</color>
     <color name="colorAccent">#8c8c8c</color>
+    <color name="lavender">#8692f7</color>
+    <color name="grey">#808080</color>
+
 </resources>

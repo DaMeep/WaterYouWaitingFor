@@ -102,7 +102,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.fragment_stats, container, false);
         waterButton = (Button) myView.findViewById(R.id.btnAddWater);
         waterButton.setOnClickListener(this);
-        timeEditText = myView.findViewById(R.id.timeEdt);
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
@@ -155,11 +154,10 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Log.d("Ashwina", "In StatsFragment: onClick: btnAddWater");
 
                 // below line is to get data from all edit text fields.
-                time = timeEditText.getText().toString();
                 consumed = consumedEditText.getText().toString();
 
                 // validating if the text fields are empty or not.
-                if (time.isEmpty() && consumed.isEmpty()) {
+                if (consumed.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter all the data..", Toast.LENGTH_SHORT).show();
                     return;
                 }

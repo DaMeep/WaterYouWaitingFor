@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment implements Serializable {
     private Button btn_Scan;
 
 
-
     private SharedPreferences sharedpreferences;
 
 
@@ -82,7 +81,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
@@ -106,14 +105,14 @@ public class HomeFragment extends Fragment implements Serializable {
 //
 //        }
 
-        btn_Scan.setOnClickListener((MainActivity)getActivity());
+        btn_Scan.setOnClickListener((MainActivity) getActivity());
 
-      //  DBHandler totTest = new DBHandler();
+        //  DBHandler totTest = new DBHandler();
 
-      //  btn_total.setOnClickListener((DBHandler)addNewDayTot());
+        //  btn_total.setOnClickListener((DBHandler)addNewDayTot());
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        String welcomeback= "Welcome back,";
+        String welcomeback = "Welcome back,";
         userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
@@ -121,7 +120,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
     }
 
-
-
-
 }
+
+
+

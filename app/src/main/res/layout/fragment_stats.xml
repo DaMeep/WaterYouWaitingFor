@@ -31,17 +31,6 @@
 
                 </com.github.mikephil.charting.charts.BarChart>
 
-
-                <EditText
-                    android:id="@+id/timeEdt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:hint="@string/timestamp"
-                    android:importantForAutofill="no"
-                    android:inputType="time"
-                    android:minHeight="48dp" />
-
                 <!--edit text to enter course duration-->
                 <EditText
                     android:id="@+id/AmtConsumedEdt"

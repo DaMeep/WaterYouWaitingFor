@@ -19,6 +19,18 @@
         app:layout_constraintStart_toStartOf="parent">
     </FrameLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome to our app!"
+        android:textColor="@color/lavender"
+        android:textSize="36sp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -41,5 +53,4 @@
         android:orientation="vertical"
         tools:context="android.kaviles.bletutorial.MainActivity">
 
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout></androidx.constraintlayout.widget.ConstraintLayout>
