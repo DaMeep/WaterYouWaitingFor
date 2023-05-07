@@ -36,6 +36,8 @@
     <string name="add_user_friends">Send Friend Request</string>
     <string name="goal">NAME</string>
     <string name="backToHomeText">Back To Home</string>
+    <string name="channel_name">NOTIFICATION_CHANNEL</string>
+    <string name="channel_description">NOTIFICATION_CHANNEL_DESC</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>

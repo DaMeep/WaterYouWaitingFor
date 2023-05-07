@@ -21,9 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link PendingFriendsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass for
+ * handling the pending friend list
  */
 public class PendingFriendsFragment extends Fragment implements View.OnClickListener {
 
@@ -36,18 +35,18 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
     private String mParam1;
     private String mParam2;
 
-    private EditText friendRequestEdit;
+    private EditText friendRequestEdit; // EditText for entering wanted friend's User ID
 
-    private SharedPreferences sharedpreferences;
-    private DatabaseReference mUsersReference;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
+    private DatabaseReference mUsersReference; // Firebase Reference
 
-    private User currentUser;
-    private HashMap<String, User> listOfUsers;
+    private User currentUser; // Application's User Data
+    private HashMap<String, User> listOfUsers; // List of all Users
 
-    private ArrayList<User> pendingFriendList;
-    private ArrayList<String> pendingFriendIDs;
+    private ArrayList<User> pendingFriendList; // List of pending friend User objects
+    private ArrayList<String> pendingFriendIDs; // List of pending friends' User IDs
 
-    private ListAdapter_Pending_Friends adapter;
+    private ListAdapter_Pending_Friends adapter; // Adapter for ListView display of pending friends
 
     public PendingFriendsFragment() {
         // Required empty public constructor
@@ -148,6 +147,10 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
         }
     }
 
+    /**
+     * Updates the Local Pending Friend List visually
+     * to match up with the Firebase
+     */
     private void updatePendingFriends(){
         pendingFriendList.clear();
         pendingFriendIDs.clear();

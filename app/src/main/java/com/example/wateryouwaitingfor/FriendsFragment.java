@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FriendsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass for
+ * handling the friend list
  */
 public class FriendsFragment extends Fragment implements View.OnClickListener{
 
@@ -34,16 +33,16 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     private String mParam1;
     private String mParam2;
 
-    private SharedPreferences sharedpreferences;
-    private DatabaseReference mUsersReference;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
+    private DatabaseReference mUsersReference; // Firebase Reference
 
-    private User currentUser;
-    private HashMap<String, User> listOfUsers;
+    private User currentUser; // Application's User Data
+    private HashMap<String, User> listOfUsers; // List of all Users
 
-    private ArrayList<User> friendList;
-    private ArrayList<String> friendIDs;
+    private ArrayList<User> friendList; // List of friended User objects
+    private ArrayList<String> friendIDs; // List of friends' User IDs
 
-    private ListAdapter_Accepted_Friends adapter;
+    private ListAdapter_Accepted_Friends adapter; // Adapter for ListView display of friends
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -125,6 +124,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /**
+     * Updates the Local Friend List visually to match up with the Firebase
+     */
     private void updateFriendList(){
         friendList.clear();
         friendIDs.clear();
