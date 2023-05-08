@@ -7,22 +7,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DeviceListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DeviceListFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class DeviceListFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -90,6 +88,8 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
 
         currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
         currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));
+
+        ((Button) view.findViewById(R.id.backToHomeButton)).setOnClickListener(this);
     }
 
 
@@ -99,5 +99,19 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
 
         currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
         currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+            case R.id.backToHomeButton:
+                MainActivity ma = ((MainActivity)getActivity());
+                ma.stopScan();
+                ma.replaceFragment(new HomeFragment());
+                break;
+            default:
+                break;
+        }
     }
 }

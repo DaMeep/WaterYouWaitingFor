@@ -6,6 +6,7 @@ plugins {
 android {
     namespace 'com.example.wateryouwaitingfor'
     compileSdk 33
+    buildToolsVersion '31.0.0'
 
     defaultConfig {
         applicationId "com.example.wateryouwaitingfor"
@@ -34,7 +35,6 @@ android {
     }
 }
 
-
 dependencies {
     // For Card view
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -44,6 +44,8 @@ dependencies {
     implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
     implementation 'com.nineoldandroids:library:2.4.0'
 
+    //Notifications
+//    implementation "androidx.core:core:1.10.0"
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:31.3.0')

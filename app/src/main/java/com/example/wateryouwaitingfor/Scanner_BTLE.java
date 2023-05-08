@@ -1,6 +1,5 @@
 package com.example.wateryouwaitingfor;
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -16,10 +15,15 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * A class for handling the
+ * scanning of new BTLE_Devices
+ */
 public class Scanner_BTLE {
 
     private final MainActivity ma;
