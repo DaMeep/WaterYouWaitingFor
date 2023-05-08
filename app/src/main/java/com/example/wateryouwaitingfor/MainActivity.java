@@ -2,7 +2,9 @@ package com.example.wateryouwaitingfor;
 
 import android.Manifest;
 import android.app.AlertDialog;
+
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -49,6 +51,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private HashMap<String, User> listOfUsers; // List of Updated User IDs and their corresponding User Objects
 
     //Notification Stuff
-    public static String CHANNEL_ID = "CHANNEL_ID";
+//    public static String CHANNEL_ID = "CHANNEL_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
-        mDatabaseReference  = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mUsersReference = mDatabaseReference.child("users");
 
         //TESTING CODE
@@ -129,16 +132,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TESTING CODE
 
 
-
         //Notification Testing
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.baseline_water_drop_24)
-                .setContentTitle("TITLE")
-                .setContentText("DRINK MORE WATER PLEASE")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.baseline_water_drop_24)
+//                .setContentTitle("TITLE")
+//                .setContentText("DRINK MORE WATER PLEASE")
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                .setAutoCancel(true);
 
+
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//
+//        }
+//        else{
+//            notificationManager.notify(1, builder.build());
+//        }
 
         //Notification Testing
 
@@ -251,11 +261,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
 
-        if (firstStart) {
-            showStartDialog();
-        }
-
-        showStartDialog();
+//        if (firstStart) {
+//            showStartDialog();
+//        }
+//
+//        showStartDialog();
 
     }
 
@@ -294,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
-        createNotificationChannel();
+//        createNotificationChannel();
 
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
@@ -318,6 +328,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
 
+
         unregisterReceiver(mBTStateUpdateReceiver);
         stopScan();
 
@@ -326,6 +337,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             unbindService(mBTLE_ServiceConnection);
         }
         mBTLE_Service_Intent = null;
+
+        startService( new Intent( this, NotificationService. class )) ;
     }
 
     @SuppressLint("MissingPermission")
@@ -476,11 +489,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
+//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+//                android.Manifest.permission.BLUETOOTH,
+//                android.Manifest.permission.BLUETOOTH_ADMIN,
                 android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_ADVERTISE,
+//                android.Manifest.permission.BLUETOOTH_ADVERTISE,
                 android.Manifest.permission.BLUETOOTH_SCAN,
 
                 android.Manifest.permission.POST_NOTIFICATIONS // If API 33, else throws error
@@ -595,19 +608,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return listOfUsers.get(userID);
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
+//    private void createNotificationChannel() {
+//        // Create the NotificationChannel, but only on API 26+ because
+//        // the NotificationChannel class is new and not in the support library
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = getString(R.string.channel_name);
+//            String description = getString(R.string.channel_description);
+//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+//            channel.setDescription(description);
+//            // Register the channel with the system; you can't change the importance
+//            // or other notification behaviors after this
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
 }
