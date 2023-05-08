@@ -1,5 +1,6 @@
 package com.example.wateryouwaitingfor;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private Button total;
 
     public static double waterTot;
+
+
 
     public StatsFragment() {
         // Required empty public constructor
@@ -117,15 +120,29 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private void getData() {
 
         barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(2f, 7));
-        barArrayList.add(new BarEntry(3f, 8));
-        barArrayList.add(new BarEntry(4f, 6));
-        barArrayList.add(new BarEntry(5f, 10));
-        barArrayList.add(new BarEntry(6f, 7));
-        barArrayList.add(new BarEntry(7f, 4));
-        barArrayList.add(new BarEntry(8f, 10));
-        barArrayList.add(new BarEntry(9f, 3));
+        barArrayList.add(new BarEntry(0, 0));
+        barArrayList.add(new BarEntry(1, 0));
+        barArrayList.add(new BarEntry(2, 0));
+        barArrayList.add(new BarEntry(3, 0));
+        barArrayList.add(new BarEntry(4, 0));
+        barArrayList.add(new BarEntry(5, 0));
+        barArrayList.add(new BarEntry(6, 0));
+        barArrayList.add(new BarEntry(7, 0));
     }
+
+    //DBHandler dbHandler = new DBHandler(getContext());
+
+    // updates values to bar chart
+//    private void updateData(){
+//
+//        double store = dbHandler.getDataStore();
+//        Float valFor = Float.parseFloat(String.valueOf(store));
+//        int num = db.getDayOfWeek();
+//        String pass = Integer.toString(num);
+//        Float dayNum = Float.parseFloat(pass);
+//        Log.e("Ashwina", "day of the week:" + dayNum);
+//       barArrayList.add(new BarEntry(dayNum, valFor));
+//    }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
@@ -168,6 +185,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
                 db.addNewDrink(Double.parseDouble(consumed));
+              //  updateData();
 
                 // after adding the data we are displaying a toast message.
                 Toast.makeText(getContext(), "Drink has been added.", Toast.LENGTH_SHORT).show();
@@ -189,7 +207,9 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
 
                 waterTot = db.getDailyTot();
-
+//            case R.id.btnBarChart:
+//                Log.d("Ashwina", "I pressed the button ");
+//                updateData();
         }
 
 
