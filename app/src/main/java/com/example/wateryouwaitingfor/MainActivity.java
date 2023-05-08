@@ -1,9 +1,14 @@
 package com.example.wateryouwaitingfor;
 
+import android.Manifest;
 import android.app.AlertDialog;
+
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -12,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -28,25 +34,35 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wateryouwaitingfor.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +70,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     ActivityMainBinding binding;
-    public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences";
+    public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences"; // Shared Preferences Location
     private final static String TAG = MainActivity.class.getSimpleName();
 
     public static final int REQUEST_ENABLE_BT = 1;
@@ -62,28 +78,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public WaterIntakeHandler waterIntakeHandler;
 
-    private SharedPreferences sharedpreferences;
-    private String deviceName, deviceAddress;
+    private SharedPreferences sharedpreferences; // Reference to Shared Preferences
+    private String deviceName, deviceAddress; // Variables for the currently connected BTLE_Device
 
-    private HashMap<String, BTLE_Device> mBTDevicesHashMap;
-    private ArrayList<BTLE_Device> mBTDevicesArrayList;
-    private ListAdapter_BTLE_Devices adapter;
+    private HashMap<String, BTLE_Device> mBTDevicesHashMap; // HashMap of all the scanned BTLE_Devices
+    private ArrayList<BTLE_Device> mBTDevicesArrayList; // ArrayList of all scanned BTLE_Devices for Displaying via ListAdapter
+    private ListAdapter_BTLE_Devices adapter; // ListAdapter for managing BTLE_Devices with the ListView
 
 
-    public static UUID SERVICE_UUID = convertFromInteger(0xC201);
-    public static UUID CHAR_UUID = convertFromInteger(0x483E);
-    public static UUID CCCD_UUID = convertFromInteger(0x2902);
+    public static UUID SERVICE_UUID = convertFromInteger(0xC201); // UUID of the Water Consumption Service on the BTLE_Device
+    public static UUID CHAR_UUID = convertFromInteger(0x483E); // UUID of the Water Consumption Characteristic for the Water Consumption Service
+    public static UUID CCCD_UUID = convertFromInteger(0x2902); // UUID of the Client Characteristic Configuration Descriptor for the Water Consumption Characteristic
 
-    private BroadcastReceiver_BTState mBTStateUpdateReceiver;
-    private Scanner_BTLE mBTLeScanner;
+    private BroadcastReceiver_BTState mBTStateUpdateReceiver; // Reads the current state of Bluetooth on the Android Device
+    private Scanner_BTLE mBTLeScanner; // Scanner for BTLE Devices
     private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 
     //Service Stuff
-    private Intent mBTLE_Service_Intent;
-    private Service_BTLE_GATT mBTLE_Service;
-    private boolean mBTLE_Service_Bound;
-    private BroadcastReceiver mGattUpdateReceiver;
+    private Intent mBTLE_Service_Intent; // Launches the BTLE_Service
+    private Service_BTLE_GATT mBTLE_Service; // Instigates a connection with the BTLE_Device
+    private boolean mBTLE_Service_Bound; // Holds the connection state of the BTLE_Service
+    private BroadcastReceiver mGattUpdateReceiver; // Reads the current state of Connection with the BTLE_Device
+
+    //Firebase Stuff
+    private DatabaseReference mDatabaseReference; // Firebase Reference
+    private DatabaseReference mUsersReference; // Firebase User List Reference
+    private ValueEventListener updateListener; // Listener for Firebase Updates
+    private HashMap<String, User> listOfUsers; // List of Updated User IDs and their corresponding User Objects
+
+    //Notification Stuff
+//    public static String CHANNEL_ID = "CHANNEL_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +118,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mUsersReference = mDatabaseReference.child("users");
+
+        //TESTING CODE
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("userID", "TEST1");
+        editor.apply();
+
+//        String userId = sharedpreferences.getString("userID", "null");
+//        User userTest = new User(sharedpreferences.getString("username", "User"));
+//        mUsersReference.child(userId).setValue(userTest);
+
+        //TESTING CODE
+
+        //Creates Listener for changes in Firebase Data
+         updateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listOfUsers = new HashMap<>();
+                for(DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    listOfUsers.put(userSnapshot.getKey(), user);
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
+            }
+        };
+        mUsersReference.addValueEventListener(updateListener);
+
+
 
         mGattUpdateReceiver = new BroadcastReceiver(){
 
@@ -126,11 +185,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
 
-        Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
-
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        someActivityResultLauncher = registerForActivityResult(
+        someActivityResultLauncher = registerForActivityResult( // FIX THIS I GUESS???????
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -146,9 +203,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
+
+
+        //Defaults the Navigation Bar to Select the Home Fragment
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
 
+        //Informs the Navigation Bar to replace the current Fragment with the desired when pressed
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             switch(item.getItemId()){
@@ -179,11 +240,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
 
-        if (firstStart) {
-            showStartDialog();
-        }
-
-        showStartDialog();
+//        if (firstStart) {
+//            showStartDialog();
+//        }
+//
+//        showStartDialog();
 
 
     }
@@ -208,19 +269,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Use this method to put the application's focus on a new Fragment
+     * Puts the application's focus on a new Fragment
+     *
      * @param fragment Replacement Fragment
      */
-    private void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+//        createNotificationChannel();
 
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
@@ -244,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
 
+
         unregisterReceiver(mBTStateUpdateReceiver);
         stopScan();
 
@@ -252,6 +317,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             unbindService(mBTLE_ServiceConnection);
         }
         mBTLE_Service_Intent = null;
+
+        startService( new Intent( this, NotificationService. class )) ;
     }
 
     @SuppressLint("MissingPermission")
@@ -274,11 +341,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
         bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
         startService(mBTLE_Service_Intent);
-
-//        Intent intent = new Intent(this, Activity_BTLE_Services.class);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-//        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -305,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Use this method to add a potential device to the list of devices
+     * Adds a potential device to the list of devices
      * @param device New Device
      * @param rssi Device's RSSI
      */
@@ -384,32 +446,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
-
-
-
-
-
     //Services Stop
 
-
-
-
+    /**
+     * Get the current ListAdapter for Scanned BTLE_Devices
+     *
+     * @return The BTLE ListAdapter
+     */
     public ListAdapter_BTLE_Devices getAdapter(){
         return adapter;
     }
 
+
+    /**
+     * Checks the Device's allowed permissions
+     * and requests more if needed
+     *
+     * @param activity The current activity
+     * @param context The context of the prompt
+     */
     public static void checkPermissions(Activity activity, Context context){
         int PERMISSION_ALL = 1;
         Log.e("BLUETOOTH PERMS", "HI");
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
+//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+//                android.Manifest.permission.BLUETOOTH,
+//                android.Manifest.permission.BLUETOOTH_ADMIN,
                 android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_ADVERTISE,
-                android.Manifest.permission.BLUETOOTH_SCAN
+//                android.Manifest.permission.BLUETOOTH_ADVERTISE,
+                android.Manifest.permission.BLUETOOTH_SCAN,
+
+                android.Manifest.permission.POST_NOTIFICATIONS // If API 33, else throws error
 
         };
 
@@ -419,6 +488,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Checks the current state of the specified permissions
+     *
+     * @param context The context of the check
+     * @param permissions The list of permissions
+     *
+     * @return Whether the permissions have been allowed
+     */
     public static boolean hasPermissions(Context context, String... permissions){
         Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
         if(context != null && permissions != null){
@@ -433,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Converts an inputted hex value into its corresponding BLE UUID
+     *
      * @param i Hex Value
      */
     public static UUID convertFromInteger(int i) { // ex "0x180D" for heart rate services
@@ -444,6 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Converts a received byte array to its corresponding String value
+     *
      * @param bytes Byte Array
      * @return String Representation of bytes
      */
@@ -451,23 +530,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Converts a received byte array to its corresponding double value
+     * @param bytes Byte Array
+     * @return Double Representation of bytes
+     */
     public static double bytesToDouble(byte[] bytes){
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getDouble();
     }
 
+    /**
+     * Get the name of the connected device
+     *
+     * @return The name of the device
+     */
     public String getDeviceName(){
         return deviceName;
     }
 
+    /**
+     * Get the address of the connected device
+     *
+     * @return The address of the device
+     */
     public String getDeviceAddress(){
         return deviceAddress;
     }
 
+    /**
+     * Get the BTLE Gatt Service with the connected device
+     *
+     * @return The established Service_BTLE_GATT
+     */
     public Service_BTLE_GATT getService(){
         return mBTLE_Service;
     }
+    
+    /**
+     * Get the WaterIntakeHandler for registering consumption
+     * 
+     * @return The WaterIntakeHandler
+     */
     public WaterIntakeHandler getIntakeHandler (){
         return waterIntakeHandler;
+    }
+
+    /**
+     * Get the reference to the Firebase
+     *
+     * @return The Firebase Reference
+     */
+    public DatabaseReference getUserReference() { return mUsersReference; }
+
+    /**
+     * Get the Firebase's updated list of users
+     *
+     * @return A Hashmap made up of User IDs and corresponding User Objects
+     */
+    public HashMap<String, User> getUsers(){ return listOfUsers; }
+
+    /**
+     * Get the updated information of the current user from the Firebase
+     *
+     * @return The Firebase information of the application's User
+     */
+    public User getCurrentUser(){
+        String userID = sharedpreferences.getString("userID", "null");
+        return listOfUsers.get(userID);
     }
 }
 

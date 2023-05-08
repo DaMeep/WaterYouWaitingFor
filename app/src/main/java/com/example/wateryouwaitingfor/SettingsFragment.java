@@ -3,6 +3,7 @@ package com.example.wateryouwaitingfor;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+
+import com.google.firebase.database.DatabaseReference;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -134,6 +137,12 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
 
         editor.apply();
+
+        String userID = sharedpreferences.getString("userID", "null");
+
+        DatabaseReference mUsersReference = ((MainActivity)getActivity()).getUserReference();
+        mUsersReference.child(userID).child("username").setValue(userNameText.getText().toString());
+
         super.onDestroyView();
     }
 

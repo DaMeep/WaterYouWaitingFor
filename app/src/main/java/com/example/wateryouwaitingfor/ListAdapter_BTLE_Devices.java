@@ -28,18 +28,15 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
     @Override
     public void notifyDataSetChanged(){
         super.notifyDataSetChanged();
-//        Log.e("ADAPTER UPDATED", devices.toString());
     }
 
     @Override
     public int getCount() {
-//        Log.e("ADAPTER COUNTER", String.valueOf(devices.size()));
         return devices.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        Log.e("GET_VIEW", "METHOD CALLED");
         if (convertView == null) {
             LayoutInflater inflater =
                     (LayoutInflater) activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
