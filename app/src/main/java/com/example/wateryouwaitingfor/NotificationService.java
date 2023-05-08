@@ -16,12 +16,12 @@ import java.util.TimerTask;
 
 public class NotificationService extends Service {
 
-    public static String NOTIFICATION_CHANNEL_ID = "10001";
-    private final static String default_notification_channel_id = "default" ;
-    private Timer timer;
-    private TimerTask timerTask;
+    public static String NOTIFICATION_CHANNEL_ID = "10001"; // Notification Channel ID
+    private final static String default_notification_channel_id = "default" ; // Default Channel ID
+    private Timer timer; // Timer Object
+    private TimerTask timerTask; // Timer Task Object
 
-    private final Handler handler = new Handler(Looper.myLooper()) ;
+    private final Handler handler = new Handler(Looper.myLooper()) ; // Handler for making Notifications
 
     @Override
     public IBinder onBind (Intent arg0) {
@@ -42,18 +42,27 @@ public class NotificationService extends Service {
         super .onDestroy() ;
     }
 
+    /**
+     * Starts the timer for the Notification Reminders
+     */
     public void startTimer () {
         timer = new Timer() ;
         initializeTimerTask() ;
         SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
         timer .schedule( timerTask , 5000 , sharedPreferences.getInt("waterReminderSeconds", 1800)  * 1000L) ;
     }
+    /**
+     * Stops the timer for the Notification Reminders
+     */
     public void stopTimerTask () {
         if ( timer != null ) {
             timer .cancel() ;
             timer = null;
         }
     }
+    /**
+     * Begins the TimerTask needed for regular notifications
+     */
     public void initializeTimerTask () {
         timerTask = new TimerTask() {
             public void run () {
@@ -65,6 +74,10 @@ public class NotificationService extends Service {
             }
         } ;
     }
+    /**
+     * Creates the Notification Channel and the
+     * Notification message
+     */
     private void createNotification () {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService( NOTIFICATION_SERVICE ) ;
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext() , default_notification_channel_id ) ;
