@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
         private ArrayList<drinkListHandler> courseModalArrayList;
         private DBHandler dbHandler;
         private drinkRVAdapter courseRVAdapter;
-        private RecyclerView coursesRV;
+        private ListView coursesRV;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +35,12 @@ import java.util.ArrayList;
             Log.i("Total::::::::::::: ", " " + tot);
 
             // on below line passing our array list to our adapter class.
-            courseRVAdapter = new drinkRVAdapter(courseModalArrayList, ViewDrinks.this);
+            courseRVAdapter = new drinkRVAdapter(ViewDrinks.this, R.layout.drink_recyclerview_item, courseModalArrayList);
             coursesRV = findViewById(R.id.idRVDrinks);
 
             // setting layout manager for our recycler view.
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ViewDrinks.this, RecyclerView.VERTICAL, false);
-            coursesRV.setLayoutManager(linearLayoutManager);
+           // LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ViewDrinks.this, RecyclerView.VERTICAL, false);
+            //coursesRV.setLayoutManager(linearLayoutManager);
 
             // setting our adapter to recycler view.
             coursesRV.setAdapter(courseRVAdapter);

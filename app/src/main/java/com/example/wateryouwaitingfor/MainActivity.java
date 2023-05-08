@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_ENABLE_BT = 1;
     public static final int BTLE_SERVICES = 2;
 
+    public WaterIntakeHandler waterIntakeHandler;
 
     private SharedPreferences sharedpreferences; // Reference to Shared Preferences
     private String deviceName, deviceAddress; // Variables for the currently connected BTLE_Device
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        waterIntakeHandler = new WaterIntakeHandler();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         checkPermissions(this, getApplicationContext());
@@ -130,29 +132,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mUsersReference.child(userId).setValue(userTest);
 
         //TESTING CODE
-
-
-        //Notification Testing
-
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-//                .setSmallIcon(R.drawable.baseline_water_drop_24)
-//                .setContentTitle("TITLE")
-//                .setContentText("DRINK MORE WATER PLEASE")
-//                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                .setAutoCancel(true);
-
-
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//
-//        }
-//        else{
-//            notificationManager.notify(1, builder.build());
-//        }
-
-        //Notification Testing
-
-
 
         //Creates Listener for changes in Firebase Data
          updateListener = new ValueEventListener() {
@@ -368,15 +347,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
 
-/*
-        DBHandler dbHandler = new DBHandler(ViewDrinks.this);
-
-        // getting our course array
-        // list from db handler class.
-        int tot = dbHandler.getDailyTot();
-        Log.i("Total: ", "blah");
-*/
-        /*
         switch (v.getId()) {
 
             case R.id.btn_scan:
@@ -393,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
-        */
+
     }
 
     /**
@@ -595,6 +565,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public Service_BTLE_GATT getService(){
         return mBTLE_Service;
     }
+    
+    /**
+     * Get the WaterIntakeHandler for registering consumption
+     * 
+     * @return The WaterIntakeHandler
+     */
+    public WaterIntakeHandler getIntakeHandler (){
+        return waterIntakeHandler;
+    }
 
     /**
      * Get the reference to the Firebase
@@ -619,20 +598,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String userID = sharedpreferences.getString("userID", "null");
         return listOfUsers.get(userID);
     }
-
-//    private void createNotificationChannel() {
-//        // Create the NotificationChannel, but only on API 26+ because
-//        // the NotificationChannel class is new and not in the support library
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            CharSequence name = getString(R.string.channel_name);
-//            String description = getString(R.string.channel_description);
-//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-//            channel.setDescription(description);
-//            // Register the channel with the system; you can't change the importance
-//            // or other notification behaviors after this
-//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//    }
 }
+

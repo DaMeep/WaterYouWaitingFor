@@ -104,7 +104,10 @@ public class Service_BTLE_GATT extends Service {
                                             BluetoothGattCharacteristic characteristic) {
 
             broadcastUpdate(characteristic);
-            Log.e("Char Changed",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
+            DBHandler dbh = new DBHandler(getApplicationContext());
+            dbh.addNewDrink(MainActivity.bytesToDouble(characteristic.getValue()));
+            Log.e("WaterHandler Amount",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
+            Log.e("WaterHandler Total", String.valueOf(dbh.getDailyTot()));
         }
 
         @Override
