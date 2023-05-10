@@ -60,6 +60,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
 
     private SwitchCompat notificationSwitch;
+    private TextView notificationText;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -130,6 +131,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
         notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
 
+        notificationText = view.findViewById(R.id.notificationTimerSettingsText);
+        notificationText.setText(notificationSwitch.isChecked() ? R.string.waterReminderText : R.string.disabledText);
 
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
@@ -144,6 +147,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
                 }
 
                 notificationDropdown.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
+                notificationText.setText(isChecked ? R.string.waterReminderText : R.string.disabledText);
+
             }
         });
 
@@ -157,6 +162,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         notificationDropdown.setOnItemSelectedListener(this);
         curNotificationInterval = sharedpreferences.getInt("notificationInterval", 0);
         notificationDropdown.setSelection(curNotificationInterval);
+        notificationDropdown.setVisibility(notificationSwitch.isChecked() ? View.VISIBLE : View.INVISIBLE);
 
     }
     @Override
