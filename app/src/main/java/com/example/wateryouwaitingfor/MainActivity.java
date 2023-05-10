@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ValueEventListener updateListener; // Listener for Firebase Updates
     private HashMap<String, User> listOfUsers; // List of Updated User IDs and their corresponding User Objects
 
-    //Notification Stuff
-//    public static String CHANNEL_ID = "CHANNEL_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,22 +117,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         waterIntakeHandler = new WaterIntakeHandler();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        checkPermissions(this, getApplicationContext());
+        checkBluetoothPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mUsersReference = mDatabaseReference.child("users");
-
-        //TESTING CODE
-
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString("userID", "TEST1");
-        editor.apply();
-
-//        String userId = sharedpreferences.getString("userID", "null");
-//        User userTest = new User(sharedpreferences.getString("username", "User"));
-//        mUsersReference.child(userId).setValue(userTest);
-
-        //TESTING CODE
 
         //Creates Listener for changes in Firebase Data
          updateListener = new ValueEventListener() {
@@ -239,48 +225,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         if (sharedpreferences.getBoolean("firstStart", true)){
-//            SharedPreferences.Editor editor = sharedpreferences.edit();
-//            editor.putBoolean("firstStart", false);
-//            editor.apply();
             Intent i = new Intent(MainActivity.this, GetStarted.class);
             startActivity(i);
             finish();
         }
-
-
-       /* SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        boolean firstStart = prefs.getBoolean("firstStart", true);
-
-*/
-
-//        if (firstStart) {
-//            showStartDialog();
-//        }
-//
-//        showStartDialog();
-
-
-
     }
-
-   /* private void showStartDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Welcome!")
-                .setMessage("")
-
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create().show();
-
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("firstStart", false);
-        editor.apply();
-    }*/
 
     /**
      * Puts the application's focus on a new Fragment
@@ -332,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mBTLE_Service_Intent = null;
 
-        startService( new Intent( this, NotificationService. class )) ;
+//        startService( new Intent( this, NotificationService. class )) ;
     }
 
     @SuppressLint("MissingPermission")
@@ -365,13 +314,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_scan:
                 Utils.toast(getApplicationContext(), "Scan Button Pressed");
-                replaceFragment(new DeviceListFragment());
-
-                if (!mBTLeScanner.isScanning()) {
+                String[] perms = {
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.BLUETOOTH_CONNECT,
+                        android.Manifest.permission.BLUETOOTH_SCAN,
+                };
+                if (hasPermissions(getApplicationContext(), perms)){
+                    replaceFragment(new DeviceListFragment());
                     startScan();
                 }
-                else {
-                    stopScan();
+                else{
+                    Utils.toast(getApplicationContext(), "Please enable Bluetooth and try again");
+                    ActivityCompat.requestPermissions(this, perms, REQUEST_ENABLE_BT);
                 }
                 break;
             default:
@@ -479,8 +434,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param activity The current activity
      * @param context The context of the prompt
      */
-    public static void checkPermissions(Activity activity, Context context){
-        int PERMISSION_ALL = 1;
+    public static void checkBluetoothPermissions(Activity activity, Context context){
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -493,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         if(!hasPermissions(context, PERMISSIONS)){
-            ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
+            ActivityCompat.requestPermissions(activity, PERMISSIONS, REQUEST_ENABLE_BT);
         }
     }
 
@@ -605,6 +559,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public User getCurrentUser(){
         String userID = sharedpreferences.getString("userID", "null");
         return listOfUsers.get(userID);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case SettingsFragment.NOTIFICATION_REQUEST_CODE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Continue the action or workflow
+                    // in your app.
+                }  else {
+                    // Explain to the user that the feature is unavailable because
+                    // the feature requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                    SettingsFragment settingsFragment = (SettingsFragment) (getSupportFragmentManager().findFragmentByTag("SettingsFragment"));
+                    settingsFragment.setNotificationSwitch(false);
+                }
+                return;
+        }
+        // Other 'case' lines to check for other
+        // permissions this app might request.
     }
 }
 

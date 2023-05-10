@@ -28,6 +28,9 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Random;
 
 public class NavigationActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -95,7 +98,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
                     readWeightEditText.setText(sharedPref.getString("userWeight", "0"));
 
-
                     break;
 
                 case 2:
@@ -113,8 +115,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
                     dropDown.setAdapter(activityAdapter);
                     dropDown.setSelection(sharedPref.getInt("activityLevel",0));
-
-
 
                     break;
 
@@ -144,24 +144,16 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
                     break;
 
-
-
-
                 default:
                     break;
             }
-
             editor.apply();
-
-
-
         }
         @Override
         public void onPageScrollStateChanged(int state) {
 
         }
     };
-
 
 
         @Override
@@ -197,9 +189,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
         notificationSwitch.setOnCheckedChangeListener(this);
 
-
-
-
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,25 +204,24 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                 if (getItem(0) < length-1)
                     slideViewPager.setCurrentItem(getItem(1), true);
                 else {
+                    String userID = generateUserId();
+
                     SharedPreferences preferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("firstStart", false);
-                    editor.putString("userID",generateUserId());
+                    editor.putString("userID", userID);
                     editor.apply();
 
-                    Log.e("UserID", preferences.getString("userID","x"));
+                    User user = new User(preferences.getString("username", "User"));
+                    DatabaseReference mUsersReference = FirebaseDatabase.getInstance().getReference().child("users");
+                    mUsersReference.child(userID).setValue(user);
 
                     Intent i = new Intent(NavigationActivity.this, MainActivity.class);
                     startActivity(i);
                     finish();
                 }
             }
-        }
-
-
-
-
-        );
+        });
 
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,7 +243,12 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
     }
 
 
-
+    /**
+     * Sets the progress bar at the bottom of
+     * the startup page
+     *
+     * @param position the highlighted "dot"
+     */
     public void setDotIndicator(int position) {
 
         dots = new TextView[length];
@@ -271,10 +264,22 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
         dots[position].setTextColor(getResources().getColor(R.color.blue, getApplicationContext().getTheme()));
     }
 
+    /**
+     * Returns the index of the current startup
+     * page + i
+     *
+     * @param i the page offset
+     * @return the page index
+     */
     private int getItem(int i) {
         return slideViewPager.getCurrentItem() + i;
     }
 
+    /**
+     * Generates a random 10-digit alphanumeric User ID for Firebase
+     *
+     * @return the generated User ID
+     */
     private String generateUserId () {
 
             String userId = "";

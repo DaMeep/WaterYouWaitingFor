@@ -52,9 +52,11 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     private Spinner notificationDropdown;
     private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
 
-    private static final String[] notificationIntervals = {"None", "Low", "Medium", "High"};
+    private static final String[] notificationIntervals = {"15 Minutes", "30 Minutes", "45 Minutes", "1 Hour"};
     private int curActivityLevel;
     private int curNotificationInterval;
+
+    public static final int NOTIFICATION_REQUEST_CODE = 101;
 
 
     private SwitchCompat notificationSwitch;
@@ -137,11 +139,15 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
                 if (isChecked && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                     String[] perms = {android.Manifest.permission.POST_NOTIFICATIONS};
                     if (!MainActivity.hasPermissions(getContext(), perms) && isChecked){
-                        ActivityCompat.requestPermissions(getActivity(), perms, 101);
+                        ActivityCompat.requestPermissions(getActivity(), perms, NOTIFICATION_REQUEST_CODE);
                     }
                 }
+
+                notificationDropdown.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
             }
         });
+
+
 
         notificationDropdown = view.findViewById(R.id.settingsNotificationTimerDropdown);
         ArrayAdapter<String> notificationAdapter = new ArrayAdapter(view.getContext(),
@@ -208,6 +214,14 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO Auto-generated method stub
+    }
+
+    /**
+     * Sets the Notification Switch State
+     * @param isActive the state of the switch
+     */
+    public void setNotificationSwitch(boolean isActive){
+        notificationSwitch.setChecked(isActive);
     }
 
 }
