@@ -49,7 +49,8 @@ public class NotificationService extends Service {
         timer = new Timer() ;
         initializeTimerTask() ;
         SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
-        timer .schedule( timerTask , 5000 , sharedPreferences.getInt("waterReminderSeconds", 1800)  * 1000L) ;
+        int notificationInterval = sharedPreferences.getInt("notificationInterval", 0) + 1;
+        timer .schedule( timerTask , 5000 , notificationInterval * 900  * 1000L) ;
     }
     /**
      * Stops the timer for the Notification Reminders

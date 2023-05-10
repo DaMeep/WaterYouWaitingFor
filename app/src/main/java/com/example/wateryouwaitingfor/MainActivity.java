@@ -467,7 +467,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public static void checkPermissions(Activity activity, Context context){
         int PERMISSION_ALL = 1;
-        Log.e("BLUETOOTH PERMS", "HI");
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -477,14 +476,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 android.Manifest.permission.BLUETOOTH_CONNECT,
 //                android.Manifest.permission.BLUETOOTH_ADVERTISE,
                 android.Manifest.permission.BLUETOOTH_SCAN,
-
-                android.Manifest.permission.POST_NOTIFICATIONS // If API 33, else throws error
-
         };
 
         if(!hasPermissions(context, PERMISSIONS)){
             ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
-            Log.e("BLUETOOTH PERMS", "NO PERMS");
         }
     }
 
@@ -497,7 +492,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return Whether the permissions have been allowed
      */
     public static boolean hasPermissions(Context context, String... permissions){
-        Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
         if(context != null && permissions != null){
             for (String permission : permissions){
                 if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
