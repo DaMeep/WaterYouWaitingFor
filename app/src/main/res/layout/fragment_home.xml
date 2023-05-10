@@ -28,13 +28,15 @@
         android:id="@+id/welcomeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
         android:text="@string/welcome"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif"
         android:textSize="26sp" />
 
     <TextView
         android:id="@+id/waterTotDisplay"
         android:layout_width="match_parent"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:text="Total water:"

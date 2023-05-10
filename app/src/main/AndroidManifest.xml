@@ -31,38 +31,42 @@
         android:theme="@style/Theme.WaterYouWaitingFor">
         <activity
             android:name=".GetStarted"
-            android:exported="false" />
+            android:exported="false" >
+
+
+        </activity>
 
 
         <activity
             android:name=".NavigationActivity"
-            android:exported="true" >
+            android:exported="false" />
 
-        <intent-filter>
+
+
+      <!--  <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
             =
-        </intent-filter>
+        </intent-filter>-->
 
             <!--<meta-data
                 android:name="android.app.lib_name"
                 android:value = "" />-->
 
-        </activity>
 
         <activity
             android:name=".ViewDrinks"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-            <!--<intent-filter>
+            android:exported="true">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 =
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         
 

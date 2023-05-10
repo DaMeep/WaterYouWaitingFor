@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
         String welcomeback = "Welcome back,";
-        userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
+        userNameDisplay.setText(welcomeback + " " + sharedpreferences.getString("username", "User")+ "!");
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
         watDisplay.setText("Total Amount Consumed: " + waterTot);

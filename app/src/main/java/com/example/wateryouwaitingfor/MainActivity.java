@@ -159,9 +159,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         });
 
+        if (sharedpreferences.getBoolean("firstStart", true)){
+//            SharedPreferences.Editor editor = sharedpreferences.edit();
+//            editor.putBoolean("firstStart", false);
+//            editor.apply();
+            Intent i = new Intent(MainActivity.this, GetStarted.class);
+            startActivity(i);
+            finish();
+        }
 
 
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+       /* SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
 
         if (firstStart) {
@@ -169,11 +177,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         showStartDialog();
-
+*/
 
     }
 
-    private void showStartDialog() {
+   /* private void showStartDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Welcome!")
                 .setMessage("")
@@ -190,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("firstStart", false);
         editor.apply();
-    }
+    }*/
 
     /**
      * Use this method to put the application's focus on a new Fragment

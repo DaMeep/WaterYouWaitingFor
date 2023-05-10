@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +20,26 @@ public class ViewPagerAdapter extends PagerAdapter {
     int sliderAllImages[] = {
             R.drawable.upload,
             R.drawable.shorts,
-            R.drawable.live,
+            R.drawable.shorts,
+            R.drawable.shorts,
+            R.drawable.shorts
     };
 
     int sliderAllTitle[] = {
             R.string.screen1,
             R.string.screen2,
             R.string.screen3,
+            R.string.screen1,
+            R.string.screen1
+
     };
 
     int sliderAllDesc[] = {
             R.string.screen1desc,
             R.string.screen2desc,
             R.string.screen3desc,
+            R.string.screen3desc,
+            R.string.screen3desc
     };
 
     public ViewPagerAdapter(Context context){

@@ -20,7 +20,7 @@ public class GetStarted extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(GetStarted.this, MainActivity.class);
+                Intent i = new Intent(GetStarted.this, NavigationActivity.class);
                 startActivity(i);
                 finish();
             }
