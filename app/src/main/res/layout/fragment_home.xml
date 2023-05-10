@@ -43,6 +43,14 @@
         android:textSize="26sp" />
 
     <TextView
+        android:id="@+id/waterGoal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Water Goal:"
+        android:textSize="26sp" />
+
+    <TextView
         android:id="@+id/updateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

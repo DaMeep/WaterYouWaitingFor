@@ -17,7 +17,7 @@
     <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
     <string name="timestamp">Enter the Time</string>
-    <string name="amtConsume">How much was consumed?</string>
+    <string name="amtConsume">How many ounces were consumed?</string>
     <string name="newDrink">Add Drink</string>
     <string name="activity_level">Activity Level:</string>
     <string name="notifications">Notifications</string>
@@ -31,24 +31,26 @@
     <string name="imperialUnitsToggle">IMPERIAL</string>
     <string name="metricUnitsToggle">METRIC</string>
     <string name="user_id">User ID</string>
-    <string name="friends_fragment">Friends Fragment</string>
+    <string name="friendsTitleText">Friends</string>
     <string name="name_Input">Name</string>
-    <string name="add_user_friends">Add User</string>
+    <string name="add_user_friends">Send Friend Request</string>
     <string name="goal">NAME</string>
+    <string name="backToHomeText">Back To Home</string>
+    <string name="channel_name">NOTIFICATION_CHANNEL</string>
+    <string name="channel_description">NOTIFICATION_CHANNEL_DESC</string>
+    <string name="waterReminderText">Remind Me Every</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>
     </string-array>
-
     <string-array name="notificationIntervals">
         <item>15 Minutes</item>
         <item>30 Minutes</item>
         <item>45 Minutes</item>
         <item>1 Hour</item>
     </string-array>
-
 
         <string name="Water_you_waiting_for">Onboarding Practice</string>
         <string name="screen1"> Track water intake</string>
@@ -59,6 +61,5 @@
     <string name="screen3desc"> Keep your friends accountable for their hydration </string>
         <string name="startDesc"> Water you waiting for??</string>
     <string name="what_is_your_name">What is your name?</string>
-
 
 </resources>

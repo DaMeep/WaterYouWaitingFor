@@ -14,9 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@id/barchart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -70,15 +74,51 @@
                     android:text="Total"
                     android:textAllCaps="false" />
 
+            </com.github.mikephil.charting.charts.BarChart>
 
 
+            <EditText
+                android:id="@+id/AmtConsumedEdt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="@string/amtConsume"
+                android:importantForAutofill="no"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp" />
 
-                <!--<FrameLayout
-            android:id="@+id/frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-        </FrameLayout>-->
+            <!--button for adding new course-->
+            <Button
+                android:id="@+id/btnAddWater"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/newDrink"
+                android:textAllCaps="false" />
+
+            <!--new button for opening our drink list activity-->
+            <Button
+                android:id="@+id/btnReadDrink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Read All Drinks"
+                android:textAllCaps="false" />
+            <Button
+                android:id="@+id/btnTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Total"
+                android:textAllCaps="false"/>
+<!--            <Button-->
+<!--                android:id="@+id/btnBarChart"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="10dp"-->
+<!--                android:text="Update Water"-->
+<!--                android:textAllCaps="false"/>-->
 
             </LinearLayout>
 
@@ -86,5 +126,7 @@
         </LinearLayout>
     </ScrollView>
 
-
 </FrameLayout>
+
+
+

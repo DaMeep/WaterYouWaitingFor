@@ -1,42 +1,60 @@
 package com.example.wateryouwaitingfor;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
 
         // creating a constant variables for our database.
         // below variable is for our database name.
-        private static final String DB_NAME = "waterconsumedb";
+        private static final String DB_NAME = "WaterConsumed";
 
         // below int is our database version
         private static final int DB_VERSION = 4;
 
         // below variable is for our table name.
-        private static final String TABLE_NAME = "dailywater";
-        // below variable is for our second table name.
-        private static final String SECONDTABLE_NAME = "overalldata";
+        private static final String TABLE_NAME = "WaterIntake";
 
         // below variable is for our id column.
         private static final String ID_COL = "id";
 
         // below variable is for our time of consumption column
-        private static final String TIME_COL = "time";
+        private static final String TIME_COL = "Time";
 
         // below variable is for our amount consumed column.
-        private static final String AMOUNT_COL = "amount";
+        private static final String AMOUNT_COL = "Amount";
 
-        // below variable is for our date column for table 2.
-        private static final String DATE_COL = "date";
+        // below variable is for our date column.
+        private static final String DATE_COL = "Date";
 
-        // below variable is for our daily total column for Table 2.
-        private static final String DAYTOT_COL = "daily totals";
+        // below variable is for our daily total column.
+        private static final String DAYTOT_COL = "DailyTotals";
+
+        private static final DateFormat DF = new SimpleDateFormat("dd/MM/yyyy");
+
+        private double dataStore=0;
+
+        public LocalDate localDate;
+
+        public int dayOfWeek=0;
+
+
+    public static double dailyTot = 0;
         // creating a constructor for our database handler.
         public DBHandler(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
@@ -54,24 +72,22 @@ public class DBHandler extends SQLiteOpenHelper {
             // setting our column names
             // along with their data types.
             String query = "CREATE TABLE " + TABLE_NAME + " ("
-                    + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + TIME_COL + " TEXT,"
-                    + AMOUNT_COL + " REAL, "
-                    + DATE_COL + "TEXT, "
-                    + DAYTOT_COL+ "REAL )";
 
-
-
+                    + ID_COL+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + TIME_COL+ " TEXT,"
+                    + AMOUNT_COL+ " TEXT,"
+                    + DATE_COL+ " TEXT,"
+                    + DAYTOT_COL+ " TEXT)";
 
             // at last we are calling a exec sql
             // method to execute above sql query
             db.execSQL(query);
-           // db.execSQL(querytwo);
+
         }
 
         // this method is used to add new drinks to our sqlite database.
-        public void addNewDrink(String time, String Consumed) {
-
+        public void addNewDrink(double Consumed) {
+            DecimalFormat meep = new DecimalFormat("0.00");
             // on below line we are creating a variable for
             // our sqlite database and calling writable method
             // as we are writing data in our database.
@@ -83,48 +99,34 @@ public class DBHandler extends SQLiteOpenHelper {
 
             // on below line we are passing all values
             // along with its key and value pair.
-            values.put(TIME_COL, time);
+
+            // meep truncates the amtConsumed string to two decimal places
+            String consume = meep.format(Consumed);
+            // adds the value passed in as a double to the totals column.
+            Consumed= Double.parseDouble(consume);
+            dailyTot += Consumed;
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate ld = LocalDate.now();
+
+
+            // inputting the local variables and the consumed parameter into our table
+            values.put(TIME_COL, LocalTime.now().toString());
             values.put(AMOUNT_COL, Consumed);
+            values.put(DATE_COL, ld.format(dtf));
+            values.put(DAYTOT_COL, dailyTot);
 
             // after adding all values we are passing
             // content values to our table.
             db.insert(TABLE_NAME, null, values);
+            // method call for updating the bar chart
+            //setDataToDates();
 
-            // at last we are closing our
-            // database after adding database.
+            // closing the database
 
-            addNewDayTot(time, Consumed);
-
-
+            db.close();
         }
 
-
-        // this method is used to add new daily totals to our sqlite database.
-        public void addNewDayTot(String date, String Totals) {
-
-            // on below line we are creating a variable for
-            // our sqlite database and calling writable method
-            // as we are writing data in our database.
-            SQLiteDatabase db = this.getWritableDatabase();
-
-            // on below line we are creating a
-            // variable for content values.
-            ContentValues values2 = new ContentValues();
-
-            // on below line we are passing all values
-            // along with its key and value pair.
-            values2.put(DATE_COL, date);
-            values2.put(DAYTOT_COL, Totals);
-
-            // after adding all values we are passing
-            // content values to our table.
-           db.insert(SECONDTABLE_NAME, null, values2);
-
-            // at last we are closing our
-            // database after adding database.
-
-            totWater = Integer.parseInt(Totals);
-        }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -132,7 +134,76 @@ public class DBHandler extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);
         }
-        // we have created a new method for reading all the courses.
+
+    // below method returns the day of the week as an integer (Sunday = 0, Monday = 1, etc)
+    // intakes a LocalDate parameter
+//    public int getDayNumberNew(LocalDate date) {
+//            Log.e("Day of week is: ", ""+ date.getDayOfWeek().getValue());
+//        DayOfWeek day = date.getDayOfWeek();
+//        return day.getValue();
+//    }
+//    public int getDayOfWeek(){
+//            return dayOfWeek;
+//    }
+//
+//    // below method returns the number of existing rows in the database
+//    // intakes a Database "db" and the name of the table within the database
+//    public static long getRowNum(SQLiteDatabase db, String tableName){
+//        return DatabaseUtils.queryNumEntries(db, TABLE_NAME);
+//    }
+//    // below method to set totals to a certain date range for our bar chart
+//    public void setDataToDates() {
+//        //getting a readable version of our database to obtain the values from it
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        // variable initialization
+//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+//
+//        //indices for the cursor
+//        int totind = cursor.getColumnIndex(DAYTOT_COL);
+//        int dateind = cursor.getColumnIndex(DATE_COL);
+//        int amtind = cursor.getColumnIndex(AMOUNT_COL);
+//
+//
+//        //ensures that the row number is greater than zero to avoid an OutOfBounds error
+//        if (getRowNum(db, TABLE_NAME) > 1){
+//            Log.d("Number of rows", " " + getRowNum(db, TABLE_NAME));
+//            cursor.moveToLast();
+//            String dateCheck = cursor.getString(dateind);
+//            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//
+//            localDate = LocalDate.parse(dateCheck, format);
+//            getDayNumberNew(localDate);
+//            cursor.moveToPrevious();
+//            if(cursor.getString(dateind).equals(dateCheck)){
+//                Log.d("Date stays: ", " "+ dateCheck);
+//
+//
+//                if (dailyTot==0) {
+//                    dailyTot += cursor.getDouble(amtind);
+//                }
+//                else
+//                    dailyTot+= cursor.getDouble(totind);
+//            }
+//            else {
+//                Log.d("Date changed", " "+dateCheck);
+//                dataStore = cursor.getDouble(totind);
+//                dailyTot=0;
+//
+//            }
+//        }
+//        else {
+//            cursor.moveToFirst();
+//            dataStore=cursor.getDouble(totind);
+//        }
+
+//
+//    // stores the variable for the daily totals of a date for the bar chart in the stats fragment
+//    public double getDataStore(){
+//            return dataStore;
+//    }
+
+        // we have created a new method for reading all the drink data in the database.
         @SuppressLint("Range")
         public ArrayList<drinkListHandler> drinkList()
         {
@@ -154,17 +225,19 @@ public class DBHandler extends SQLiteOpenHelper {
                 do {
                     int timeind = cursor.getColumnIndex(TIME_COL);
                     int amtConsumind = cursor.getColumnIndex(AMOUNT_COL);
-                   // int dateind = cursor.getColumnIndex(DATE_COL);
+                    int dateind = cursor.getColumnIndex(DATE_COL);
+                    int totind = cursor.getColumnIndex(DAYTOT_COL);
                     // on below line we are adding the data from
                     // cursor to our array list.
                     courseModalArrayList.add(new drinkListHandler(
                             cursor.getString(timeind),
-                            cursor.getDouble(amtConsumind)));
-                            //cursor.getString(dateind)));
-                           // cursor.getDouble(3)));
+                            cursor.getDouble(amtConsumind),
+                            cursor.getString(dateind),
+                           cursor.getDouble(totind)));
                 } while (cursor.moveToNext());
                 // moving our cursor to next.
             }
+
             // at last closing our cursor
             // and returning our array list.
             cursor.close();
@@ -172,7 +245,6 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         // Get total consumed per day
-        // we have created a new method for reading all the courses.
         @SuppressLint("Range")
         public double getDailyTot()
         {
@@ -189,8 +261,9 @@ public class DBHandler extends SQLiteOpenHelper {
             ArrayList<drinkListHandler> waterLog
                     = new ArrayList<>();
 
-            int amtConsumind = 0;
+            int amtConsumind;
             double amtConsumed = 0;
+
             // moving our cursor to first position.
             if (cursor.moveToFirst()) {
                 do {
@@ -200,8 +273,8 @@ public class DBHandler extends SQLiteOpenHelper {
                     Log.i("Amount consumed: ", " " + amtConsumed);
                     // on below line we are adding the data from
                     // cursor to our array list.
-                    //waterLog.add(new drinkListHandler(
-                            //cursor.getDouble(amtConsumed)));
+                    waterLog.add(new drinkListHandler(
+                            cursor.getDouble(amtConsumind)));
                     // cursor.getDouble(3)));
                 } while (cursor.moveToNext());
                 // moving our cursor to next.
