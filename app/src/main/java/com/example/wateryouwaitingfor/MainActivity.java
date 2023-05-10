@@ -1,10 +1,10 @@
 package com.example.wateryouwaitingfor;
 
+
+
 import android.Manifest;
 import android.app.AlertDialog;
-
 import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
+
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -64,8 +64,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -235,10 +238,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         });
 
+        if (sharedpreferences.getBoolean("firstStart", true)){
+//            SharedPreferences.Editor editor = sharedpreferences.edit();
+//            editor.putBoolean("firstStart", false);
+//            editor.apply();
+            Intent i = new Intent(MainActivity.this, GetStarted.class);
+            startActivity(i);
+            finish();
+        }
 
 
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+       /* SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
+
+*/
 
 //        if (firstStart) {
 //            showStartDialog();
@@ -247,9 +260,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        showStartDialog();
 
 
+
     }
 
-    private void showStartDialog() {
+   /* private void showStartDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Welcome!")
                 .setMessage("")
@@ -266,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("firstStart", false);
         editor.apply();
-    }
+    }*/
 
     /**
      * Puts the application's focus on a new Fragment

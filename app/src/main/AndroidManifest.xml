@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
@@ -29,8 +29,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:allowBackup="true"
@@ -42,6 +42,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WaterYouWaitingFor">
         <activity
+            android:name=".GetStarted"
+            android:exported="false" >
+
+
+        </activity>
+
+
+        <activity
+            android:name=".NavigationActivity"
+            android:exported="false" />
+
+
+
+      <!--  <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+            =
+        </intent-filter>-->
+
+            <!--<meta-data
+                android:name="android.app.lib_name"
+                android:value = "" />-->
+
+
+        <activity
             android:name=".ViewDrinks"
             android:exported="false" />
         <activity
@@ -51,8 +77,12 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                =
             </intent-filter>
         </activity>
+        
+
+
 
         <service
             android:name=".Service_BTLE_GATT"
@@ -71,5 +101,7 @@
             </intent-filter>
         </service>
     </application>
+
+
 
 </manifest>

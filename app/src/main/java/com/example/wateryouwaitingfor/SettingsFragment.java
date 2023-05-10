@@ -51,9 +51,11 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     private Spinner activityDropdown;
     private Spinner notificationDropdown;
     private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
+
     private static final String[] notificationIntervals = {"None", "Low", "Medium", "High"};
     private int curActivityLevel;
     private int curNotificationInterval;
+
 
     private SwitchCompat notificationSwitch;
 
@@ -122,8 +124,6 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         curActivityLevel = sharedpreferences.getInt("activityLevel", 0);
         activityDropdown.setSelection(curActivityLevel);
 
-
-
         //Notifications
         notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
         notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
@@ -165,7 +165,6 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         editor.putString("userWeight", userWeightText.getText().toString());
         editor.putInt("activityLevel", curActivityLevel);
 
-
         //Notifications
         editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
         editor.putInt("notificationInterval", curNotificationInterval);
@@ -192,6 +191,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+
         switch (v.getId()){
             case R.id.settingsActivityDropdown:
                 curActivityLevel = position;
@@ -202,10 +202,12 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
             default:
                 break;
         }
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO Auto-generated method stub
     }
+
 }

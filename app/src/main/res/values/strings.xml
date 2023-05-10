@@ -51,4 +51,15 @@
         <item>45 Minutes</item>
         <item>1 Hour</item>
     </string-array>
+
+        <string name="Water_you_waiting_for">Onboarding Practice</string>
+        <string name="screen1"> Track water intake</string>
+        <string name="screen2"> Receive hydration reminders</string>
+        <string name="screen3"> Stay connected with friends </string>
+        <string name="screen1desc"> View your hydration statistics, set water-drinking goals, and stay healthy! </string>
+        <string name="screen2desc"> Scheduled push notifications to alert you to take a sip.  </string>
+    <string name="screen3desc"> Keep your friends accountable for their hydration </string>
+        <string name="startDesc"> Water you waiting for??</string>
+    <string name="what_is_your_name">What is your name?</string>
+
 </resources>

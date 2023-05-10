@@ -173,6 +173,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Log.d("Ashwina", "In StatsFragment: onClick: btnAddWater");
 
                 // below line is to get data from all edit text fields.
+
                // time = timeEditText.getText().toString();
                 consumed = consumedEditText.getText().toString();
 

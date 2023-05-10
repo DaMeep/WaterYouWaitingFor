@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NavigationActivity">
+
+    <Spinner
+        android:id="@+id/spinnerIntroDropDown"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="11dp"
+        android:entries="@array/activityLevels"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/slideViewPager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activateNotificationSwitch" />
+
+    <Button
+        android:id="@+id/skipButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:drawableRight="@drawable/baseline_skip_next_24"
+        android:padding="8dp"
+        android:text="Skip"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:cornerRadius="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/readWeightEditText" />
+
+    <EditText
+        android:id="@+id/readWeightEditText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="27dp"
+        android:hint="Enter Weight"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toTopOf="@+id/activateNotificationSwitch"
+        app:layout_constraintEnd_toEndOf="@+id/readNameEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/activateNotificationSwitch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:minHeight="48dp"
+        android:text="@string/notifications"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:thumb="@drawable/customswitchselector"
+        android:track="@drawable/custom_track"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerIntroDropDown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/readWeightEditText" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/slideViewPager"
+        android:layout_width="482dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="100dp"
+        android:layout_marginBottom="76dp"
+        android:contentDescription="@string/Average_Water_Intake"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerIntroDropDown">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="77dp"
+        android:layout_marginBottom="20dp"
+        android:background="#00000000"
+        android:text="Back"
+        android:textColor="@color/blue"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dotIndicator"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <EditText
+        android:id="@+id/readNameEditText"
+        android:layout_width="347dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="26dp"
+        android:hint="@string/name_Input"
+        android:inputType="text"
+        android:minHeight="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/activateNotificationSwitch"
+        app:layout_constraintStart_toStartOf="@+id/activateNotificationSwitch"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:background="#00000000"
+        android:text="Next"
+        android:textColor="@color/blue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/dotIndicator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dotIndicator"
+        app:layout_constraintTop_toBottomOf="@+id/slideViewPager" />
+
+
+    <LinearLayout
+        android:id="@+id/dotIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="129dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextButton"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toBottomOf="@+id/nextButton">
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,7 +36,6 @@ public class HomeFragment extends Fragment implements Serializable {
     private WaterIntakeHandler waterIntakeHandler;
 
 
-
     private SharedPreferences sharedpreferences;
 
 
@@ -83,12 +82,12 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
 
-        waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
+       waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
        waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
        waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
        waterIntakeHandler.updateIdealIntake();
@@ -98,8 +97,8 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        String welcomeback= "Welcome back,";
-        userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
+        String welcomeback = "Welcome back,";
+        userNameDisplay.setText(welcomeback + " " + sharedpreferences.getString("username", "User")+ "!");
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
         watDisplay.setText("Total Amount Consumed: " + waterTot);
@@ -113,7 +112,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
     }
 
-
-
-
 }
+
+
+

@@ -72,12 +72,12 @@ public class DBHandler extends SQLiteOpenHelper {
             // setting our column names
             // along with their data types.
             String query = "CREATE TABLE " + TABLE_NAME + " ("
+
                     + ID_COL+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + TIME_COL+ " TEXT,"
                     + AMOUNT_COL+ " TEXT,"
                     + DATE_COL+ " TEXT,"
                     + DAYTOT_COL+ " TEXT)";
-
 
             // at last we are calling a exec sql
             // method to execute above sql query

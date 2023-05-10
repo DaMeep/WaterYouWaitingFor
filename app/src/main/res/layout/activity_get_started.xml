@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    app:flow_horizontalAlign="center">
+
+    <ImageView
+        android:layout_width="463dp"
+        android:layout_height="391dp"
+        android:layout_marginTop="70dp"
+        android:paddingLeft="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/start" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Water you waiting for?"
+        android:textAlignment="center"
+        android:textColor="@color/blue"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:text="Track your hydration and water intake. "
+
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/blue"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="Get Started"
+        android:padding="8dp"
+
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        app:cornerRadius = "12dp"
+        />
+
+</LinearLayout>
