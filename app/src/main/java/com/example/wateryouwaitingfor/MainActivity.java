@@ -76,10 +76,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences"; // Shared Preferences Location
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    public static final int REQUEST_ENABLE_BT = 1;
+    public static final int REQUEST_ENABLE_BT = 1; // Request Code for Bluetooth Permissions
     public static final int BTLE_SERVICES = 2;
 
-    public WaterIntakeHandler waterIntakeHandler;
+    public WaterIntakeHandler waterIntakeHandler; // Handler for Bottle Data
 
     private SharedPreferences sharedpreferences; // Reference to Shared Preferences
     private String deviceName, deviceAddress; // Variables for the currently connected BTLE_Device
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver; // Reads the current state of Bluetooth on the Android Device
     private Scanner_BTLE mBTLeScanner; // Scanner for BTLE Devices
-    private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 
     //Service Stuff
@@ -118,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         checkBluetoothPermissions(this, getApplicationContext());
+
+        // Create References
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mUsersReference = mDatabaseReference.child("users");
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUsersReference.addValueEventListener(updateListener);
 
 
-
+        // Reciever for current BT Status
         mGattUpdateReceiver = new BroadcastReceiver(){
 
             @Override
@@ -158,14 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
-        replaceFragment((new HomeFragment()));
-
 
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Utils.toast(getApplicationContext(), "BLE not supported");
-            finish();
+//            finish();
         }
 
         mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
@@ -176,23 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        someActivityResultLauncher = registerForActivityResult( // FIX THIS I GUESS???????
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-                        }
-                        else if (result.getResultCode() == Activity.RESULT_CANCELED){
-                            Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-                        }
-                    }
-                });
-
-
+        // Set current page to HomeFragment
+        replaceFragment((new HomeFragment()));
 
         //Defaults the Navigation Bar to Select the Home Fragment
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
@@ -224,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         });
 
+        //If first startup, start introduction activity
         if (sharedpreferences.getBoolean("firstStart", true)){
             Intent i = new Intent(MainActivity.this, GetStarted.class);
             startActivity(i);
@@ -320,11 +305,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         android.Manifest.permission.BLUETOOTH_CONNECT,
                         android.Manifest.permission.BLUETOOTH_SCAN,
                 };
-                if (hasPermissions(getApplicationContext(), perms)){
+                if (hasPermissions(getApplicationContext(), perms)){ // Check BT Perms and scan
                     replaceFragment(new DeviceListFragment());
                     startScan();
                 }
-                else{
+                else{ // Request BT Perms again
                     Utils.toast(getApplicationContext(), "Please enable Bluetooth and try again");
                     ActivityCompat.requestPermissions(this, perms, REQUEST_ENABLE_BT);
                 }
@@ -572,6 +557,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
+                    startService( new Intent( this, NotificationService. class )) ;
                 }  else {
                     // Explain to the user that the feature is unavailable because
                     // the feature requires a permission that the user has denied.
@@ -586,5 +572,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Other 'case' lines to check for other
         // permissions this app might request.
     }
+
 }
 

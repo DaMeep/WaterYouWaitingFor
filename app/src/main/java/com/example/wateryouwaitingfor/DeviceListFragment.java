@@ -16,9 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeviceListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass for displaying
+ * scanned Bluetooth Devices
  */
 public class DeviceListFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener{
 
@@ -31,9 +30,9 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     private String mParam1;
     private String mParam2;
 
-    private SharedPreferences sharedpreferences;
-    private TextView currentDeviceName;
-    private TextView currentDeviceAddress;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
+    private TextView currentDeviceName; // Name of the Connected Device
+    private TextView currentDeviceAddress; // Address of the Connected Device
 
     public DeviceListFragment() {
         // Required empty public constructor
@@ -105,7 +104,7 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     public void onClick(View view) {
         switch (view.getId()) {
 
-            case R.id.backToHomeButton:
+            case R.id.backToHomeButton: // Swap fragment for HomeFragment
                 MainActivity ma = ((MainActivity)getActivity());
                 ma.stopScan();
                 ma.replaceFragment(new HomeFragment());

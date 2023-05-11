@@ -108,6 +108,7 @@ public class Service_BTLE_GATT extends Service {
             dbh.addNewDrink(MainActivity.bytesToDouble(characteristic.getValue()));
             Log.e("WaterHandler Amount",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
             Log.e("WaterHandler Total", String.valueOf(dbh.getDailyTot()));
+
         }
 
         @Override
