@@ -51,12 +51,17 @@ public class BTLE_Device extends android.content.Context {
         this.bluetoothDevice = bluetoothDevice;
     }
 
+    /**
+     * Gets the address of the Device
+     *
+     * @return The address of the BTLE_Device
+     */
     public String getAddress() {
         return bluetoothDevice.getAddress();
     }
 
     /**
-     * Get the name of the Device
+     * Gets the name of the Device
      *
      * @return The name of the BTLE_Device
      */
@@ -75,7 +80,7 @@ public class BTLE_Device extends android.content.Context {
     }
 
     /**
-     * Set the RSSI for the Device
+     * Sets the RSSI for the Device
      *
      * @param rssi RSSI of the BTLE_Device
      */
@@ -84,7 +89,7 @@ public class BTLE_Device extends android.content.Context {
     }
 
     /**
-     * Get the RSSI for the Device
+     * Gets the RSSI for the Device
      *
      * @return The RSSI of the BTLE_Device
      */

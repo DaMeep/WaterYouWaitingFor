@@ -25,9 +25,8 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.database.DatabaseReference;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass
+ * for a settings page
  */
 public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -40,27 +39,26 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     private String mParam1;
     private String mParam2;
 
-    private SharedPreferences sharedpreferences;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
 
-    private ToggleButton unitsButton;
+    private ToggleButton unitsButton; // Metric-Imperial Button
 
-    private TextView weightSettingsText;
-    private EditText userNameText;
-    private EditText userWeightText;
+    private TextView weightSettingsText; // Weight Field TextView
+    private EditText userNameText; // Edit Username Field
+    private EditText userWeightText; // Edit User Weight Field
 
-    private Spinner activityDropdown;
-    private Spinner notificationDropdown;
+    private Spinner activityDropdown; // Dropdown for User Activity Level
+    private Spinner notificationDropdown; // Dropdown for Notification Level
     private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
 
     private static final String[] notificationIntervals = {"15 Minutes", "30 Minutes", "45 Minutes", "1 Hour"};
-    private int curActivityLevel;
-    private int curNotificationInterval;
+    private int curActivityLevel; // Current Activity Dropdown Level
+    private int curNotificationInterval; // Current Notification Dropdown Level
 
-    public static final int NOTIFICATION_REQUEST_CODE = 101;
+    public static final int NOTIFICATION_REQUEST_CODE = 101; // Notification Permission Request Code
 
-
-    private SwitchCompat notificationSwitch;
-    private TextView notificationText;
+    private SwitchCompat notificationSwitch; // Switch to Toggle Notifications
+    private TextView notificationText; // TextView displaying Notification Field
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -164,6 +162,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         notificationDropdown.setSelection(curNotificationInterval);
         notificationDropdown.setVisibility(notificationSwitch.isChecked() ? View.VISIBLE : View.INVISIBLE);
 
+
+        TextView userIdDisplay = (TextView) view.findViewById(R.id.settingUserIDText);
+        userIdDisplay.setText(sharedpreferences.getString("userID", "User ID"));
     }
     @Override
     public void onDestroyView() {

@@ -70,6 +70,8 @@ public class NotificationService extends Service {
                 handler .post( new Runnable() {
                     public void run () {
                         createNotification() ;
+                        stopTimerTask();
+                        startTimer();
                     }
                 }) ;
             }
