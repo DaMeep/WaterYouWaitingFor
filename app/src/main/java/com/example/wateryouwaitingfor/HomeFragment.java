@@ -5,6 +5,7 @@ import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,16 +93,16 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
+        Resources res = getResources();
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        String welcomeback = "Welcome back,";
-        userNameDisplay.setText(welcomeback + " " + sharedpreferences.getString("username", "User")+ "!");
+        userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", "User")));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
-        watDisplay.setText("Total Amount Consumed: " + waterTot);
+        watDisplay.setText(String.format(res.getString(R.string.amountConsumed), waterTot));
 
         TextView waterGoal = view.findViewById(R.id.waterGoal);
-        waterGoal.setText("Goal: "+ waterIntakeHandler.getIdealIntake());
+        waterGoal.setText(String.format(res.getString(R.string.goalText), waterTot));
 
 
 

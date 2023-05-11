@@ -13,7 +13,7 @@
     <string name="con1">Contaminant 1</string>
     <string name="con3">Contaminant 3</string>
     <string name="con4">Contaminant 4</string>
-    <string name="welcome">Welcome back, User!</string>
+    <string name="welcome">Welcome back, %1$s!</string>
     <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
     <string name="timestamp">Enter the Time</string>
@@ -40,6 +40,9 @@
     <string name="channel_description">NOTIFICATION_CHANNEL_DESC</string>
     <string name="waterReminderText">Remind Me Every</string>
     <string name="disabledText">[Disabled]</string>
+    <string name="userPointsText">%1$d Points</string>
+    <string name="amountConsumed">Total Amount Consumed: %1$.2f</string>
+    <string name="goalText">Goal: %1$.2f</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>

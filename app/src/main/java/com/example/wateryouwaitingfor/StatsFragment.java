@@ -120,14 +120,13 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private void getData() {
 
         barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(0, 0));
+        barArrayList.add(new BarEntry(0, 64));
         barArrayList.add(new BarEntry(1, 0));
         barArrayList.add(new BarEntry(2, 0));
         barArrayList.add(new BarEntry(3, 0));
         barArrayList.add(new BarEntry(4, 0));
         barArrayList.add(new BarEntry(5, 0));
         barArrayList.add(new BarEntry(6, 0));
-        barArrayList.add(new BarEntry(7, 0));
     }
 
     //DBHandler dbHandler = new DBHandler(getContext());

@@ -109,6 +109,9 @@ public class Service_BTLE_GATT extends Service {
             Log.e("WaterHandler Amount",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
             Log.e("WaterHandler Total", String.valueOf(dbh.getDailyTot()));
 
+
+
+
         }
 
         @Override
@@ -231,7 +234,7 @@ public class Service_BTLE_GATT extends Service {
             return false;
         }
 
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
         mConnectionState = STATE_CONNECTING;
