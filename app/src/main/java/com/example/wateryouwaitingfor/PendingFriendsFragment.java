@@ -136,6 +136,10 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
                 mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.pendingFriendsList);
                 mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updatePendingFriends();
+
+                ArrayList<String> targetFriendsList =  listOfUsers.get(targetUser).acceptedFriendsList;
+                targetFriendsList.add(currentUserID);
+                mUsersReference.child(targetUser).child("acceptedFriendsList").setValue(targetFriendsList);
                 break;
             case R.id.denyFriendButton:
                 currentUser.denyFriend(targetUser);

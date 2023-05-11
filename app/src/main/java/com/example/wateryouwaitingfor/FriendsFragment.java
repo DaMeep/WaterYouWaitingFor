@@ -111,13 +111,20 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         String targetUser = (String)view.getTag();
         switch (view.getId()){
             case R.id.pendingFriendsButton:
+                //Swap Fragment with the Pending Friends List
                 MainActivity ma = ((MainActivity)getActivity());
                 ma.replaceFragment(new PendingFriendsFragment());
                 break;
             case R.id.deleteFriendButton:
+                // Delete Friend from current User
                 currentUser.deleteFriend(targetUser);
                 mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updateFriendList();
+
+                // Delete Friend from target User
+                User targetUserObject = listOfUsers.get(targetUser);
+                targetUserObject.deleteFriend(currentUserID);
+                mUsersReference.child(targetUser).child("acceptedFriendsList").setValue(targetUserObject.acceptedFriendsList);
                 break;
             default:
                 break;

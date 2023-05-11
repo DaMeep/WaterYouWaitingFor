@@ -18,6 +18,7 @@
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
+    <uses-feature android:name="android.hardware.screen.portrait" />
 
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -43,15 +44,18 @@
         android:theme="@style/Theme.WaterYouWaitingFor">
         <activity
             android:name=".GetStarted"
-            android:exported="false" >
-
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
 
 
         <activity
             android:name=".NavigationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
 
 
@@ -69,15 +73,19 @@
 
         <activity
             android:name=".ViewDrinks"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                =
+
             </intent-filter>
         </activity>
         
