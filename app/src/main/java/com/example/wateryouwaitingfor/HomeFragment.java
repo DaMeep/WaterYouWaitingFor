@@ -18,9 +18,7 @@ import androidx.fragment.app.Fragment;
 import java.io.Serializable;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass for the homepage
  */
 public class HomeFragment extends Fragment implements Serializable {
 
@@ -32,11 +30,10 @@ public class HomeFragment extends Fragment implements Serializable {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Button btn_Scan;
-    private WaterIntakeHandler waterIntakeHandler;
+    private Button btn_Scan; // BT Scan button
+    private WaterIntakeHandler waterIntakeHandler; // Water consumption handler
 
-
-    private SharedPreferences sharedpreferences;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
 
 
     public HomeFragment() {
