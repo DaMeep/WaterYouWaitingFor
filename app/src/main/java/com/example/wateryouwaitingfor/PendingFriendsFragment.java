@@ -125,10 +125,15 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
             case R.id.sendFriendRequestButton:
                 String userID = friendRequestEdit.getText().toString();
                 friendRequestEdit.setText("");
-                ArrayList<String> pendingFriendsList = listOfUsers.get(userID).pendingFriendsList;
-                if (!pendingFriendsList.contains(currentUserID) && !listOfUsers.get(userID).acceptedFriendsList.contains(currentUserID)){
-                    pendingFriendsList.add(currentUserID);
-                    mUsersReference.child(userID).child("pendingFriendsList").setValue(pendingFriendsList);
+                if (listOfUsers.containsKey(targetUser)){
+                    ArrayList<String> pendingFriendsList = listOfUsers.get(userID).pendingFriendsList;
+                    if ( !pendingFriendsList.contains(currentUserID) && !listOfUsers.get(userID).acceptedFriendsList.contains(currentUserID)){
+                        pendingFriendsList.add(currentUserID);
+                        mUsersReference.child(userID).child("pendingFriendsList").setValue(pendingFriendsList);
+                    }
+                }
+                else{
+                    Utils.toast(getActivity().getApplicationContext(), "Error: User Not Found");
                 }
                 break;
             case R.id.acceptFriendButton:

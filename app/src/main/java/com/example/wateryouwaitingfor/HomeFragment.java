@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
         TextView watUpdate = view.findViewById(R.id.updateText);
-        watUpdate.setText(String.format(res.getString(R.string.lastUpdatedText), LocalTime.now()));
+        watUpdate.setText(String.format(res.getString(R.string.lastUpdatedText), LocalTime.now().withNano(0)));
 
 
     }
