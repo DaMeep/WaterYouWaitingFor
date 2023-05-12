@@ -14,24 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".MainActivity">
 
                 <!--Edit text to enter course name-->
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@id/barchart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:translationY="10sp">
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@id/barchart"
-                    android:layout_width="match_parent"
-                    android:layout_height="500dp"
-                    android:translationY="-100dp">
+                android:translationY="10sp"/>
 
                 <!--edit text to enter course duration-->
                 <EditText
@@ -66,16 +55,10 @@
                     android:text="Read All Drinks"
                     android:textAllCaps="false" />
 
-                <Button
-                    android:text="Read All Drinks"
-                    android:textAllCaps="false" />
-
 
 
             </LinearLayout>
 
-
-        </LinearLayout>
     </ScrollView>
 
 </FrameLayout>

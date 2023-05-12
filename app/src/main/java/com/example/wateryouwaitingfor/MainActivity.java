@@ -305,11 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-
-        if (v.getId() == R.id.btn_scan) {
-            Utils.toast(getApplicationContext(), "Scan Button Pressed");
-            replaceFragment(new DeviceListFragment());
-
+        switch (v.getId()){
             case R.id.btn_scan:
                 Utils.toast(getApplicationContext(), "Scan Button Pressed");
                 String[] perms = {

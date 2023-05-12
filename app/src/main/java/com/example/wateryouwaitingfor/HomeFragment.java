@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment implements Serializable {
             String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -102,12 +102,12 @@ public class HomeFragment extends Fragment implements Serializable {
         super.onViewCreated(view, savedInstanceState);
 
         Button btn_Scan = (Button) view.findViewById(R.id.btn_scan);
-        WaterIntakeHandler waterIntakeHandler = ((MainActivity) Objects.requireNonNull(getActivity())).getIntakeHandler();
-       waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
-       waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
-       waterIntakeHandler.updateIdealIntake();
+        waterIntakeHandler = ((MainActivity) ((getActivity()))).getIntakeHandler();
+        waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
+        waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
+        waterIntakeHandler.updateIdealIntake();
 
-       StatsFragment sm = new StatsFragment();
+        StatsFragment sm = new StatsFragment();
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
@@ -132,11 +132,9 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
         TextView watUpdate = view.findViewById(R.id.updateText);
-        watUpdate.setText("Last Updated: "+ LocalTime.now());
+        watUpdate.setText(String.format(res.getString(R.string.lastUpdatedText), LocalTime.now()));
 
 
-    }
-}
     }
 
     // updateProgressBar() method sets

@@ -107,11 +107,11 @@ public class Scanner_BTLE {
     private void scanLeDevice(final boolean enable) {
         final BluetoothLeScanner mBluetoothScanner = mBluetoothAdapter.getBluetoothLeScanner();
         if (enable && !mScanning) {
-            Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
+            Log.d("Scanner_BTLE", "Starting BLE scan...");
 
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(() -> {
-                Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
+                Log.d("Scanner_BTLE", "Stopping BLE scan...");
 
                 mScanning = false;
                 mBluetoothScanner.stopScan(mLeScanCallback);

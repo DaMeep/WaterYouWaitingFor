@@ -99,9 +99,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
        /* total = myView.findViewById(R.id.btnTotal);
         total.setOnClickListener(this);*/
 
-        Button updateButton = myView.findViewById(R.id.btnBarChart);
-        updateButton.setOnClickListener(this);
-
 
         return myView;
     }
@@ -194,11 +191,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 startActivity(i);
 
                 break;
-            case R.id.btnBarChart:
-                Log.d("Ashwina", "I pressed the button ");
-             //   updateData();
-                break;
-
         }
 
     }

@@ -43,6 +43,7 @@
     <string name="userPointsText">%1$d Points</string>
     <string name="amountConsumed">Total Amount Consumed: %1$.2f</string>
     <string name="goalText">Goal: %1$.2f</string>
+    <string name="lastUpdatedText">Last Updated: %1$s</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>
