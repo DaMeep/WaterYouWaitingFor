@@ -9,15 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
      // variable for our array list and context
-    private ArrayList<drinkListHandler> drinkArrayList;
-    int layoutResourceID;
-    Activity activity;
+    private final ArrayList<drinkListHandler> drinkArrayList;
+    final int layoutResourceID;
+    final Activity activity;
 
 
     // constructor
@@ -39,15 +38,15 @@ public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
                 convertView = inflater.inflate(layoutResourceID, parent, false);
             }
         drinkListHandler dlh = drinkArrayList.get(position);
-        String time = dlh.getTime();
+        String time =  dlh.getTime();
         String amount = dlh.getAmtConsumed();
         String totals = dlh.getDailyTotals();
-        String date = dlh.getDate();;
-        TextView tv = new TextView(getContext());
+        String date =  dlh.getDate();
+            TextView tv = new TextView(getContext());
 
         tv = convertView.findViewById(R.id.timeTV);
         if (time != null && time.length()>0){
-            tv.setText(dlh.getTime());
+            tv.setText("Time: " + dlh.getTime());
         }
         else {
             tv.setText("No Time");
@@ -55,21 +54,21 @@ public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
 
         tv = (TextView) convertView.findViewById(R.id.amtConsumedTV);
             if (amount != null && amount.length()>0){
-                tv.setText(dlh.getAmtConsumed());
+                tv.setText("Amount consumed: " + dlh.getAmtConsumed());
             }
             else {
                 tv.setText("None Consumed");
             }
         tv = (TextView) convertView.findViewById(R.id.dailyTotalTV);
             if (totals != null && totals.length()>0){
-                tv.setText(dlh.getDailyTotals());
+                tv.setText("Daily Total: "+ dlh.getDailyTotals());
             }
             else {
                 tv.setText("No Total");
             }
         tv = (TextView) convertView.findViewById(R.id.dateTV);
             if (date != null && date.length()>0){
-                tv.setText(dlh.getDate());
+                tv.setText("Date: " + dlh.getDate());
             }
             else {
                 tv.setText("No Date");

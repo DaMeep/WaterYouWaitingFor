@@ -11,7 +11,7 @@ import android.content.Intent;
  */
 public class BroadcastReceiver_BTState extends BroadcastReceiver {
 
-        Context activityContext;
+        final Context activityContext;
 
         public BroadcastReceiver_BTState(Context activityContext) {
             this.activityContext = activityContext;

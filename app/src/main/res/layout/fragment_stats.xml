@@ -27,7 +27,11 @@
                 android:layout_height="400dp"
                 android:translationY="10sp">
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@id/barchart"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:translationY="-100dp">
 
                 <!--edit text to enter course duration-->
                 <EditText
@@ -48,6 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:fontFamily="@font/poppins_semibold"
                     android:text="@string/newDrink"
                     android:textAllCaps="false" />
 
@@ -57,16 +62,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:fontFamily="More Fonts..."
                     android:text="Read All Drinks"
                     android:textAllCaps="false" />
 
-              <!--  <Button
-                    android:id="@+id/btnTotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Total"
-                    android:textAllCaps="false" />-->
+                <Button
+                    android:text="Read All Drinks"
+                    android:textAllCaps="false" />
+
 
 
             </LinearLayout>

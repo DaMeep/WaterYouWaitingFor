@@ -22,6 +22,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
 import com.google.firebase.database.DatabaseReference;
 
 /**
@@ -86,11 +87,12 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         userWeightText = view.findViewById(R.id.editWeightText);
         userWeightText.setText(sharedpreferences.getString("userWeight", "100"));
 
-        activityDropdown = view.findViewById(R.id.settingsActivityDropdown);
+        Spinner activityDropdown = view.findViewById(R.id.settingsActivityDropdown);
         ArrayAdapter<String> activityAdapter = new ArrayAdapter(view.getContext(),
                 android.R.layout.simple_spinner_dropdown_item,activityLevels);
         activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
