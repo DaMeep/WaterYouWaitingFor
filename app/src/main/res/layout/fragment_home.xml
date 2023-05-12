@@ -58,6 +58,47 @@
         android:text="@string/update_last"
         android:textSize="20sp" />
 
+    <!--Add ProgressBar. Main Attribute used here are
+         style="@style/CircularDeterminateProgressBar" that
+         takes style as created in theme.xml file above and
+          android:progressDrawable="@drawable/circle" that has been
+         created in circle.xml file above.-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/CircularDeterminateProgressBar"
+            android:layout_width="520dp"
+            android:layout_height="469dp"
+            android:layout_marginStart="15dp"
+            android:indeterminateOnly="false"
+            android:progress="60"
+            android:progressDrawable="@drawable/circle"
+            android:rotation="-90"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="60" />
+
+        <TextView
+            android:id="@+id/text_view_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="252dp"
+            android:layout_marginTop="208dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="60%" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Increment button that will decrement the progress by 10%-->
+
+    <!--Increment button that will increment the progress by 10%-->
+
 
 </LinearLayout>
 
