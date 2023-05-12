@@ -442,11 +442,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-//                android.Manifest.permission.BLUETOOTH,
-//                android.Manifest.permission.BLUETOOTH_ADMIN,
                 android.Manifest.permission.BLUETOOTH_CONNECT,
-//                android.Manifest.permission.BLUETOOTH_ADVERTISE,
                 android.Manifest.permission.BLUETOOTH_SCAN,
         };
 
