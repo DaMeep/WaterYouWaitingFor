@@ -289,13 +289,6 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
 
-    public double getNewDailyTotal () {
-
-            return totWater;
-
-    }
-
-
     }
 
 
