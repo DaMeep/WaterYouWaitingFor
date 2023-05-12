@@ -2,7 +2,6 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,9 @@ import java.util.ArrayList;
 
 public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
 
-    Activity activity;
-    int layoutResourceID;
-    ArrayList<BTLE_Device> devices;
+    final Activity activity;
+    final int layoutResourceID;
+    final ArrayList<BTLE_Device> devices;
 
     public ListAdapter_BTLE_Devices(Activity activity, int resource, ArrayList<BTLE_Device> objects) {
         super(activity.getApplicationContext(), resource, objects);
@@ -59,7 +58,7 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
         }
 
         tv = (TextView) convertView.findViewById(R.id.tv_rssi);
-        tv.setText("RSSI: " + Integer.toString(rssi));
+        tv.setText("RSSI: " + rssi);
 
         tv = (TextView) convertView.findViewById(R.id.tv_macaddr);
         if (address != null && address.length() > 0) {

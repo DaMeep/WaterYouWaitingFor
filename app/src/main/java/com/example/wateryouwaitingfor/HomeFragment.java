@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Objects;
 
 
 
@@ -76,13 +78,12 @@ public class HomeFragment extends Fragment implements Serializable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
-
-
+        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -100,12 +101,13 @@ public class HomeFragment extends Fragment implements Serializable {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btn_Scan = (Button) view.findViewById(R.id.btn_scan);
+        Button btn_Scan = (Button) view.findViewById(R.id.btn_scan);
+        WaterIntakeHandler waterIntakeHandler = ((MainActivity) Objects.requireNonNull(getActivity())).getIntakeHandler();
+       waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
+       waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
+       waterIntakeHandler.updateIdealIntake();
 
-        waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
-        waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
-        waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
-        waterIntakeHandler.updateIdealIntake();
+       StatsFragment sm = new StatsFragment();
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
@@ -129,7 +131,12 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
 
+        TextView watUpdate = view.findViewById(R.id.updateText);
+        watUpdate.setText("Last Updated: "+ LocalTime.now());
 
+
+    }
+}
     }
 
     // updateProgressBar() method sets
@@ -153,11 +160,3 @@ public class HomeFragment extends Fragment implements Serializable {
 
     }
 }
-
-
-
-
-
-
-
-

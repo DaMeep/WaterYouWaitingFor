@@ -30,15 +30,9 @@ public class ContaminationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private PieChart pieChart;
-
-/*    public ContaminationFragment() {
+        public ContaminationFragment() {
         // Required empty public constructor
-    }*/
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -62,8 +56,9 @@ public class ContaminationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
 
@@ -79,7 +74,7 @@ public class ContaminationFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
 
-        pieChart= view.findViewById(R.id.pieChart);
+        PieChart pieChart = view.findViewById(R.id.pieChart);
 
 
         ArrayList <PieEntry> contaminants = new ArrayList<>();

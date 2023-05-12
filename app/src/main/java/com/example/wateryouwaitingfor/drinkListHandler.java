@@ -1,8 +1,5 @@
 package com.example.wateryouwaitingfor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 public class drinkListHandler {
 
         // variables for our drink tracking,
@@ -33,16 +30,8 @@ public class drinkListHandler {
         return String.valueOf(amtConsumed);
     }
 
-    public void setAmtConsumed(double amtConsumed)
-    {
-        this.amtConsumed = amtConsumed;
-    }
-
     public String getDate() {return date; }
 
-    public void setDate(String date) {
-        date = date;
-    }
     public String getDailyTotals()
     {
         return Double.toString(dailyTotals);

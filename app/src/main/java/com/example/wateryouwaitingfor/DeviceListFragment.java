@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Objects;
 /**
  * A {@link Fragment} subclass for displaying
  * scanned Bluetooth Devices
@@ -60,11 +61,12 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
         super.onViewCreated(view, savedInstanceState);
 
         ListView listView = (ListView) view.findViewById(R.id.deviceListView);
-        listView.setAdapter(((MainActivity)getActivity()).getAdapter());
+        listView.setAdapter(((MainActivity) Objects.requireNonNull(getActivity())).getAdapter());
         listView.setOnItemClickListener(this);
 
         currentDeviceName = (TextView) view.findViewById(R.id.curDeviceNameText);
@@ -94,7 +96,7 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ((MainActivity) getActivity()).onItemClick(adapterView, view, i, l);
+        ((MainActivity) Objects.requireNonNull(getActivity())).onItemClick(adapterView, view, i, l);
 
         currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
         currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));
