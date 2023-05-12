@@ -60,13 +60,13 @@
                     android:text="Read All Drinks"
                     android:textAllCaps="false" />
 
-                <Button
+              <!--  <Button
                     android:id="@+id/btnTotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:text="Total"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false" />-->
 
 
             </LinearLayout>

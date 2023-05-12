@@ -110,8 +110,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
 
-        total = myView.findViewById(R.id.btnTotal);
-        total.setOnClickListener(this);
+       /* total = myView.findViewById(R.id.btnTotal);
+        total.setOnClickListener(this);*/
 
 
         return myView;
@@ -193,6 +193,11 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
               //  timeEditText.setText("");
                 consumedEditText.setText("");
 
+                Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
+
+                waterTot = db.getDailyTot();
+
+
                 break;
             case R.id.btnReadDrink:
                 Log.d("Ashwina", "InStatsFrag: readdrink");
@@ -201,21 +206,12 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 break;
         }
 
-        switch (view.getId()) {
-            case R.id.btnTotal:
-                Log.d("Naga", "In StatsFragment: onClick: btnTotal!!!!!!!!!!!!!!" + db.getDailyTot());
-
-                Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
-
-                waterTot = db.getDailyTot();
-//            case R.id.btnBarChart:
-//                Log.d("Ashwina", "I pressed the button ");
-//                updateData();
         }
+
+
+
 
 
     }
 
 
-
-}

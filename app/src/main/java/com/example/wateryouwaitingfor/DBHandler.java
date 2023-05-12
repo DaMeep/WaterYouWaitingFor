@@ -1,5 +1,7 @@
 package com.example.wateryouwaitingfor;
 
+import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -284,6 +287,13 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.close();
             return amtConsumed;
         }
+
+
+    public double getNewDailyTotal () {
+
+            return totWater;
+
+    }
 
 
     }
