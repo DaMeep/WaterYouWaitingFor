@@ -18,19 +18,19 @@ public class ViewPagerAdapter extends PagerAdapter {
     Context context;
 
     int sliderAllImages[] = {
-            R.drawable.upload,
-            R.drawable.shorts,
-            R.drawable.shorts,
-            R.drawable.shorts,
-            R.drawable.shorts
+            R.drawable.person,
+            R.drawable.scale,
+            R.drawable.fitness,
+            R.drawable.bell,
+            R.drawable.check
     };
 
     int sliderAllTitle[] = {
             R.string.screen1,
             R.string.screen2,
             R.string.screen3,
-            R.string.screen1,
-            R.string.screen1
+            R.string.screen4,
+            R.string.screen5
 
     };
 
@@ -38,8 +38,8 @@ public class ViewPagerAdapter extends PagerAdapter {
             R.string.screen1desc,
             R.string.screen2desc,
             R.string.screen3desc,
-            R.string.screen3desc,
-            R.string.screen3desc
+            R.string.screen4desc,
+            R.string.screen5desc
     };
 
     public ViewPagerAdapter(Context context){

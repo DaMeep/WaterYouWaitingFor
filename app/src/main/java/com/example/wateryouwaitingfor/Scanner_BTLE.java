@@ -7,16 +7,22 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ParcelUuid;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -118,14 +124,17 @@ public class Scanner_BTLE {
             }, scanPeriod);
 
             mScanning = true;
-            mBluetoothScanner.startScan(mLeScanCallback);
 
-            Log.e("PERMS: FINE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED));
-            Log.e("PERMS: COARSE LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED));
-            Log.e("PERMS: BLUETOOTH", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED));
-            Log.e("PERMS: BLUETOOTH SCAN", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED));
-            Log.e("PERMS: BLUETOOTH ADMIN", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED));
-            Log.e("PERMS: BACKGROUND LOCATION", String.valueOf(ActivityCompat.checkSelfPermission(ma.getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED));
+            ScanFilter.Builder filterBuilder = new ScanFilter.Builder();
+            filterBuilder.setServiceUuid(new ParcelUuid(MainActivity.SERVICE_UUID));
+
+            ScanSettings.Builder settingsBuilder = new ScanSettings.Builder();
+            settingsBuilder.setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES);
+
+            ArrayList<ScanFilter> scanFilters = new ArrayList<ScanFilter>();
+
+            scanFilters.add(filterBuilder.build());
+            mBluetoothScanner.startScan(scanFilters, settingsBuilder.build(), mLeScanCallback);
         }
         else {
             mScanning = false;

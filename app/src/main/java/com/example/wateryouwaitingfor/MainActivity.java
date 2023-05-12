@@ -48,6 +48,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUsersReference.addValueEventListener(updateListener);
 
 
-        // Reciever for current BT Status
+        // Receiver for current BT Status
         mGattUpdateReceiver = new BroadcastReceiver(){
 
             @Override
@@ -156,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Utils.toast(getApplicationContext(), "Disconnected From Device");
                 }
 
+                DBHandler dbh = new DBHandler(getApplicationContext());
+                mUsersReference.child(sharedpreferences.getString("userID", "User ID")).child("points").setValue((int) (dbh.getDailyTot()));
+
             }
         };
 
@@ -167,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            finish();
         }
 
+        //Initialize Bluetooth Scanning Features
         mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
         mBTLeScanner = new Scanner_BTLE(this, 5000, -75);
 
@@ -184,22 +189,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Informs the Navigation Bar to replace the current Fragment with the desired when pressed
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            ActionBar actionBar = getSupportActionBar();
 
             switch(item.getItemId()){
 
                 case R.id.contamination:
+                    actionBar.hide();
                     replaceFragment(new ContaminationFragment());
                     break;
                 case R.id.stats:
+                    actionBar.hide();
                     replaceFragment(new StatsFragment());
                     break;
                 case R.id.home:
+                    actionBar.show();
                     replaceFragment(new HomeFragment());
                     break;
                 case R.id.friends:
+                    actionBar.hide();
                     replaceFragment(new FriendsFragment());
                     break;
                 case R.id.settings:
+                    actionBar.hide();
                     replaceFragment(new SettingsFragment());
                     break;
 
@@ -232,11 +243,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
-//        createNotificationChannel();
-
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
         registerReceiver(mGattUpdateReceiver, Utils.makeGattUpdateIntentFilter());
+
+        deviceAddress = sharedpreferences.getString("currentDeviceAddress", "null");
+        if (!deviceAddress.equals("null")){
+            mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
+            bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
+            startService(mBTLE_Service_Intent);
+        }
     }
 
     @Override
@@ -261,10 +277,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
 
         unregisterReceiver(mGattUpdateReceiver);
-        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound){
-            unbindService(mBTLE_ServiceConnection);
-        }
-        mBTLE_Service_Intent = null;
+//        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound){
+//            unbindService(mBTLE_ServiceConnection);
+//        }
+//        mBTLE_Service_Intent = null;
 
 //        startService( new Intent( this, NotificationService. class )) ;
     }
@@ -285,6 +301,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("currentDeviceName", deviceName);
         editor.putString("currentDeviceAddress", deviceAddress);
         editor.apply();
+
+        if (mBTLE_Service_Bound){
+            mBTLE_Service.disconnect();
+            unbindService(mBTLE_ServiceConnection);
+            stopService(mBTLE_Service_Intent);
+            mBTLE_Service_Intent = null;
+        }
 
         mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
         bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
@@ -334,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             mBTDevicesHashMap.put(address, btleDevice);
             mBTDevicesArrayList.add(btleDevice);
-//            Log.e("Device Stored", btleDevice.getAddress());
         }
         else {
             mBTDevicesHashMap.get(address).setRSSI(rssi);
@@ -347,7 +369,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Prompts the Scanner_BTLE to begin its scan
      */
     public void startScan(){
-//        btn_Scan.setText("Scanning...");
 
         mBTDevicesArrayList.clear();
         mBTDevicesHashMap.clear();
@@ -359,8 +380,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Prompts the Scanner_BTLE to stop its scan
      */
     public void stopScan() {
-//        btn_Scan.setText("Scan Again");
-
         mBTLeScanner.stop();
     }
     
@@ -423,11 +442,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-//                android.Manifest.permission.BLUETOOTH,
-//                android.Manifest.permission.BLUETOOTH_ADMIN,
                 android.Manifest.permission.BLUETOOTH_CONNECT,
-//                android.Manifest.permission.BLUETOOTH_ADVERTISE,
                 android.Manifest.permission.BLUETOOTH_SCAN,
         };
 

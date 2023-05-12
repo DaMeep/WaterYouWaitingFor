@@ -13,7 +13,7 @@
     <string name="con1">Contaminant 1</string>
     <string name="con3">Contaminant 3</string>
     <string name="con4">Contaminant 4</string>
-    <string name="welcome">Welcome back, User!</string>
+    <string name="welcome">Welcome back, %1$s!</string>
     <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
     <string name="timestamp">Enter the Time</string>
@@ -40,6 +40,9 @@
     <string name="channel_description">NOTIFICATION_CHANNEL_DESC</string>
     <string name="waterReminderText">Remind Me Every</string>
     <string name="disabledText">[Disabled]</string>
+    <string name="userPointsText">%1$d Points</string>
+    <string name="amountConsumed">Total Amount Consumed: %1$.2f</string>
+    <string name="goalText">Goal: %1$.2f</string>
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>
@@ -53,14 +56,19 @@
         <item>1 Hour</item>
     </string-array>
 
-        <string name="Water_you_waiting_for">Onboarding Practice</string>
-        <string name="screen1"> Track water intake</string>
-        <string name="screen2"> Receive hydration reminders</string>
-        <string name="screen3"> Stay connected with friends </string>
-        <string name="screen1desc"> View your hydration statistics, set water-drinking goals, and stay healthy! </string>
-        <string name="screen2desc"> Scheduled push notifications to alert you to take a sip.  </string>
-    <string name="screen3desc"> Keep your friends accountable for their hydration </string>
-        <string name="startDesc"> Water you waiting for??</string>
+    <string name="Water_you_waiting_for">Onboarding Practice</string>
+    <string name="screen1">Enter Your Name</string>
+    <string name="screen2">Enter Your Weight</string>
+    <string name="screen3">How active are you?</string>
+    <string name="screen4">Do you want to turn on notifications?</string>
+    <string name="screen5">All Done!</string>
+    <string name="screen1desc">What should we call you?</string>
+    <string name="screen2desc">How much do you weigh (to the nearest pound)?</string>
+    <string name="screen3desc">On average, what is your level of exercise?</string>
+    <string name="screen4desc">We can help remind you when it\'s time to drink!</string>
+    <string name="screen5desc">Ready to Begin!?</string>
+    <string name="startScreen">Water you waiting for??</string>
+    <string name="startDesc">To help us track your hydration, tell us a little about yourself</string>
     <string name="what_is_your_name">What is your name?</string>
 
 </resources>
