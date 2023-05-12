@@ -1,7 +1,9 @@
 package com.example.wateryouwaitingfor;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,18 +27,12 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-//
-///**
-// * A simple {@link Fragment} subclass.
-// * Use the {@link StatsFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
-public class StatsFragment extends Fragment implements View.OnClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+/**
+ * A {@link Fragment} to display Water
+ * Consumption statistics
+ */
+public class StatsFragment extends Fragment implements View.OnClickListener {
 
     ArrayList barArrayList;
 
@@ -48,40 +44,15 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     public StatsFragment() {
         // Required empty public constructor
     }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment StatsFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static StatsFragment newInstance(String param1, String param2) {
-//        StatsFragment fragment = new StatsFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
     private EditText consumedEditText;
 
     private DBHandler db;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("Ashwina", "In StatsFragment: onCreate");
-
-        if (getArguments() != null) {
-            // TODO: Rename and change types of parameters
-            String mParam1 = getArguments().getString(ARG_PARAM1);
-            String mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         db = new DBHandler(getContext());
     }
@@ -95,10 +66,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         Button readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
-
-       /* total = myView.findViewById(R.id.btnTotal);
-        total.setOnClickListener(this);*/
-
 
         return myView;
     }
@@ -116,18 +83,6 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     }
 
    final DBHandler dbHandler = new DBHandler(getContext());
-
-    // updates values to bar chart
-//    private void updateData(){
-//
-//        double store = dbHandler.getDataStore();
-//        LocalDate ld = LocalDate.now();
-//        int num = db.getDayNumberNew(ld);
-//        db.setDataToDates();
-//
-//        Log.e("Ashwina", "stored: " + store);
-//       barArrayList.set(num, store);
-//    }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
@@ -183,6 +138,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
                 waterTot = db.getDailyTot();
 
+                SharedPreferences sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+                ((MainActivity)getActivity()).getUserReference().child(sharedpreferences.getString("userID", "User ID")).child("points").setValue((int) (waterTot));
 
                 break;
             case R.id.btnReadDrink:
