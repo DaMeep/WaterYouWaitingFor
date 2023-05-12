@@ -6,13 +6,15 @@
     tools:context=".SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
     <TextView
         android:id="@+id/settingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/settingsTitle"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,7 +32,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/generalSettingsTitle"
                 android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:translationX="10dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -80,13 +83,6 @@
                         android:textSize="20sp" />
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
             </TableLayout>
 
             <TextView
@@ -95,7 +91,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/personalSettingsTitle"
                 android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:translationX="10dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -161,9 +158,6 @@
                         android:spinnerMode="dropdown" />
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
             </TableLayout>
 
             <androidx.appcompat.widget.SwitchCompat
@@ -171,6 +165,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
+                android:paddingHorizontal="10dp"
                 android:text="@string/notifications"
                 android:textSize="26sp"
                 android:textStyle="bold"
@@ -185,20 +180,53 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent" >
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <TextView
+                        android:id="@+id/notificationTimerSettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/waterReminderText"
+                        android:textSize="26sp" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <Spinner
+                        android:id="@+id/settingsNotificationTimerDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/notificationIntervals"
+                        android:spinnerMode="dropdown" />
+                </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
             </TableLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/user_id"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/settingUserIDText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/user_id"
+                    android:textSize="26sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

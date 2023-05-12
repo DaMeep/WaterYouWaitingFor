@@ -5,11 +5,15 @@ import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,10 +23,10 @@ import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Objects;
 
+
+
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass for the homepage
  */
 public class HomeFragment extends Fragment implements Serializable {
 
@@ -31,8 +35,21 @@ public class HomeFragment extends Fragment implements Serializable {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private Button btn_Scan; // BT Scan button
+    private WaterIntakeHandler waterIntakeHandler; // Water consumption handler
 
-    private SharedPreferences sharedpreferences;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
+
+    private int progress = 0;
+    Button buttonIncrement;
+    Button buttonDecrement;
+    ProgressBar progressBar;
+    TextView textView;
+
+    private DBHandler dbHandler;
 
 
     public HomeFragment() {
@@ -72,6 +89,8 @@ public class HomeFragment extends Fragment implements Serializable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -79,7 +98,7 @@ public class HomeFragment extends Fragment implements Serializable {
 
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Button btn_Scan = (Button) view.findViewById(R.id.btn_scan);
@@ -93,19 +112,50 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
+        dbHandler = new DBHandler(getContext());
+        Resources res = getResources();
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        String welcomeback= "Welcome back, ";
-        userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
+        userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", "User")));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
-        watDisplay.setText("Total Amount Consumed: " + waterTot);
+        watDisplay.setText(String.format(res.getString(R.string.amountConsumed), waterTot));
 
         TextView waterGoal = view.findViewById(R.id.waterGoal);
-        waterGoal.setText("Goal: "+ waterIntakeHandler.getIdealIntake());
+        waterGoal.setText(String.format(res.getString(R.string.goalText), waterTot));
+
+        progressBar =  view.findViewById(R.id.progress_bar);
+        textView =  view.findViewById(R.id.text_view_progress);
+
+        updateProgressBar();
+
+
 
         TextView watUpdate = view.findViewById(R.id.updateText);
         watUpdate.setText("Last Updated: "+ LocalTime.now());
+
+
+    }
+}
+    }
+
+    // updateProgressBar() method sets
+    // the progress of ProgressBar in text
+    private void updateProgressBar() {
+
+        int value = (int)(dbHandler.getDailyTot()/waterIntakeHandler.getIdealIntake()*100);
+
+        if (value >0) {
+            progressBar.setProgress(value);
+            textView.setText(String.valueOf(value + "%"));
+
+        }
+
+        else {
+            progressBar.setProgress(0);
+            textView.setText(String.valueOf(0 + "%"));
+
+        }
 
 
     }

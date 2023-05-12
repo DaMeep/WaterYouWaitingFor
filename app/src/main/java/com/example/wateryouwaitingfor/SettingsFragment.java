@@ -2,12 +2,16 @@ package com.example.wateryouwaitingfor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,14 +19,15 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.Objects;
+import com.google.firebase.database.DatabaseReference;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass
+ * for a settings page
  */
 public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -31,18 +36,30 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private SharedPreferences sharedpreferences;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
-    private ToggleButton unitsButton;
+    private SharedPreferences sharedpreferences; // Shared Preferences Reference
 
-    private TextView weightSettingsText;
-    private EditText userNameText;
-    private EditText userWeightText;
+    private ToggleButton unitsButton; // Metric-Imperial Button
 
+    private TextView weightSettingsText; // Weight Field TextView
+    private EditText userNameText; // Edit Username Field
+    private EditText userWeightText; // Edit User Weight Field
+
+    private Spinner activityDropdown; // Dropdown for User Activity Level
+    private Spinner notificationDropdown; // Dropdown for Notification Level
     private static final String[] activityLevels = {"None", "Low", "Medium", "High"};
-    private int curActivityLevel;
 
-    private SwitchCompat notificationSwitch;
+    private static final String[] notificationIntervals = {"15 Minutes", "30 Minutes", "45 Minutes", "1 Hour"};
+    private int curActivityLevel; // Current Activity Dropdown Level
+    private int curNotificationInterval; // Current Notification Dropdown Level
+
+    public static final int NOTIFICATION_REQUEST_CODE = 101; // Notification Permission Request Code
+
+    private SwitchCompat notificationSwitch; // Switch to Toggle Notifications
+    private TextView notificationText; // TextView displaying Notification Field
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -113,6 +130,43 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         //Notifications
         notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
         notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
+
+        notificationText = view.findViewById(R.id.notificationTimerSettingsText);
+        notificationText.setText(notificationSwitch.isChecked() ? R.string.waterReminderText : R.string.disabledText);
+
+        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    String[] perms = {android.Manifest.permission.POST_NOTIFICATIONS};
+                    if (!MainActivity.hasPermissions(getContext(), perms) && isChecked){
+                        ActivityCompat.requestPermissions(getActivity(), perms, NOTIFICATION_REQUEST_CODE);
+                    }
+                }
+
+                notificationDropdown.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
+                notificationText.setText(isChecked ? R.string.waterReminderText : R.string.disabledText);
+
+            }
+        });
+
+
+
+        notificationDropdown = view.findViewById(R.id.settingsNotificationTimerDropdown);
+        ArrayAdapter<String> notificationAdapter = new ArrayAdapter(view.getContext(),
+                android.R.layout.simple_spinner_dropdown_item,notificationIntervals);
+        notificationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notificationDropdown.setAdapter(notificationAdapter);
+        notificationDropdown.setOnItemSelectedListener(this);
+        curNotificationInterval = sharedpreferences.getInt("notificationInterval", 0);
+        notificationDropdown.setSelection(curNotificationInterval);
+        notificationDropdown.setVisibility(notificationSwitch.isChecked() ? View.VISIBLE : View.INVISIBLE);
+
+
+        TextView userIdDisplay = (TextView) view.findViewById(R.id.settingUserIDText);
+        userIdDisplay.setText(sharedpreferences.getString("userID", "User ID"));
     }
     @Override
     public void onDestroyView() {
@@ -126,12 +180,18 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         editor.putString("userWeight", userWeightText.getText().toString());
         editor.putInt("activityLevel", curActivityLevel);
 
-
         //Notifications
         editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
+        editor.putInt("notificationInterval", curNotificationInterval);
 
 
         editor.apply();
+
+        String userID = sharedpreferences.getString("userID", "null");
+
+        DatabaseReference mUsersReference = ((MainActivity)getActivity()).getUserReference();
+        mUsersReference.child(userID).child("username").setValue(userNameText.getText().toString());
+
         super.onDestroyView();
     }
 
@@ -146,11 +206,31 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-        curActivityLevel = position;
+
+        switch (v.getId()){
+            case R.id.settingsActivityDropdown:
+                curActivityLevel = position;
+                break;
+            case R.id.settingsNotificationTimerDropdown:
+                curNotificationInterval = position;
+                break;
+            default:
+                break;
+        }
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO Auto-generated method stub
     }
+
+    /**
+     * Sets the Notification Switch State
+     * @param isActive the state of the switch
+     */
+    public void setNotificationSwitch(boolean isActive){
+        notificationSwitch.setChecked(isActive);
+    }
+
 }

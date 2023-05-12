@@ -96,8 +96,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         Button readDrinkButton = myView.findViewById(R.id.btnReadDrink);
         readDrinkButton.setOnClickListener(this);
 
-        Button total = myView.findViewById(R.id.btnTotal);
-        total.setOnClickListener(this);
+       /* total = myView.findViewById(R.id.btnTotal);
+        total.setOnClickListener(this);*/
 
         Button updateButton = myView.findViewById(R.id.btnBarChart);
         updateButton.setOnClickListener(this);
@@ -109,13 +109,13 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private void getData() {
 
         barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(0, 17));
-        barArrayList.add(new BarEntry(1, 16));
-        barArrayList.add(new BarEntry(2, 18));
-        barArrayList.add(new BarEntry(3, 14));
-        barArrayList.add(new BarEntry(4, 15));
-        barArrayList.add(new BarEntry(5, 17));
-        barArrayList.add(new BarEntry(6, 12));
+        barArrayList.add(new BarEntry(0, 64));
+        barArrayList.add(new BarEntry(1, 49));
+        barArrayList.add(new BarEntry(2, 78));
+        barArrayList.add(new BarEntry(3, 61));
+        barArrayList.add(new BarEntry(4, 89));
+        barArrayList.add(new BarEntry(5, 74));
+        barArrayList.add(new BarEntry(6, 86));
     }
 
    final DBHandler dbHandler = new DBHandler(getContext());
@@ -142,7 +142,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
-        barChart.getDescription().setEnabled(true);
+        barChart.getDescription().setEnabled(false);
         barChart.getXAxis().setDrawGridLines(false); // disable grid lines for the XAxis
         barChart.getAxisLeft().setDrawGridLines(false); // disable grid lines for the left YAxis
         barChart.getAxisRight().setDrawGridLines(false); // disable grid lines for the right YAxis
@@ -162,6 +162,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Log.d("Ashwina", "In StatsFragment: onClick: btnAddWater");
 
                 // below line is to get data from all edit text fields.
+
                // time = timeEditText.getText().toString();
                 String consumed = consumedEditText.getText().toString();
 
@@ -181,6 +182,11 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
               //  timeEditText.setText("");
                 consumedEditText.setText("");
 
+                Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
+
+                waterTot = db.getDailyTot();
+
+
                 break;
             case R.id.btnReadDrink:
                 Log.d("Ashwina", "InStatsFrag: readdrink");
@@ -193,18 +199,9 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
              //   updateData();
                 break;
 
-            case R.id.btnTotal:
-                Log.d("Naga", "In StatsFragment: onClick: btnTotal!!!!!!!!!!!!!!" + db.getDailyTot());
-
-                Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
-
-                LocalDateTime lastUpdate = LocalDateTime.now();
-                Log.d("Val Updated", " " + lastUpdate);
-                waterTot = db.getDailyTot();
-                break;
         }
 
     }
 
-
 }
+

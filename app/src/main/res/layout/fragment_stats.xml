@@ -14,12 +14,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
-            <LinearLayout
+                <!--Edit text to enter course name-->
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@id/barchart"
                 android:layout_width="match_parent"
-                android:layout_height="810dp"
-                android:orientation="vertical"
-                tools:context=".MainActivity">
+                android:layout_height="400dp"
+                android:translationY="10sp">
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@id/barchart"
@@ -27,31 +33,20 @@
                     android:layout_height="500dp"
                     android:translationY="-100dp">
 
-                </com.github.mikephil.charting.charts.BarChart>
-
-                <Button
-                    android:id="@+id/btnBarChart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Update Water"
-                    android:textAllCaps="false" />
-
-
-                <!--button for adding new course-->
-
+                <!--edit text to enter course duration-->
                 <EditText
                     android:id="@+id/AmtConsumedEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:fontFamily="More Fonts..."
                     android:hint="@string/amtConsume"
                     android:importantForAutofill="no"
                     android:inputType="numberDecimal"
                     android:minHeight="48dp" />
 
+
+
+                <!--button for adding new course-->
                 <Button
                     android:id="@+id/btnAddWater"
                     android:layout_width="match_parent"
@@ -72,14 +67,9 @@
                     android:textAllCaps="false" />
 
                 <Button
-                    android:id="@+id/btnTotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:fontFamily="@font/poppins"
-                    android:minHeight="48dp"
-                    android:text="Total"
+                    android:text="Read All Drinks"
                     android:textAllCaps="false" />
+
 
 
             </LinearLayout>

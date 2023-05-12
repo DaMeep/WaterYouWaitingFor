@@ -1,8 +1,13 @@
 package com.example.wateryouwaitingfor;
 
+
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -11,6 +16,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.view.LayoutInflater;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,60 +27,84 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
+
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wateryouwaitingfor.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     ActivityMainBinding binding;
-    public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences";
+    public static final String SHARED_PREFS = "com.example.wateryouwaitingfor.shared_preferences"; // Shared Preferences Location
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    public static final int REQUEST_ENABLE_BT = 1;
+    public static final int REQUEST_ENABLE_BT = 1; // Request Code for Bluetooth Permissions
     public static final int BTLE_SERVICES = 2;
 
-    public WaterIntakeHandler waterIntakeHandler;
+    public WaterIntakeHandler waterIntakeHandler; // Handler for Bottle Data
 
-    private SharedPreferences sharedpreferences;
-    private String deviceName, deviceAddress;
+    private SharedPreferences sharedpreferences; // Reference to Shared Preferences
+    private String deviceName, deviceAddress; // Variables for the currently connected BTLE_Device
 
-    private HashMap<String, BTLE_Device> mBTDevicesHashMap;
-    private ArrayList<BTLE_Device> mBTDevicesArrayList;
-    private ListAdapter_BTLE_Devices adapter;
+    private HashMap<String, BTLE_Device> mBTDevicesHashMap; // HashMap of all the scanned BTLE_Devices
+    private ArrayList<BTLE_Device> mBTDevicesArrayList; // ArrayList of all scanned BTLE_Devices for Displaying via ListAdapter
+    private ListAdapter_BTLE_Devices adapter; // ListAdapter for managing BTLE_Devices with the ListView
 
 
-    public static final UUID SERVICE_UUID = convertFromInteger(0xC201);
-    public static final UUID CHAR_UUID = convertFromInteger(0x483E);
-    public static final UUID CCCD_UUID = convertFromInteger(0x2902);
+    public static UUID SERVICE_UUID = convertFromInteger(0xC201); // UUID of the Water Consumption Service on the BTLE_Device
+    public static UUID CHAR_UUID = convertFromInteger(0x483E); // UUID of the Water Consumption Characteristic for the Water Consumption Service
+    public static UUID CCCD_UUID = convertFromInteger(0x2902); // UUID of the Client Characteristic Configuration Descriptor for the Water Consumption Characteristic
 
-    private BroadcastReceiver_BTState mBTStateUpdateReceiver;
-    private Scanner_BTLE mBTLeScanner;
+    private BroadcastReceiver_BTState mBTStateUpdateReceiver; // Reads the current state of Bluetooth on the Android Device
+    private Scanner_BTLE mBTLeScanner; // Scanner for BTLE Devices
 
 
     //Service Stuff
-    private Intent mBTLE_Service_Intent;
-    private Service_BTLE_GATT mBTLE_Service;
-    private boolean mBTLE_Service_Bound;
-    private BroadcastReceiver mGattUpdateReceiver;
+    private Intent mBTLE_Service_Intent; // Launches the BTLE_Service
+    private Service_BTLE_GATT mBTLE_Service; // Instigates a connection with the BTLE_Device
+    private boolean mBTLE_Service_Bound; // Holds the connection state of the BTLE_Service
+    private BroadcastReceiver mGattUpdateReceiver; // Reads the current state of Connection with the BTLE_Device
+
+    //Firebase Stuff
+    private DatabaseReference mDatabaseReference; // Firebase Reference
+    private DatabaseReference mUsersReference; // Firebase User List Reference
+    private ValueEventListener updateListener; // Listener for Firebase Updates
+    private HashMap<String, User> listOfUsers; // List of Updated User IDs and their corresponding User Objects
+
 
 
     @Override
@@ -82,10 +113,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         waterIntakeHandler = new WaterIntakeHandler();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        checkPermissions(this, getApplicationContext());
-        sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        checkBluetoothPermissions(this, getApplicationContext());
 
-        mGattUpdateReceiver = new BroadcastReceiver() {
+        // Create References
+        sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mUsersReference = mDatabaseReference.child("users");
+
+        //Creates Listener for changes in Firebase Data
+         updateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listOfUsers = new HashMap<>();
+                for(DataSnapshot userSnapshot : dataSnapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    listOfUsers.put(userSnapshot.getKey(), user);
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
+            }
+        };
+        mUsersReference.addValueEventListener(updateListener);
+
+
+        // Receiver for current BT Status
+        mGattUpdateReceiver = new BroadcastReceiver(){
 
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -97,62 +152,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Utils.toast(getApplicationContext(), "Disconnected From Device");
                 }
 
+                DBHandler dbh = new DBHandler(getApplicationContext());
+                mUsersReference.child(sharedpreferences.getString("userID", "User ID")).child("points").setValue((int) (dbh.getDailyTot()));
+
             }
         };
-
-        replaceFragment((new HomeFragment()));
 
 
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Utils.toast(getApplicationContext(), "BLE not supported");
-            finish();
+//            finish();
         }
 
+        //Initialize Bluetooth Scanning Features
         mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
         mBTLeScanner = new Scanner_BTLE(this, 5000, -75);
 
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
 
-        Log.e("DEVICES IN MAIN", mBTDevicesArrayList.toString());
-
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        // There are no request codes
-        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        Intent data = result.getData();
-                        Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                        Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-                    }
-                });
+        // Set current page to HomeFragment
+        replaceFragment((new HomeFragment()));
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        //Defaults the Navigation Bar to Select the Home Fragment
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
 
+        //Informs the Navigation Bar to replace the current Fragment with the desired when pressed
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            ActionBar actionBar = getSupportActionBar();
 
             switch (item.getItemId()) {
 
                 case R.id.contamination:
+                    actionBar.hide();
                     replaceFragment(new ContaminationFragment());
                     break;
                 case R.id.stats:
+                    actionBar.hide();
                     replaceFragment(new StatsFragment());
                     break;
                 case R.id.home:
+                    actionBar.show();
                     replaceFragment(new HomeFragment());
                     break;
                 case R.id.friends:
+                    actionBar.hide();
                     replaceFragment(new FriendsFragment());
                     break;
                 case R.id.settings:
+                    actionBar.hide();
                     replaceFragment(new SettingsFragment());
                     break;
 
@@ -160,43 +213,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             return true;
         });
-
-
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        boolean firstStart = prefs.getBoolean("firstStart", true);
-
-        if (firstStart) {
-            showStartDialog();
+        //If first startup, start introduction activity
+        if (sharedpreferences.getBoolean("firstStart", true)){
+            Intent i = new Intent(MainActivity.this, GetStarted.class);
+            startActivity(i);
+            finish();
         }
-
-        showStartDialog();
-
-
-    }
-
-    private void showStartDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Welcome!")
-                .setMessage("")
-
-                .setPositiveButton("ok", (dialog, which) -> dialog.dismiss())
-                .create().show();
-
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("firstStart", false);
-        editor.apply();
     }
 
     /**
-     * Use this method to put the application's focus on a new Fragment
+     * Puts the application's focus on a new Fragment
      *
      * @param fragment Replacement Fragment
      */
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
     }
 
@@ -207,6 +240,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
         registerReceiver(mGattUpdateReceiver, Utils.makeGattUpdateIntentFilter());
+
+        deviceAddress = sharedpreferences.getString("currentDeviceAddress", "null");
+        if (!deviceAddress.equals("null")){
+            mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
+            bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
+            startService(mBTLE_Service_Intent);
+        }
     }
 
     @Override
@@ -226,14 +266,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
 
+
         unregisterReceiver(mBTStateUpdateReceiver);
         stopScan();
 
         unregisterReceiver(mGattUpdateReceiver);
-        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound) {
-            unbindService(mBTLE_ServiceConnection);
-        }
-        mBTLE_Service_Intent = null;
     }
 
     @SuppressLint("MissingPermission")
@@ -253,14 +290,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.putString("currentDeviceAddress", deviceAddress);
         editor.apply();
 
+        if (mBTLE_Service_Bound){
+            mBTLE_Service.disconnect();
+            unbindService(mBTLE_ServiceConnection);
+            stopService(mBTLE_Service_Intent);
+            mBTLE_Service_Intent = null;
+        }
+
         mBTLE_Service_Intent = new Intent(this, Service_BTLE_GATT.class);
         bindService(mBTLE_Service_Intent, mBTLE_ServiceConnection, Context.BIND_AUTO_CREATE);
         startService(mBTLE_Service_Intent);
-
-//        Intent intent = new Intent(this, Activity_BTLE_Services.class);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_NAME, name);
-//        intent.putExtra(Activity_BTLE_Services.EXTRA_ADDRESS, address);
-//        someActivityResultLauncher.launch(intent);
     }
 
     @Override
@@ -271,18 +310,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Utils.toast(getApplicationContext(), "Scan Button Pressed");
             replaceFragment(new DeviceListFragment());
 
-            if (!mBTLeScanner.isScanning()) {
-                startScan();
-            } else {
-                stopScan();
-            }
+            case R.id.btn_scan:
+                Utils.toast(getApplicationContext(), "Scan Button Pressed");
+                String[] perms = {
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.BLUETOOTH_CONNECT,
+                        android.Manifest.permission.BLUETOOTH_SCAN,
+                };
+                if (hasPermissions(getApplicationContext(), perms)){ // Check BT Perms and scan
+                    replaceFragment(new DeviceListFragment());
+                    startScan();
+                }
+                else{ // Request BT Perms again
+                    Utils.toast(getApplicationContext(), "Please enable Bluetooth and try again");
+                    ActivityCompat.requestPermissions(this, perms, REQUEST_ENABLE_BT);
+                }
+                break;
+            default:
+                break;
         }
 
     }
 
     /**
-     * Use this method to add a potential device to the list of devices
-     *
+     * Adds a potential device to the list of devices
      * @param device New Device
      * @param rssi   Device's RSSI
      */
@@ -306,8 +358,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Prompts the Scanner_BTLE to begin its scan
      */
-    public void startScan() {
-//        btn_Scan.setText("Scanning...");
+    public void startScan(){
 
         mBTDevicesArrayList.clear();
         mBTDevicesHashMap.clear();
@@ -319,8 +370,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Prompts the Scanner_BTLE to stop its scan
      */
     public void stopScan() {
-//        btn_Scan.setText("Scan Again");
-
         mBTLeScanner.stop();
     }
 
@@ -361,38 +410,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //Services Stop
-
-
-    public ListAdapter_BTLE_Devices getAdapter() {
+  
+    /**
+     * Get the current ListAdapter for Scanned BTLE_Devices
+     *
+     * @return The BTLE ListAdapter
+     */
+    public ListAdapter_BTLE_Devices getAdapter(){
         return adapter;
     }
 
-    public static void checkPermissions(Activity activity, Context context) {
-        int PERMISSION_ALL = 1;
-        Log.e("BLUETOOTH PERMS", "HI");
+
+    /**
+     * Checks the Device's allowed permissions
+     * and requests more if needed
+     *
+     * @param activity The current activity
+     * @param context The context of the prompt
+     */
+    public static void checkBluetoothPermissions(Activity activity, Context context){
         String[] PERMISSIONS = {
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
                 android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_ADVERTISE,
-                android.Manifest.permission.BLUETOOTH_SCAN
-
+                android.Manifest.permission.BLUETOOTH_SCAN,
         };
 
-        if (!hasPermissions(context, PERMISSIONS)) {
-            ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
-            Log.e("BLUETOOTH PERMS", "NO PERMS");
+        if(!hasPermissions(context, PERMISSIONS)){
+            ActivityCompat.requestPermissions(activity, PERMISSIONS, REQUEST_ENABLE_BT);
         }
     }
 
-    public static boolean hasPermissions(Context context, String... permissions) {
-        Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+    /**
+     * Checks the current state of the specified permissions
+     *
+     * @param context The context of the check
+     * @param permissions The list of permissions
+     *
+     * @return Whether the permissions have been allowed
+     */
+    public static boolean hasPermissions(Context context, String... permissions){
+        if(context != null && permissions != null){
+            for (String permission : permissions){
+                if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
                     return false;
                 }
             }
@@ -421,25 +481,101 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String bytesToString(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8);
     }
-
-    public static double bytesToDouble(byte[] bytes) {
+  
+    /**
+     * Converts a received byte array to its corresponding double value
+     * @param bytes Byte Array
+     * @return Double Representation of bytes
+     */
+    public static double bytesToDouble(byte[] bytes){
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getDouble();
     }
 
-    public String getDeviceName() {
+    /**
+     * Get the name of the connected device
+     *
+     * @return The name of the device
+     */
+    public String getDeviceName(){
         return deviceName;
     }
 
-    public String getDeviceAddress() {
+    /**
+     * Get the address of the connected device
+     *
+     * @return The address of the device
+     */
+    public String getDeviceAddress(){
         return deviceAddress;
     }
 
-    public Service_BTLE_GATT getService() {
+    /**
+     * Get the BTLE Gatt Service with the connected device
+     *
+     * @return The established Service_BTLE_GATT
+     */
+    public Service_BTLE_GATT getService(){
         return mBTLE_Service;
     }
-
-    public WaterIntakeHandler getIntakeHandler() {
+    
+    /**
+     * Get the WaterIntakeHandler for registering consumption
+     * 
+     * @return The WaterIntakeHandler
+     */
+    public WaterIntakeHandler getIntakeHandler (){
         return waterIntakeHandler;
+    }
+
+    /**
+     * Get the reference to the Firebase
+     *
+     * @return The Firebase Reference
+     */
+    public DatabaseReference getUserReference() { return mUsersReference; }
+
+    /**
+     * Get the Firebase's updated list of users
+     *
+     * @return A Hashmap made up of User IDs and corresponding User Objects
+     */
+    public HashMap<String, User> getUsers(){ return listOfUsers; }
+
+    /**
+     * Get the updated information of the current user from the Firebase
+     *
+     * @return The Firebase information of the application's User
+     */
+    public User getCurrentUser(){
+        String userID = sharedpreferences.getString("userID", "null");
+        return listOfUsers.get(userID);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case SettingsFragment.NOTIFICATION_REQUEST_CODE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Continue the action or workflow
+                    // in your app.
+                    startService( new Intent( this, NotificationService. class )) ;
+                }  else {
+                    // Explain to the user that the feature is unavailable because
+                    // the feature requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                    SettingsFragment settingsFragment = (SettingsFragment) (getSupportFragmentManager().findFragmentByTag("SettingsFragment"));
+                    settingsFragment.setNotificationSwitch(false);
+                }
+                return;
+        }
+        // Other 'case' lines to check for other
+        // permissions this app might request.
     }
 
 }
