@@ -85,10 +85,10 @@ public class HomeFragment extends Fragment implements Serializable {
 
         btn_Scan = (Button) view.findViewById(R.id.btn_scan);
 
-       waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
-       waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
-       waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
-       waterIntakeHandler.updateIdealIntake();
+        waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
+        waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
+        waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
+        waterIntakeHandler.updateIdealIntake();
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());

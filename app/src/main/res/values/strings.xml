@@ -56,14 +56,19 @@
         <item>1 Hour</item>
     </string-array>
 
-        <string name="Water_you_waiting_for">Onboarding Practice</string>
-        <string name="screen1"> Track water intake</string>
-        <string name="screen2"> Receive hydration reminders</string>
-        <string name="screen3"> Stay connected with friends </string>
-        <string name="screen1desc"> View your hydration statistics, set water-drinking goals, and stay healthy! </string>
-        <string name="screen2desc"> Scheduled push notifications to alert you to take a sip.  </string>
-    <string name="screen3desc"> Keep your friends accountable for their hydration </string>
-        <string name="startDesc"> Water you waiting for??</string>
+    <string name="Water_you_waiting_for">Onboarding Practice</string>
+    <string name="screen1">Enter Your Name</string>
+    <string name="screen2">Enter Your Weight</string>
+    <string name="screen3">Choose the Best Option Below</string>
+    <string name="screen4">Do you want to turn on notifications?</string>
+    <string name="screen5">All Done!</string>
+    <string name="screen1desc">What should we call you?</string>
+    <string name="screen2desc">How much do you weigh (to the nearest pound)?</string>
+    <string name="screen3desc">On average, what is your level of exercise?</string>
+    <string name="screen4desc">We can help remind you when it\'s time to drink!</string>
+    <string name="screen5desc">Ready to Begin!?</string>
+    <string name="startScreen">Water you waiting for??</string>
+    <string name="startDesc">To help us track your hydration, tell us a little about yourself</string>
     <string name="what_is_your_name">What is your name?</string>
 
 </resources>
