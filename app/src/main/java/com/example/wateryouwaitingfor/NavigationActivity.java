@@ -37,7 +37,7 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
     ViewPager slideViewPager;
     LinearLayout dotIndicator;
-    Button backButton, nextButton, skipButton;
+    Button backButton, nextButton;
     TextView[] dots;
     ViewPagerAdapter viewPagerAdapter;
 
@@ -163,7 +163,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
-        skipButton = findViewById(R.id.skipButton);
         readNameEditText = findViewById(R.id.readNameEditText);
         readWeightEditText = findViewById(R.id.readWeightEditText);
         dropDown = findViewById(R.id.spinnerIntroDropDown);
@@ -220,15 +219,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                     startActivity(i);
                     finish();
                 }
-            }
-        });
-
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(NavigationActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
             }
         });
 

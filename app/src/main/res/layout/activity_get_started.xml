@@ -8,10 +8,10 @@
     app:flow_horizontalAlign="center">
 
     <ImageView
-        android:layout_width="463dp"
-        android:layout_height="391dp"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="70dp"
-        android:paddingLeft="100dp"
         android:scaleType="centerCrop"
         android:src="@drawable/start" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Water you waiting for?"
+        android:text="@string/startScreen"
         android:textAlignment="center"
         android:textColor="@color/blue"
         android:textSize="30sp"
@@ -29,12 +29,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:text="Track your hydration and water intake. "
-
         android:layout_marginTop="20dp"
+
+        android:text="@string/startDesc"
         android:textAlignment="center"
         android:textColor="@color/blue"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/startButton"

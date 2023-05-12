@@ -21,13 +21,13 @@
             tools:context=".MainActivity">
 
                 <!--Edit text to enter course name-->
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@id/barchart"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:translationY="-100dp">
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@id/barchart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:translationY="10sp">
 
-                </com.github.mikephil.charting.charts.BarChart>
+            </com.github.mikephil.charting.charts.BarChart>
 
                 <!--edit text to enter course duration-->
                 <EditText

@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -43,6 +45,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     private ArrayList<String> friendIDs; // List of friends' User IDs
 
     private ListAdapter_Accepted_Friends adapter; // Adapter for ListView display of friends
+
+    private TextView userPoints;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -95,6 +99,10 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         updateFriendList();
 
         view.findViewById(R.id.pendingFriendsButton).setOnClickListener(this);
+
+        userPoints = view.findViewById(R.id.userPointsView);
+        Resources res = getResources();
+        userPoints.setText(String.format(res.getString(R.string.userPointsText), currentUser.points));
     }
 
     @Override
@@ -111,13 +119,20 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         String targetUser = (String)view.getTag();
         switch (view.getId()){
             case R.id.pendingFriendsButton:
+                //Swap Fragment with the Pending Friends List
                 MainActivity ma = ((MainActivity)getActivity());
                 ma.replaceFragment(new PendingFriendsFragment());
                 break;
             case R.id.deleteFriendButton:
+                // Delete Friend from current User
                 currentUser.deleteFriend(targetUser);
                 mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updateFriendList();
+
+                // Delete Friend from target User
+                User targetUserObject = listOfUsers.get(targetUser);
+                targetUserObject.deleteFriend(currentUserID);
+                mUsersReference.child(targetUser).child("acceptedFriendsList").setValue(targetUserObject.acceptedFriendsList);
                 break;
             default:
                 break;

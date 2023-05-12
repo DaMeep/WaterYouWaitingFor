@@ -120,14 +120,13 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     private void getData() {
 
         barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(0, 0));
-        barArrayList.add(new BarEntry(1, 0));
-        barArrayList.add(new BarEntry(2, 0));
-        barArrayList.add(new BarEntry(3, 0));
-        barArrayList.add(new BarEntry(4, 0));
-        barArrayList.add(new BarEntry(5, 0));
-        barArrayList.add(new BarEntry(6, 0));
-        barArrayList.add(new BarEntry(7, 0));
+        barArrayList.add(new BarEntry(0, 64));
+        barArrayList.add(new BarEntry(1, 49));
+        barArrayList.add(new BarEntry(2, 78));
+        barArrayList.add(new BarEntry(3, 61));
+        barArrayList.add(new BarEntry(4, 89));
+        barArrayList.add(new BarEntry(5, 74));
+        barArrayList.add(new BarEntry(6, 86));
     }
 
     //DBHandler dbHandler = new DBHandler(getContext());
@@ -154,7 +153,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         barDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
-        barChart.getDescription().setEnabled(true);
+        barChart.getDescription().setEnabled(false);
         barChart.getXAxis().setDrawGridLines(false); // disable grid lines for the XAxis
         barChart.getAxisLeft().setDrawGridLines(false); // disable grid lines for the left YAxis
         barChart.getAxisRight().setDrawGridLines(false); // disable grid lines for the right YAxis
