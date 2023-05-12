@@ -3,7 +3,6 @@ package com.example.wateryouwaitingfor;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -17,15 +16,12 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import java.util.List;
-import java.util.UUID;
-
 public class Scanner_BTLE {
 
     private final MainActivity ma;
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private ScanCallback mLeScanCallback = new ScanCallback() {
+    private final BluetoothAdapter mBluetoothAdapter;
+    private final ScanCallback mLeScanCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -43,10 +39,10 @@ public class Scanner_BTLE {
         }
     };
     private boolean mScanning;
-    private Handler mHandler;
+    private final Handler mHandler;
 
-    private long scanPeriod;
-    private int signalStrength;
+    private final long scanPeriod;
+    private final int signalStrength;
 
 
 
@@ -100,17 +96,13 @@ public class Scanner_BTLE {
             Utils.toast(ma.getApplicationContext(), "Starting BLE scan...");
 
             // Stops scanning after a pre-defined scan period.
-            mHandler.postDelayed(new Runnable() {
-                @SuppressLint("MissingPermission")
-                @Override
-                public void run() {
-                    Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
+            mHandler.postDelayed(() -> {
+                Utils.toast(ma.getApplicationContext(), "Stopping BLE scan...");
 
-                    mScanning = false;
-                    mBluetoothScanner.stopScan(mLeScanCallback);
+                mScanning = false;
+                mBluetoothScanner.stopScan(mLeScanCallback);
 
-                    ma.stopScan();
-                }
+                ma.stopScan();
             }, scanPeriod);
 
             mScanning = true;

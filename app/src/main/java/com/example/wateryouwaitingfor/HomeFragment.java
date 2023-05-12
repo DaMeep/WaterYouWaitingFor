@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,13 +30,6 @@ public class HomeFragment extends Fragment implements Serializable {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private Button btn_Scan;
-    private WaterIntakeHandler waterIntakeHandler;
-
 
 
     private SharedPreferences sharedpreferences;
@@ -66,11 +61,12 @@ public class HomeFragment extends Fragment implements Serializable {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -86,19 +82,20 @@ public class HomeFragment extends Fragment implements Serializable {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        btn_Scan = (Button) view.findViewById(R.id.btn_scan);
-
-        waterIntakeHandler = ((MainActivity) getActivity()).getIntakeHandler();
+        Button btn_Scan = (Button) view.findViewById(R.id.btn_scan);
+        WaterIntakeHandler waterIntakeHandler = ((MainActivity) Objects.requireNonNull(getActivity())).getIntakeHandler();
        waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
        waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
        waterIntakeHandler.updateIdealIntake();
+
+       StatsFragment sm = new StatsFragment();
 
 
         btn_Scan.setOnClickListener((MainActivity)getActivity());
 
 
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        String welcomeback= "Welcome back,";
+        String welcomeback= "Welcome back, ";
         userNameDisplay.setText(welcomeback + sharedpreferences.getString("username", "User"));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
@@ -107,13 +104,9 @@ public class HomeFragment extends Fragment implements Serializable {
         TextView waterGoal = view.findViewById(R.id.waterGoal);
         waterGoal.setText("Goal: "+ waterIntakeHandler.getIdealIntake());
 
-
-
+        TextView watUpdate = view.findViewById(R.id.updateText);
+        watUpdate.setText("Last Updated: "+ LocalTime.now());
 
 
     }
-
-
-
-
 }

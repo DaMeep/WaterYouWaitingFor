@@ -15,25 +15,29 @@
         android:id="@+id/btn_scan"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:fontFamily="@font/poppins_semibold"
         android:text="@string/change_device" />
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true" />
+
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/poppins_semibold"
         android:text="@string/welcome"
+        android:textAlignment="center"
         android:textSize="26sp" />
 
     <TextView
         android:id="@+id/waterTotDisplay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingLeft="20dp"
         android:text="Total water:"
         android:textSize="26sp" />
 
@@ -41,7 +45,8 @@
         android:id="@+id/waterGoal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/poppins_semibold"
+        android:paddingLeft="20dp"
         android:text="Water Goal:"
         android:textSize="26sp" />
 
@@ -49,7 +54,9 @@
         android:id="@+id/updateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/poppins"
+        android:includeFontPadding="true"
+        android:paddingLeft="20dp"
         android:text="@string/update_last"
         android:textSize="20sp" />
 

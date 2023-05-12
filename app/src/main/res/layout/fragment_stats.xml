@@ -14,62 +14,73 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".MainActivity">
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@id/barchart"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:translationY="-100dp">
+                android:layout_height="810dp"
+                android:orientation="vertical"
+                tools:context=".MainActivity">
 
-            </com.github.mikephil.charting.charts.BarChart>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@id/barchart"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:translationY="-100dp">
+
+                </com.github.mikephil.charting.charts.BarChart>
+
+                <Button
+                    android:id="@+id/btnBarChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Update Water"
+                    android:textAllCaps="false" />
 
 
-            <EditText
-                android:id="@+id/AmtConsumedEdt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:hint="@string/amtConsume"
-                android:importantForAutofill="no"
-                android:inputType="numberDecimal"
-                android:minHeight="48dp" />
+                <!--button for adding new course-->
 
+                <EditText
+                    android:id="@+id/AmtConsumedEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="More Fonts..."
+                    android:hint="@string/amtConsume"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp" />
 
-            <!--button for adding new course-->
-            <Button
-                android:id="@+id/btnAddWater"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/newDrink"
-                android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/btnAddWater"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/newDrink"
+                    android:textAllCaps="false" />
 
-            <!--new button for opening our drink list activity-->
-            <Button
-                android:id="@+id/btnReadDrink"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Read All Drinks"
-                android:textAllCaps="false" />
-            <Button
-                android:id="@+id/btnTotal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Total"
-                android:textAllCaps="false"/>
-<!--            <Button-->
-<!--                android:id="@+id/btnBarChart"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:text="Update Water"-->
-<!--                android:textAllCaps="false"/>-->
+                <!--new button for opening our drink list activity-->
+                <Button
+                    android:id="@+id/btnReadDrink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="More Fonts..."
+                    android:text="Read All Drinks"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btnTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:minHeight="48dp"
+                    android:text="Total"
+                    android:textAllCaps="false" />
+
 
             </LinearLayout>
 

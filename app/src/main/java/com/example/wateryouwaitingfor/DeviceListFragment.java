@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,10 +27,6 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private SharedPreferences sharedpreferences;
     private TextView currentDeviceName;
@@ -63,11 +58,12 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // TODO: Rename and change types of parameters
+            String mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sharedpreferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedpreferences = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -82,7 +78,7 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
         super.onViewCreated(view, savedInstanceState);
 
         ListView listView = (ListView) view.findViewById(R.id.deviceListView);
-        listView.setAdapter(((MainActivity)getActivity()).getAdapter());
+        listView.setAdapter(((MainActivity) Objects.requireNonNull(getActivity())).getAdapter());
         listView.setOnItemClickListener(this);
 
         currentDeviceName = (TextView) view.findViewById(R.id.curDeviceNameText);
@@ -95,7 +91,7 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ((MainActivity) getActivity()).onItemClick(adapterView, view, i, l);
+        ((MainActivity) Objects.requireNonNull(getActivity())).onItemClick(adapterView, view, i, l);
 
         currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
         currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));

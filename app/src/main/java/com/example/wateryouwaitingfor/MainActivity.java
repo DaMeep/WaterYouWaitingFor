@@ -1,7 +1,6 @@
 package com.example.wateryouwaitingfor;
 
 import android.app.AlertDialog;
-import static android.bluetooth.BluetoothAdapter.STATE_CONNECTED;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -12,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.view.LayoutInflater;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,19 +18,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import androidx.activity.result.ActivityResult;
@@ -70,13 +61,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ListAdapter_BTLE_Devices adapter;
 
 
-    public static UUID SERVICE_UUID = convertFromInteger(0xC201);
-    public static UUID CHAR_UUID = convertFromInteger(0x483E);
-    public static UUID CCCD_UUID = convertFromInteger(0x2902);
+    public static final UUID SERVICE_UUID = convertFromInteger(0xC201);
+    public static final UUID CHAR_UUID = convertFromInteger(0x483E);
+    public static final UUID CCCD_UUID = convertFromInteger(0x2902);
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
     private Scanner_BTLE mBTLeScanner;
-    private ActivityResultLauncher<Intent> someActivityResultLauncher;
 
 
     //Service Stuff
@@ -84,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Service_BTLE_GATT mBTLE_Service;
     private boolean mBTLE_Service_Bound;
     private BroadcastReceiver mGattUpdateReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkPermissions(this, getApplicationContext());
         sharedpreferences = getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE);
 
-        mGattUpdateReceiver = new BroadcastReceiver(){
+        mGattUpdateReceiver = new BroadcastReceiver() {
 
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -102,8 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (Service_BTLE_GATT.ACTION_GATT_CONNECTED.equals(action)) {
                     Utils.toast(getApplicationContext(), "Connected To Device");
-                }
-                else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
+                } else if (Service_BTLE_GATT.ACTION_GATT_DISCONNECTED.equals(action)) {
                     Utils.toast(getApplicationContext(), "Disconnected From Device");
                 }
 
@@ -130,28 +120,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        someActivityResultLauncher = registerForActivityResult(
+        // There are no request codes
+        ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent data = result.getData();
-                            Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
-                        }
-                        else if (result.getResultCode() == Activity.RESULT_CANCELED){
-                            Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
-                        }
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        Utils.toast(getApplicationContext(), "Thank you for turning on Bluetooth");
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                        Utils.toast(getApplicationContext(), "Please turn on Bluetooth");
                     }
                 });
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
-            switch(item.getItemId()){
+            switch (item.getItemId()) {
 
                 case R.id.contamination:
                     replaceFragment(new ContaminationFragment());
@@ -175,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean("firstStart", true);
 
@@ -193,12 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setTitle("Welcome!")
                 .setMessage("")
 
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setPositiveButton("ok", (dialog, which) -> dialog.dismiss())
                 .create().show();
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -209,12 +190,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Use this method to put the application's focus on a new Fragment
+     *
      * @param fragment Replacement Fragment
      */
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
 
@@ -248,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
 
         unregisterReceiver(mGattUpdateReceiver);
-        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound){
+        if (mBTLE_ServiceConnection != null && mBTLE_Service_Bound) {
             unbindService(mBTLE_ServiceConnection);
         }
         mBTLE_Service_Intent = null;
@@ -285,29 +267,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
 
-        switch (v.getId()) {
+        if (v.getId() == R.id.btn_scan) {
+            Utils.toast(getApplicationContext(), "Scan Button Pressed");
+            replaceFragment(new DeviceListFragment());
 
-            case R.id.btn_scan:
-                Utils.toast(getApplicationContext(), "Scan Button Pressed");
-                replaceFragment(new DeviceListFragment());
-
-                if (!mBTLeScanner.isScanning()) {
-                    startScan();
-                }
-                else {
-                    stopScan();
-                }
-                break;
-            default:
-                break;
+            if (!mBTLeScanner.isScanning()) {
+                startScan();
+            } else {
+                stopScan();
+            }
         }
 
     }
 
     /**
      * Use this method to add a potential device to the list of devices
+     *
      * @param device New Device
-     * @param rssi Device's RSSI
+     * @param rssi   Device's RSSI
      */
     public void addDevice(BluetoothDevice device, int rssi) {
 
@@ -319,9 +296,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBTDevicesHashMap.put(address, btleDevice);
             mBTDevicesArrayList.add(btleDevice);
 //            Log.e("Device Stored", btleDevice.getAddress());
-        }
-        else {
-            mBTDevicesHashMap.get(address).setRSSI(rssi);
+        } else {
+            Objects.requireNonNull(mBTDevicesHashMap.get(address)).setRSSI(rssi);
         }
 
         adapter.notifyDataSetChanged();
@@ -330,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Prompts the Scanner_BTLE to begin its scan
      */
-    public void startScan(){
+    public void startScan() {
 //        btn_Scan.setText("Scanning...");
 
         mBTDevicesArrayList.clear();
@@ -347,10 +323,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBTLeScanner.stop();
     }
-    
+
     //Services Start
 
-    private ServiceConnection mBTLE_ServiceConnection = new ServiceConnection() {
+    private final ServiceConnection mBTLE_ServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -384,21 +360,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
-
-
-
-
-
     //Services Stop
 
 
-
-
-    public ListAdapter_BTLE_Devices getAdapter(){
+    public ListAdapter_BTLE_Devices getAdapter() {
         return adapter;
     }
 
-    public static void checkPermissions(Activity activity, Context context){
+    public static void checkPermissions(Activity activity, Context context) {
         int PERMISSION_ALL = 1;
         Log.e("BLUETOOTH PERMS", "HI");
         String[] PERMISSIONS = {
@@ -413,17 +382,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         };
 
-        if(!hasPermissions(context, PERMISSIONS)){
+        if (!hasPermissions(context, PERMISSIONS)) {
             ActivityCompat.requestPermissions(activity, PERMISSIONS, PERMISSION_ALL);
             Log.e("BLUETOOTH PERMS", "NO PERMS");
         }
     }
 
-    public static boolean hasPermissions(Context context, String... permissions){
+    public static boolean hasPermissions(Context context, String... permissions) {
         Log.e("BLUETOOTH PERMS", "RUNNING HASPERMS");
-        if(context != null && permissions != null){
-            for (String permission : permissions){
-                if (ActivityCompat.checkSelfPermission(context, permission)!=PackageManager.PERMISSION_GRANTED){
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }
@@ -433,41 +402,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Converts an inputted hex value into its corresponding BLE UUID
+     *
      * @param i Hex Value
      */
     public static UUID convertFromInteger(int i) { // ex "0x180D" for heart rate services
         final long MSB = 0x0000000000001000L;
         final long LSB = 0x800000805f9b34fbL;
-        long value = i & 0xFFFFFFFF;
+        long value = i;
         return new UUID(MSB | (value << 32), LSB);
     }
 
     /**
      * Converts a received byte array to its corresponding String value
+     *
      * @param bytes Byte Array
      * @return String Representation of bytes
      */
-    public static String bytesToString(byte[] bytes){
+    public static String bytesToString(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    public static double bytesToDouble(byte[] bytes){
+    public static double bytesToDouble(byte[] bytes) {
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getDouble();
     }
 
-    public String getDeviceName(){
+    public String getDeviceName() {
         return deviceName;
     }
 
-    public String getDeviceAddress(){
+    public String getDeviceAddress() {
         return deviceAddress;
     }
 
-    public Service_BTLE_GATT getService(){
+    public Service_BTLE_GATT getService() {
         return mBTLE_Service;
     }
-    public WaterIntakeHandler getIntakeHandler (){
+
+    public WaterIntakeHandler getIntakeHandler() {
         return waterIntakeHandler;
     }
+
 }
 
