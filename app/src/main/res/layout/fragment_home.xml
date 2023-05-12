@@ -98,12 +98,16 @@
             android:id="@+id/text_view_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="80sp"
             app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
             app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="@+id/progress_bar"
             app:layout_constraintTop_toTopOf="@+id/progress_bar"
+            app:layout_constraintVertical_bias="0.541"
             tools:text="60%" />
 
 
