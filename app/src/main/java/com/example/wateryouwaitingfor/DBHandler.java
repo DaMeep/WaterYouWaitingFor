@@ -236,7 +236,6 @@ public class DBHandler extends SQLiteOpenHelper {
         cursor.close();
         return courseModalArrayList;
     }
-
     // Get total consumed per day
     @SuppressLint("Range")
     public double getDailyTot() {
@@ -277,8 +276,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return amtConsumed;
     }
 }
-
-
 
 
 

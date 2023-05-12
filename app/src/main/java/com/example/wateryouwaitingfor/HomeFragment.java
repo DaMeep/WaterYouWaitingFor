@@ -119,10 +119,10 @@ public class HomeFragment extends Fragment implements Serializable {
         userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", "User")));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
-        watDisplay.setText(String.format(res.getString(R.string.amountConsumed), waterTot));
+        watDisplay.setText(String.format(res.getString(R.string.amountConsumed), dbHandler.getDailyTot()));
 
         TextView waterGoal = view.findViewById(R.id.waterGoal);
-        waterGoal.setText(String.format(res.getString(R.string.goalText), waterTot));
+        waterGoal.setText(String.format(res.getString(R.string.goalText), waterIntakeHandler.getIdealIntake()));
 
         progressBar =  view.findViewById(R.id.progress_bar);
         textView =  view.findViewById(R.id.text_view_progress);

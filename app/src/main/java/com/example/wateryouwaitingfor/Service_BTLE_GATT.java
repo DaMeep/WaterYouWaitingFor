@@ -109,7 +109,7 @@ public class Service_BTLE_GATT extends Service {
             Log.e("WaterHandler Amount",  String.valueOf(MainActivity.bytesToDouble(characteristic.getValue())));
             Log.e("WaterHandler Total", String.valueOf(dbh.getDailyTot()));
 
-
+            dbh.getDailyTot();
 
 
         }
