@@ -273,7 +273,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // at last closing our cursor
         // and returning our array list.
         cursor.close();
-        return amtConsumed;
+        return dailyTot;
     }
 }
 
