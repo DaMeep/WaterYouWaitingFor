@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
-        android:text="@string/amountConsumed"
+        android:text="@string/totalAmountConsumed"
         android:textColor="@color/black"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="26sp" />

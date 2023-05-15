@@ -1,14 +1,9 @@
 package com.example.wateryouwaitingfor;
 
-
-import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.time.LocalTime;
-import java.util.Objects;
 
 
 
@@ -30,7 +24,6 @@ import java.util.Objects;
  */
 public class HomeFragment extends Fragment implements Serializable {
 
-    private Button btn_Scan; // BT Scan button
     private WaterIntakeHandler waterIntakeHandler; // Water consumption handler
 
     private SharedPreferences sharedpreferences; // Shared Preferences Reference
@@ -88,7 +81,7 @@ public class HomeFragment extends Fragment implements Serializable {
         userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", "User")));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
-        watDisplay.setText(String.format(res.getString(R.string.amountConsumed), dbHandler.getDailyTot()));
+        watDisplay.setText(String.format(res.getString(R.string.totalAmountConsumed), dbHandler.getDailyTot()));
 
         TextView waterGoal = view.findViewById(R.id.waterGoal);
         waterGoal.setText(String.format(res.getString(R.string.goalText), waterIntakeHandler.getIdealIntake()));

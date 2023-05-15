@@ -75,17 +75,11 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
 
         float[] weekData = db.getWeekData();
 
+        //Create a bar entry for the totals in the last week
         barArrayList = new ArrayList();
         for(int i=0; i<7; i++){
             barArrayList.add(new BarEntry(i, weekData[i]));
         }
-//        barArrayList.add(new BarEntry(0, weekData[0]));
-//        barArrayList.add(new BarEntry(1, weekData[1]));
-//        barArrayList.add(new BarEntry(2, weekData[2]));
-//        barArrayList.add(new BarEntry(3, weekData[3]));
-//        barArrayList.add(new BarEntry(4, weekData[4]));
-//        barArrayList.add(new BarEntry(5, weekData[5]));
-//        barArrayList.add(new BarEntry(6, weekData[6]));
     }
 
    final DBHandler dbHandler = new DBHandler(getContext());

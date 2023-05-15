@@ -41,9 +41,25 @@
     <string name="waterReminderText">Remind Me Every</string>
     <string name="disabledText">[Disabled]</string>
     <string name="userPointsText">%1$d Points</string>
-    <string name="amountConsumed">Total Amount Consumed: %1$.2f</string>
-    <string name="goalText">Goal: %1$.2f</string>
+    <string name="totalAmountConsumed">Total Amount Consumed: %1$.2f oz</string>
+    <string name="goalText">Goal: %1$.2f oz</string>
     <string name="lastUpdatedText">Last Updated: %1$s</string>
+
+
+
+<!--    Consumption Listing -->
+    <string name="time">Time: %1$s</string>
+    <string name="noTime">No Time</string>
+    <string name="amountConsumed">Amount Consumed: %1$s oz</string>
+    <string name="noneConsumed">None Consumed</string>
+    <string name="dailyTotal">Daily Total: %1$s oz</string>
+    <string name="noTotal">No Total</string>
+    <string name="dateText">Date: %1$s</string>
+    <string name="noDateText">No Date</string>
+
+
+
+<!--    Arrays -->
     <string-array name="activityLevels">
         <item>None</item>
         <item>Low</item>
@@ -57,6 +73,7 @@
         <item>1 Hour</item>
     </string-array>
 
+<!--    Onboarding-->
     <string name="Water_you_waiting_for">Onboarding Practice</string>
     <string name="screen1">Enter Your Name</string>
     <string name="screen2">Enter Your Weight</string>

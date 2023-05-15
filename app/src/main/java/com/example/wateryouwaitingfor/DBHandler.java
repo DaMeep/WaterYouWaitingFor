@@ -85,7 +85,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // this method is used to add new drinks to our sqlite database.
     public void addNewDrink(double Consumed) {
-        DecimalFormat meep = new DecimalFormat("0.00");
+        DecimalFormat decForm = new DecimalFormat("0.00");
         // on below line we are creating a variable for
         // our sqlite database and calling writable method
         // as we are writing data in our database.
@@ -99,7 +99,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // along with its key and value pair.
 
         // meep truncates the amtConsumed string to two decimal places
-        String consume = meep.format(Consumed);
+        String consume = decForm.format(Consumed);
         // adds the value passed in as a double to the totals column.
         Consumed = Double.parseDouble(consume);
         dailyTot += Consumed;
@@ -132,65 +132,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
-
-//    // below method returns the day of the week as an integer (Sunday = 0, Monday = 1, etc)
-//    // intakes a LocalDate parameter
-//    public int getDayNumberNew(LocalDate date) {
-//        Log.e("Day of week is: ", "" + date.getDayOfWeek().getValue());
-//        DayOfWeek day = date.getDayOfWeek();
-//        return day.getValue();
-//    }
-//
-//
-//    // below method returns the number of existing rows in the database
-//    // intakes a Database "db" and the name of the table within the database
-//    public static long getRowNum(SQLiteDatabase db, String TABLE_NAME) {
-//        return DatabaseUtils.queryNumEntries(db, TABLE_NAME);
-//    }
-//
-//    // below method to set totals to a certain date range for our bar chart
-//    public void setDataToDates() {
-//        //getting a readable version of our database to obtain the values from it
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        // variable initialization
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-//
-//        //indices for the cursor
-//        int totind = cursor.getColumnIndex(DAYTOT_COL);
-//        int dateind = cursor.getColumnIndex(DATE_COL);
-//        int amtind = cursor.getColumnIndex(AMOUNT_COL);
-//
-//
-//        //ensures that the row number is greater than zero to avoid an OutOfBounds error
-//        if (getRowNum(db, TABLE_NAME) > 1) {
-//            Log.d("Number of rows", " " + getRowNum(db, TABLE_NAME));
-//            cursor.moveToLast();
-//            String dateCheck = cursor.getString(dateind);
-//            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//
-//            localDate = LocalDate.parse(dateCheck, format);
-//            getDayNumberNew(localDate);
-//            cursor.moveToPrevious();
-//            if (cursor.getString(dateind).equals(dateCheck)) {
-//                Log.d("Date stays: ", " " + dateCheck);
-//
-//
-//                if (dailyTot == 0) {
-//                    dailyTot += cursor.getDouble(amtind);
-//                } else
-//                    dailyTot += cursor.getDouble(totind);
-//            } else {
-//                Log.d("Date changed", " " + dateCheck);
-//                dataStore = cursor.getDouble(totind);
-//                dailyTot = 0;
-//
-//            }
-//        } else {
-//            cursor.moveToFirst();
-//            dataStore = cursor.getDouble(totind);
-//        }
-//    }
 
     // stores the variable for the daily totals of a date for the bar chart in the stats fragment
     public double getDataStore() {
@@ -276,30 +217,38 @@ public class DBHandler extends SQLiteOpenHelper {
         return dailyTot;
     }
 
+    /**
+     * Gets the daily totals of the last week
+     * @return a float array of the totals
+     */
     public float[] getWeekData(){
         float[] weekData = new float[7];
 
+        //SQL Database Reference
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
 
+        //Define variables
         int dailyTotIndex;
         int dateIndex;
         int counter = 6;
         String lastDate = "";
 
+        //Move cursor backwards
         if (cursor.moveToLast()){
             do{
+                //Get needed column positions
                 dailyTotIndex = cursor.getColumnIndex(DAYTOT_COL);
                 dateIndex = cursor.getColumnIndex(DATE_COL);
 
                 String curDate = cursor.getString(dateIndex);
-                if (!curDate.equals(lastDate)){
+                if (!curDate.equals(lastDate)){ // If the date is different, add daily total to return
                     weekData[counter] = (float) cursor.getDouble(dailyTotIndex);
                     counter--;
                     lastDate = curDate;
                 }
 
-            } while(cursor.moveToPrevious() && counter >= 0);
+            } while(cursor.moveToPrevious() && counter >= 0); // while not at end of table or < 7 entries
         }
 
 
