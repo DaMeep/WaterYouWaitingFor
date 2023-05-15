@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.hadiidbouk.charts.Bar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,14 +73,19 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     
     private void getData() {
 
+        float[] weekData = db.getWeekData();
+
         barArrayList = new ArrayList();
-        barArrayList.add(new BarEntry(0, 64));
-        barArrayList.add(new BarEntry(1, 49));
-        barArrayList.add(new BarEntry(2, 78));
-        barArrayList.add(new BarEntry(3, 61));
-        barArrayList.add(new BarEntry(4, 89));
-        barArrayList.add(new BarEntry(5, 74));
-        barArrayList.add(new BarEntry(6, 86));
+        for(int i=0; i<7; i++){
+            barArrayList.add(new BarEntry(i, weekData[i]));
+        }
+//        barArrayList.add(new BarEntry(0, weekData[0]));
+//        barArrayList.add(new BarEntry(1, weekData[1]));
+//        barArrayList.add(new BarEntry(2, weekData[2]));
+//        barArrayList.add(new BarEntry(3, weekData[3]));
+//        barArrayList.add(new BarEntry(4, weekData[4]));
+//        barArrayList.add(new BarEntry(5, weekData[5]));
+//        barArrayList.add(new BarEntry(6, weekData[6]));
     }
 
    final DBHandler dbHandler = new DBHandler(getContext());

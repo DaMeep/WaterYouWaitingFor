@@ -275,6 +275,36 @@ public class DBHandler extends SQLiteOpenHelper {
         cursor.close();
         return dailyTot;
     }
+
+    public float[] getWeekData(){
+        float[] weekData = new float[7];
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        int dailyTotIndex;
+        int dateIndex;
+        int counter = 6;
+        String lastDate = "";
+
+        if (cursor.moveToLast()){
+            do{
+                dailyTotIndex = cursor.getColumnIndex(DAYTOT_COL);
+                dateIndex = cursor.getColumnIndex(DATE_COL);
+
+                String curDate = cursor.getString(dateIndex);
+                if (!curDate.equals(lastDate)){
+                    weekData[counter] = (float) cursor.getDouble(dailyTotIndex);
+                    counter--;
+                    lastDate = curDate;
+                }
+
+            } while(cursor.moveToPrevious() && counter >= 0);
+        }
+
+
+        return weekData;
+    }
 }
 
 
