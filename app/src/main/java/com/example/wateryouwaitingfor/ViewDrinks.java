@@ -6,9 +6,11 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 
-    public class ViewDrinks extends AppCompatActivity {
+public class ViewDrinks extends AppCompatActivity {
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -18,23 +20,31 @@ import java.util.ArrayList;
             // initializing our all variables.
             // creating variables for our array list,
             // dbhandler, adapter and recycler view.
-            ArrayList<drinkListHandler> courseModalArrayList = new ArrayList<>();
+            ArrayList<drinkListHandler> drinkModalArrayList;
             DBHandler dbHandler = new DBHandler(ViewDrinks.this);
 
-            // getting our course array
+            // getting our drink array
             // list from db handler class.
-            courseModalArrayList = dbHandler.drinkList();
+            drinkModalArrayList = (ArrayList<drinkListHandler>) dbHandler.drinkList().clone();
+            Collections.reverse(drinkModalArrayList);
+
+
+            // removes previous days' data
+            LocalDate date = LocalDate.now();
+            String currentDate = date.format(DBHandler.DATE_FORMATTER);
+
+            for (drinkListHandler handler : drinkModalArrayList){
+                if (!currentDate.equals(handler.getDate())){
+                    drinkModalArrayList.remove(handler);
+                }
+            }
 
             double tot = dbHandler.getDailyTot();
             Log.i("Total::::::::::::: ", " " + tot);
 
             // on below line passing our array list to our adapter class.
-            drinkRVAdapter courseRVAdapter = new drinkRVAdapter(ViewDrinks.this, R.layout.drink_recyclerview_item, courseModalArrayList);
+            drinkRVAdapter courseRVAdapter = new drinkRVAdapter(ViewDrinks.this, R.layout.drink_recyclerview_item, drinkModalArrayList);
             ListView coursesRV = findViewById(R.id.idRVDrinks);
-
-            // setting layout manager for our recycler view.
-           // LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ViewDrinks.this, RecyclerView.VERTICAL, false);
-            //coursesRV.setLayoutManager(linearLayoutManager);
 
             // setting our adapter to recycler view.
             coursesRV.setAdapter(courseRVAdapter);

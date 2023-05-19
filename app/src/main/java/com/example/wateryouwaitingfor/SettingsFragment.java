@@ -1,12 +1,11 @@
 package com.example.wateryouwaitingfor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -22,7 +22,6 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import java.util.Objects;
 import com.google.firebase.database.DatabaseReference;
 
 /**
@@ -74,6 +73,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Initialize variables and set values to those from Shared Preferences
+
         //General
         unitsButton = view.findViewById(R.id.unitToggleButton);
         unitsButton.setActivated(sharedpreferences.getBoolean("metricUnits", false));
@@ -86,8 +87,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         userWeightText = view.findViewById(R.id.editWeightText);
         userWeightText.setText(sharedpreferences.getString("userWeight", "100"));
 
-        Spinner activityDropdown = view.findViewById(R.id.settingsActivityDropdown);
-        ArrayAdapter<String> activityAdapter = new ArrayAdapter(view.getContext(),
+        activityDropdown = view.findViewById(R.id.settingsActivityDropdown);
+        ArrayAdapter<String> activityAdapter = new ArrayAdapter<>(view.getContext(),
                 android.R.layout.simple_spinner_dropdown_item,activityLevels);
         activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityDropdown.setAdapter(activityAdapter);
@@ -96,12 +97,13 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         activityDropdown.setSelection(curActivityLevel);
 
         //Notifications
-        notificationSwitch = (SwitchCompat) view.findViewById(R.id.notificationSwitch);
+        notificationSwitch = view.findViewById(R.id.notificationSwitch);
         notificationSwitch.setChecked(sharedpreferences.getBoolean("notificationsEnabled", false));
 
         notificationText = view.findViewById(R.id.notificationTimerSettingsText);
         notificationText.setText(notificationSwitch.isChecked() ? R.string.waterReminderText : R.string.disabledText);
 
+        // Permissions check when enabled
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
@@ -109,8 +111,21 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
             {
                 if (isChecked && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                     String[] perms = {android.Manifest.permission.POST_NOTIFICATIONS};
-                    if (!MainActivity.hasPermissions(getContext(), perms) && isChecked){
+                    if (!MainActivity.hasPermissions(getContext(), perms)){
                         ActivityCompat.requestPermissions(getActivity(), perms, NOTIFICATION_REQUEST_CODE);
+                    }
+                    else {
+                        if (MainActivity.notificationIntent != null){
+                            getActivity().stopService(MainActivity.notificationIntent);
+                        }
+                        MainActivity.notificationIntent = new Intent( getContext(), NotificationService. class ) ;
+                        getActivity().startService(MainActivity.notificationIntent);
+                    }
+                }
+                else if (!isChecked){
+                    if (MainActivity.notificationIntent != null){
+                        getActivity().stopService(MainActivity.notificationIntent);
+                        MainActivity.notificationIntent = null;
                     }
                 }
 
@@ -123,7 +138,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
 
         notificationDropdown = view.findViewById(R.id.settingsNotificationTimerDropdown);
-        ArrayAdapter<String> notificationAdapter = new ArrayAdapter(view.getContext(),
+        ArrayAdapter<String> notificationAdapter = new ArrayAdapter<>(view.getContext(),
                 android.R.layout.simple_spinner_dropdown_item,notificationIntervals);
         notificationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         notificationDropdown.setAdapter(notificationAdapter);
@@ -133,19 +148,39 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         notificationDropdown.setVisibility(notificationSwitch.isChecked() ? View.VISIBLE : View.INVISIBLE);
 
 
-        TextView userIdDisplay = (TextView) view.findViewById(R.id.settingUserIDText);
+        TextView userIdDisplay = view.findViewById(R.id.settingUserIDText);
         userIdDisplay.setText(sharedpreferences.getString("userID", "User ID"));
     }
     @Override
     public void onDestroyView() {
+
+        // Store settings in Shared Preferences
+
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         //General
         editor.putBoolean("metricUnits", unitsButton.isChecked());
 
         //Personal
-        editor.putString("username", userNameText.getText().toString());
-        editor.putString("userWeight", userWeightText.getText().toString());
+
+        // check if username is empty
+        String name = userNameText.getText().toString();
+        if (!name.isEmpty()){
+            editor.putString("username", name);
+        }
+        else{
+            Toast.makeText(getContext(), "Not Stored: Please enter a valid name", Toast.LENGTH_SHORT).show();
+        }
+
+        // check if weight is a number > 0
+        String weight = userWeightText.getText().toString();
+        if (MainActivity.isValidDouble(weight) && Double.parseDouble(weight) > 0){
+            editor.putString("userWeight", weight);
+        }
+        else{
+            Toast.makeText(getContext(), "Not Stored: Please enter a valid weight", Toast.LENGTH_SHORT).show();
+        }
+
         editor.putInt("activityLevel", curActivityLevel);
 
         //Notifications
@@ -159,7 +194,6 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
         DatabaseReference mUsersReference = ((MainActivity)getActivity()).getUserReference();
         mUsersReference.child(userID).child("username").setValue(userNameText.getText().toString());
-
         super.onDestroyView();
     }
 

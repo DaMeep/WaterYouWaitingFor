@@ -4,14 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,8 +16,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,26 +32,26 @@ import java.util.Random;
 
 public class NavigationActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
-    ViewPager slideViewPager;
-    LinearLayout dotIndicator;
-    Button backButton, nextButton;
-    TextView[] dots;
-    ViewPagerAdapter viewPagerAdapter;
+    private ViewPager slideViewPager; // contains information about each onboarding page
+    private LinearLayout dotIndicator; // current page indicator
+    private Button backButton, nextButton; // navigation buttons
 
-    Spinner dropDown;
+    private Spinner dropDown; // dropdown for activity level & notification interval selection
 
-    private EditText readNameEditText;
+    private EditText readNameEditText; // name display
 
-    private EditText readWeightEditText;
+    private EditText readWeightEditText; // weight display
 
-    private SwitchCompat notificationSwitch;
+    private SwitchCompat notificationSwitch; // notification toggle
 
-    private final int length = 5;
+    private final int length = 5; // number of pages
 
-    private final String[] activityLevels = {"None", "Low", "Medium", "High"};
-    private final String[] notificationIntervals = {"15 Minutes", "30 Minutes", "45 Minutes", "1 Hour"};
+    private final String[] activityLevels = {"None", "Low", "Medium", "High"}; // list of activity levels
+    private final String[] notificationIntervals = {"15 Minutes", "30 Minutes", "45 Minutes", "1 Hour"}; // list of notification intervals
 
-    private int curDropdownLevel =0;
+    private int curDropdownLevel = 0; // stores the selected dropdown item
+
+    private Resources res; // reference to application resources
 
 
     ViewPager.OnPageChangeListener viewPagerListener = new ViewPager.OnPageChangeListener() {
@@ -65,14 +62,16 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
         @Override
         public void onPageSelected(int position) {
 
+            // set the page indicator to the current page
             setDotIndicator(position);
 
+            // access shared preferences for settings storage
             SharedPreferences sharedPref = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
 
+            // Store and display data based on current page
 
             switch (position) {
-
                 case 0:
                     backButton.setVisibility(View.INVISIBLE);
                     readNameEditText.setVisibility(View.VISIBLE);
@@ -83,7 +82,7 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                     editor.putString("userWeight", readWeightEditText.getText().toString());
 
                     readNameEditText.setText(sharedPref.getString("username", "User"));
-                    nextButton.setText("Next");
+                    nextButton.setText(res.getString(R.string.nextText));
                     break;
 
                 case 1:
@@ -111,7 +110,7 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                     editor.putInt("notificationInterval", curDropdownLevel);
                     editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
 
-                    ArrayAdapter<String> activityAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,activityLevels);
+                    ArrayAdapter<String> activityAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,activityLevels);
 
                     dropDown.setAdapter(activityAdapter);
                     dropDown.setSelection(sharedPref.getInt("activityLevel",0));
@@ -122,14 +121,14 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                     notificationSwitch.setVisibility(View.VISIBLE);
 
                     editor.putInt("activityLevel", curDropdownLevel);
-                    ArrayAdapter<String> notifAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,notificationIntervals);
+                    ArrayAdapter<String> notifAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,notificationIntervals);
                     dropDown.setAdapter(notifAdapter);
                     dropDown.setSelection(sharedPref.getInt("notificationInterval",0));
 
                     notificationSwitch.setChecked(sharedPref.getBoolean("notificationsEnabled", false));
                     dropDown.setVisibility(notificationSwitch.isChecked() ? View.VISIBLE : View.INVISIBLE);
 
-                    nextButton.setText("Next");
+                    nextButton.setText(res.getString(R.string.nextText));
 
                     break;
 
@@ -140,13 +139,15 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                     editor.putInt("notificationInterval", curDropdownLevel);
                     editor.putBoolean("notificationsEnabled", notificationSwitch.isChecked());
 
-                    nextButton.setText("Finish");
+                    nextButton.setText(res.getString(R.string.finishText));
 
                     break;
 
                 default:
                     break;
             }
+
+            // apply modified settings
             editor.apply();
         }
         @Override
@@ -155,12 +156,13 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
         }
     };
 
-
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+        res = getResources();
 
+        // initialize views & set OnClick actions/listeners
         backButton = findViewById(R.id.backButton);
         nextButton = findViewById(R.id.nextButton);
         readNameEditText = findViewById(R.id.readNameEditText);
@@ -191,7 +193,11 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getItem(0) > 0) {
+
+                int curPage = getItem(0);
+
+                // if it is after the second page or the second page is active and the weight is valid
+                if (curPage > 1 || (curPage == 1 && checkValidity(readWeightEditText.getText().toString()))) {
                     slideViewPager.setCurrentItem(getItem(-1), true);
                 }
             }
@@ -200,21 +206,33 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getItem(0) < length-1)
-                    slideViewPager.setCurrentItem(getItem(1), true);
-                else {
+
+                int curPage = getItem(0);
+
+                if (curPage < length-1) { // if before the last page
+                    // if on first page with a valid name, or second page with a valid weight
+                    if (curPage > 1 || (curPage == 0 && checkValidity(readNameEditText.getText().toString())) || ((curPage == 1 && checkValidity(readWeightEditText.getText().toString())))) {
+                        slideViewPager.setCurrentItem(getItem(1), true);
+                    }
+                }
+                else { // if on the last page
                     String userID = generateUserId();
 
                     SharedPreferences preferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
+                    // User has completed onboarding page
                     editor.putBoolean("firstStart", false);
+
+                    // give User an ID
                     editor.putString("userID", userID);
                     editor.apply();
 
+                    // put User in Firebase
                     User user = new User(preferences.getString("username", "User"));
                     DatabaseReference mUsersReference = FirebaseDatabase.getInstance().getReference().child("users");
                     mUsersReference.child(userID).setValue(user);
 
+                    // Start MainActivity
                     Intent i = new Intent(NavigationActivity.this, MainActivity.class);
                     startActivity(i);
                     finish();
@@ -222,26 +240,24 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
             }
         });
 
-        slideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
-        dotIndicator = (LinearLayout) findViewById(R.id.dotIndicator);
+        slideViewPager = findViewById(R.id.slideViewPager);
+        dotIndicator = findViewById(R.id.dotIndicator);
 
-        viewPagerAdapter = new ViewPagerAdapter(this);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         slideViewPager.setAdapter(viewPagerAdapter);
 
         setDotIndicator(0);
         slideViewPager.addOnPageChangeListener(viewPagerListener);
     }
 
-
     /**
      * Sets the progress bar at the bottom of
      * the startup page
-     *
      * @param position the highlighted "dot"
      */
     public void setDotIndicator(int position) {
 
-        dots = new TextView[length];
+        TextView[] dots = new TextView[length];
         dotIndicator.removeAllViews();
 
         for (int i = 0; i < dots.length; i++) {
@@ -257,7 +273,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
     /**
      * Returns the index of the current startup
      * page + i
-     *
      * @param i the page offset
      * @return the page index
      */
@@ -267,7 +282,6 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
     /**
      * Generates a random 10-digit alphanumeric User ID for Firebase
-     *
      * @return the generated User ID
      */
     private String generateUserId () {
@@ -295,25 +309,71 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
 
     }
 
+    /**
+     * Checks whether the given name or weight is valid
+     * @param value the value to check
+     * @return the validity of the value
+     */
+    public boolean checkValidity(String value){
+
+        boolean isValid;
+
+        switch(getItem(0)){
+            case 0: // if name is not empty
+                if (!value.isEmpty()){
+                    isValid = true;
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show();
+                    isValid = false;
+                }
+                break;
+            case 1: // if weight is a number > 0
+                if ((MainActivity.isValidDouble(value) && Double.parseDouble(value) > 0)){
+                    isValid = true;
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please enter a valid weight", Toast.LENGTH_SHORT).show();
+                    isValid = false;
+                }
+                break;
+            default:
+                isValid = true;
+                break;
+        }
+        return isValid;
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        if (isChecked){
+        if (isChecked){ // if set enabled check notification perms
             dropDown.setVisibility(View.VISIBLE);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                 String[] perms = {Manifest.permission.POST_NOTIFICATIONS};
                 if (!MainActivity.hasPermissions(getApplicationContext(), perms)){
                     ActivityCompat.requestPermissions(this, perms, 1001);
                 }
+                else {
+                    if (MainActivity.notificationIntent != null){
+                        stopService(MainActivity.notificationIntent);
+                    }
+                    MainActivity.notificationIntent = new Intent( getApplicationContext(), NotificationService. class ) ;
+                    startService(MainActivity.notificationIntent);
+                }
             }
         }
-        else{
+        else {
+            if (MainActivity.notificationIntent != null){
+                stopService(MainActivity.notificationIntent);
+                MainActivity.notificationIntent = null;
+            }
             dropDown.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1001:
@@ -322,15 +382,15 @@ public class NavigationActivity extends AppCompatActivity implements CompoundBut
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
+                    MainActivity.notificationIntent =  new Intent( this, NotificationService. class );
+                    startService(MainActivity.notificationIntent);
                 }  else {
-                    // Explain to the user that the feature is unavailable because
-                    // the feature requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
+                    // if denied, disable notifications
                     notificationSwitch.setChecked(false);
+                    stopService(MainActivity.notificationIntent);
+                    MainActivity.notificationIntent = null;
                 }
-                return;
+                break;
         }
         // Other 'case' lines to check for other
         // permissions this app might request.

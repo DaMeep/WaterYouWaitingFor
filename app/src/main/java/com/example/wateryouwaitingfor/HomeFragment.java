@@ -17,24 +17,21 @@ import androidx.fragment.app.Fragment;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-
-
 /**
  * A {@link Fragment} subclass for the homepage
  */
 public class HomeFragment extends Fragment implements Serializable {
 
-    private WaterIntakeHandler waterIntakeHandler; // Water consumption handler
+    private WaterIntakeHandler waterIntakeHandler; // Water Consumption Handler
 
     private SharedPreferences sharedpreferences; // Shared Preferences Reference
 
-    private int progress = 0;
-    Button buttonIncrement;
-    Button buttonDecrement;
-    ProgressBar progressBar;
-    TextView textView;
+    private ProgressBar progressBar; // daily water progress bar
+    private TextView currentProgressTextView; // percent of daily goal fulfilled
 
-    private DBHandler dbHandler;
+    private DBHandler dbHandler; // reference to Water Database Handler
+
+    Resources res; // reference to the application resources
 
 
     public HomeFragment() {
@@ -63,22 +60,24 @@ public class HomeFragment extends Fragment implements Serializable {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button btn_Scan = (Button) view.findViewById(R.id.btn_scan);
+        // Initialize BLE Scan button & Assign on click
+        Button btn_Scan = view.findViewById(R.id.btn_scan);
+        btn_Scan.setOnClickListener((MainActivity)getActivity());
+
+        // Initialize Water Consumption Handler
         waterIntakeHandler = ((MainActivity) ((getActivity()))).getIntakeHandler();
         waterIntakeHandler.setActivitylevel(sharedpreferences.getInt("activityLevel", 0));
         waterIntakeHandler.setWeight(Double.parseDouble(sharedpreferences.getString("userWeight", "100")));
         waterIntakeHandler.updateIdealIntake();
 
-        StatsFragment sm = new StatsFragment();
-
-
-        btn_Scan.setOnClickListener((MainActivity)getActivity());
-
+        // Initialize Water Database Handler
         dbHandler = new DBHandler(getContext());
-        Resources res = getResources();
 
+        res = getResources();
+
+        // Set text accordingly
         TextView userNameDisplay = view.findViewById(R.id.welcomeText);
-        userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", "User")));
+        userNameDisplay.setText(String.format(res.getString(R.string.welcome), sharedpreferences.getString("username", res.getString(R.string.usernameDefault))));
 
         TextView watDisplay = view.findViewById(R.id.waterTotDisplay);
         watDisplay.setText(String.format(res.getString(R.string.totalAmountConsumed), dbHandler.getDailyTot()));
@@ -86,37 +85,28 @@ public class HomeFragment extends Fragment implements Serializable {
         TextView waterGoal = view.findViewById(R.id.waterGoal);
         waterGoal.setText(String.format(res.getString(R.string.goalText), waterIntakeHandler.getIdealIntake()));
 
-        progressBar =  view.findViewById(R.id.progress_bar);
-        textView =  view.findViewById(R.id.text_view_progress);
-
-        updateProgressBar();
-
-
-
         TextView watUpdate = view.findViewById(R.id.updateText);
         watUpdate.setText(String.format(res.getString(R.string.lastUpdatedText), LocalTime.now().withNano(0)));
 
+        // Update water progress bar
+        progressBar =  view.findViewById(R.id.progress_bar);
+        currentProgressTextView =  view.findViewById(R.id.text_view_progress);
 
+        updateProgressBar();
     }
 
-    // updateProgressBar() method sets
-    // the progress of ProgressBar in text
+    /**
+     * Updates the progress bar and the percentage text
+     * to the current progress towards the daily goal
+     */
     private void updateProgressBar() {
 
-        int value = (int)(dbHandler.getDailyTot()/waterIntakeHandler.getIdealIntake()*100);
+        // find the current percentage towards the water goal
+        int value = Math.max((int)(dbHandler.getDailyTot() / waterIntakeHandler.getIdealIntake() * 100), 0);
 
-        if (value >0) {
-            progressBar.setProgress(value);
-            textView.setText(String.valueOf(value + "%"));
-
-        }
-
-        else {
-            progressBar.setProgress(0);
-            textView.setText(String.valueOf(0 + "%"));
-
-        }
-
+        // set the bar and text to said percent
+        progressBar.setProgress(value);
+        currentProgressTextView.setText(String.format(res.getString(R.string.percentage), value));
 
     }
 }

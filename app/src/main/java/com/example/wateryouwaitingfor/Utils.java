@@ -14,6 +14,11 @@ import androidx.core.app.ActivityCompat;
 
 public class Utils {
 
+    /**
+     * Ensures that Bluetooth is available on the Device and is enabled
+     * @param bluetoothAdapter the active BLE Adapter
+     * @return the status of the bluetooth adapter
+     */
     public static boolean checkBluetooth(BluetoothAdapter bluetoothAdapter) {
 
         // Ensures Bluetooth is available on the device and it is enabled. If not,
@@ -21,6 +26,10 @@ public class Utils {
         return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
     }
 
+    /**
+     * Requests Bluetooth permission on the application
+     * @param activity the current activity
+     */
     public static void requestUserBluetooth(Activity activity) {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         if (ActivityCompat.checkSelfPermission(activity.getBaseContext(), android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -70,6 +79,11 @@ public class Utils {
         return property & BluetoothGattCharacteristic.PROPERTY_NOTIFY;
     }
 
+    /**
+     * Creates an Application Toast
+     * @param context context of the toast
+     * @param string displayed text
+     */
     public static void toast(Context context, String string) {
 
         Toast toast = Toast.makeText(context, string, Toast.LENGTH_SHORT);

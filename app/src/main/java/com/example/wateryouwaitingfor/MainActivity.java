@@ -1,23 +1,15 @@
 package com.example.wateryouwaitingfor;
 
-
-
 import android.Manifest;
-import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
-import android.view.LayoutInflater;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -27,27 +19,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.UUID;
 
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,11 +43,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
+/*
+    Bluetooth Permissions: https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+    Original Bluetooth Code: https://github.com/kaviles/BLE_Tutorials/tree/master/Android/BLE_Tutorial_Final
+ */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -73,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String TAG = MainActivity.class.getSimpleName();
 
     public static final int REQUEST_ENABLE_BT = 1; // Request Code for Bluetooth Permissions
-    public static final int BTLE_SERVICES = 2;
 
     public WaterIntakeHandler waterIntakeHandler; // Handler for Bottle Data
 
@@ -105,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ValueEventListener updateListener; // Listener for Firebase Updates
     private HashMap<String, User> listOfUsers; // List of Updated User IDs and their corresponding User Objects
 
+
+    public static Intent notificationIntent;
 
 
     @Override
@@ -153,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 DBHandler dbh = new DBHandler(getApplicationContext());
-                mUsersReference.child(sharedpreferences.getString("userID", "User ID")).child("points").setValue((int) (dbh.getDailyTot()));
 
+                mUsersReference.child(sharedpreferences.getString("userID", "User ID")).child("points").setValue((int) (dbh.getDailyTot()));
             }
         };
 
@@ -163,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // you can selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Utils.toast(getApplicationContext(), "BLE not supported");
-//            finish();
         }
 
         //Initialize Bluetooth Scanning Features
@@ -179,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         replaceFragment((new HomeFragment()));
 
         //Defaults the Navigation Bar to Select the Home Fragment
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigationView);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
 
         //Informs the Navigation Bar to replace the current Fragment with the desired when pressed
@@ -276,8 +258,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("MissingPermission")
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Context context = view.getContext();
-
         stopScan();
 
         BTLE_Device currentDevice = mBTDevicesArrayList.get(position);
@@ -343,7 +323,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             mBTDevicesHashMap.put(address, btleDevice);
             mBTDevicesArrayList.add(btleDevice);
-//            Log.e("Device Stored", btleDevice.getAddress());
         } else {
             Objects.requireNonNull(mBTDevicesHashMap.get(address)).setRSSI(rssi);
         }
@@ -386,21 +365,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             mBTLE_Service.connect(deviceAddress);
-            // Automatically connects to the device upon successful start-up initialization.
-//            mBTLeService.connect(mBTLeDeviceAddress);
-
-//            mBluetoothGatt = mBTLeService.getmBluetoothGatt();
-//            mGattUpdateReceiver.setBluetoothGatt(mBluetoothGatt);
-//            mGattUpdateReceiver.setBTLeService(mBTLeService);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mBTLE_Service = null;
             mBTLE_Service_Bound = false;
-//            mBluetoothGatt = null;
-//            mGattUpdateReceiver.setBluetoothGatt(null);
-//            mGattUpdateReceiver.setBTLeService(null);
         }
     };
 
@@ -409,7 +379,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   
     /**
      * Get the current ListAdapter for Scanned BTLE_Devices
-     *
      * @return The BTLE ListAdapter
      */
     public ListAdapter_BTLE_Devices getAdapter(){
@@ -420,7 +389,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Checks the Device's allowed permissions
      * and requests more if needed
-     *
      * @param activity The current activity
      * @param context The context of the prompt
      */
@@ -439,10 +407,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Checks the current state of the specified permissions
-     *
      * @param context The context of the check
      * @param permissions The list of permissions
-     *
      * @return Whether the permissions have been allowed
      */
     public static boolean hasPermissions(Context context, String... permissions){
@@ -458,19 +424,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Converts an inputted hex value into its corresponding BLE UUID
-     *
      * @param i Hex Value
      */
     public static UUID convertFromInteger(int i) { // ex "0x180D" for heart rate services
         final long MSB = 0x0000000000001000L;
         final long LSB = 0x800000805f9b34fbL;
-        long value = i;
-        return new UUID(MSB | (value << 32), LSB);
+        return new UUID(MSB | ((long) i << 32), LSB);
     }
 
     /**
      * Converts a received byte array to its corresponding String value
-     *
      * @param bytes Byte Array
      * @return String Representation of bytes
      */
@@ -489,7 +452,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Get the name of the connected device
-     *
      * @return The name of the device
      */
     public String getDeviceName(){
@@ -498,7 +460,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Get the address of the connected device
-     *
      * @return The address of the device
      */
     public String getDeviceAddress(){
@@ -507,7 +468,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Get the BTLE Gatt Service with the connected device
-     *
      * @return The established Service_BTLE_GATT
      */
     public Service_BTLE_GATT getService(){
@@ -516,7 +476,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     
     /**
      * Get the WaterIntakeHandler for registering consumption
-     * 
      * @return The WaterIntakeHandler
      */
     public WaterIntakeHandler getIntakeHandler (){
@@ -525,21 +484,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Get the reference to the Firebase
-     *
      * @return The Firebase Reference
      */
     public DatabaseReference getUserReference() { return mUsersReference; }
 
     /**
      * Get the Firebase's updated list of users
-     *
      * @return A Hashmap made up of User IDs and corresponding User Objects
      */
     public HashMap<String, User> getUsers(){ return listOfUsers; }
 
     /**
      * Get the updated information of the current user from the Firebase
-     *
      * @return The Firebase information of the application's User
      */
     public User getCurrentUser(){
@@ -547,9 +503,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return listOfUsers.get(userID);
     }
 
+    /**
+     * Checks if a value is a valid double
+     * @param value the checked value
+     * @return whether the value is a valid double
+     */
+    public static boolean isValidDouble(String value){
+        try{ // testing if weight is a number
+            double d = Double.parseDouble(value);
+        }
+        catch (NumberFormatException nfe){
+            return false;
+        }
+        return true;
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case SettingsFragment.NOTIFICATION_REQUEST_CODE:
@@ -558,7 +529,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
-                    startService( new Intent( this, NotificationService. class )) ;
+                    notificationIntent =  new Intent( this, NotificationService. class );
+                    startService(notificationIntent);
                 }  else {
                     // Explain to the user that the feature is unavailable because
                     // the feature requires a permission that the user has denied.
@@ -567,8 +539,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // their decision.
                     SettingsFragment settingsFragment = (SettingsFragment) (getSupportFragmentManager().findFragmentByTag("SettingsFragment"));
                     settingsFragment.setNotificationSwitch(false);
+                    stopService(notificationIntent);
+                    notificationIntent = null;
                 }
-                return;
+                break;
         }
         // Other 'case' lines to check for other
         // permissions this app might request.

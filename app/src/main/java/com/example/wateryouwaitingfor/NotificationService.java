@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -50,7 +51,8 @@ public class NotificationService extends Service {
         initializeTimerTask() ;
         SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
         int notificationInterval = sharedPreferences.getInt("notificationInterval", 0) + 1;
-        timer .schedule( timerTask , 5000 , notificationInterval * 900  * 1000L) ;
+        Log.e("NOTIFICATION INTERVAL", String.valueOf(notificationInterval));
+        timer .schedule( timerTask , notificationInterval * 900  * 1000L , notificationInterval * 900  * 1000L ) ;
     }
     /**
      * Stops the timer for the Notification Reminders
@@ -67,11 +69,9 @@ public class NotificationService extends Service {
     public void initializeTimerTask () {
         timerTask = new TimerTask() {
             public void run () {
-                handler .post( new Runnable() {
+                handler .post   ( new Runnable() {
                     public void run () {
                         createNotification() ;
-                        stopTimerTask();
-                        startTimer();
                     }
                 }) ;
             }

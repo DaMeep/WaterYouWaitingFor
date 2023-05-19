@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -61,6 +60,8 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
+        // initialize views and display lists
+
         mUsersReference = ((MainActivity)getActivity()).getUserReference();
 
         listOfUsers = ((MainActivity)getActivity()).getUsers();
@@ -71,15 +72,15 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
         pendingFriendIDs = new ArrayList<>();
 
         adapter = new ListAdapter_Pending_Friends(getActivity(), R.layout.pending_friends_item, pendingFriendList, pendingFriendIDs);
-        ListView pendingFriendsView = (ListView) view.findViewById(R.id.pendingFriendsView);
+        ListView pendingFriendsView = view.findViewById(R.id.pendingFriendsView);
         pendingFriendsView.setAdapter(adapter);
 
         updatePendingFriends();
 
-        ((Button) view.findViewById(R.id.backToFriendsButton)).setOnClickListener(this);
+        view.findViewById(R.id.backToFriendsButton).setOnClickListener(this);
 
-        friendRequestEdit = (EditText) view.findViewById(R.id.editTextID);
-        ((Button) view.findViewById(R.id.sendFriendRequestButton)).setOnClickListener(this);
+        friendRequestEdit = view.findViewById(R.id.editTextID);
+        view.findViewById(R.id.sendFriendRequestButton).setOnClickListener(this);
     }
 
     @Override
@@ -93,6 +94,7 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
                 ma.replaceFragment(new FriendsFragment());
                 break;
             case R.id.sendFriendRequestButton:
+                //add the current user to the target User's list
                 String userID = friendRequestEdit.getText().toString();
                 friendRequestEdit.setText("");
                 if (listOfUsers.containsKey(userID)){
@@ -107,16 +109,19 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
                 }
                 break;
             case R.id.acceptFriendButton:
+                // update the current User's lists
                 currentUser.acceptFriend(targetUser);
                 mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.pendingFriendsList);
                 mUsersReference.child(currentUserID).child("acceptedFriendsList").setValue(currentUser.acceptedFriendsList);
                 updatePendingFriends();
 
+                // update the target User's lists
                 ArrayList<String> targetFriendsList =  listOfUsers.get(targetUser).acceptedFriendsList;
                 targetFriendsList.add(currentUserID);
                 mUsersReference.child(targetUser).child("acceptedFriendsList").setValue(targetFriendsList);
                 break;
             case R.id.denyFriendButton:
+                // edit the pending friends lists
                 currentUser.denyFriend(targetUser);
                 mUsersReference.child(currentUserID).child("pendingFriendsList").setValue(currentUser.pendingFriendsList);
                 updatePendingFriends();
@@ -135,15 +140,11 @@ public class PendingFriendsFragment extends Fragment implements View.OnClickList
         pendingFriendIDs.clear();
 
         for(String key : listOfUsers.keySet()){
-            Log.e("TESTING", currentUser.pendingFriendsList.toString());
             if (currentUser.pendingFriendsList.contains(key)){
-                Log.e("TESTING", "WE GODEM");
                 pendingFriendList.add(listOfUsers.get(key));
                 pendingFriendIDs.add(key);
             }
         }
-
-        Log.e("TESTING", listOfUsers.keySet().toString());
 
         adapter.notifyDataSetChanged();
     }

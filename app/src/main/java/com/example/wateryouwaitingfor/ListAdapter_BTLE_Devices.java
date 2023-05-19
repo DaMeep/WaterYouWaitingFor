@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,30 +43,35 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
             convertView = inflater.inflate(layoutResourceID, parent, false);
         }
 
+        // Get information about the BTLE_Device
+
         BTLE_Device device = devices.get(position);
         String name = device.getName();
         String address = device.getAddress();
         int rssi = device.getRSSI();
 
-        TextView tv = null;
+        // Populate the list item with the device's data
 
-        tv = (TextView) convertView.findViewById(R.id.tv_name);
+        TextView tv;
+        Resources res = activity.getResources();
+
+        tv = convertView.findViewById(R.id.tv_name);
         if (name != null && name.length() > 0) {
             tv.setText(device.getName());
         }
         else {
-            tv.setText("No Name");
+            tv.setText(res.getString(R.string.noName));
         }
 
-        tv = (TextView) convertView.findViewById(R.id.tv_rssi);
-        tv.setText("RSSI: " + rssi);
+        tv = convertView.findViewById(R.id.tv_rssi);
+        tv.setText(String.format(res.getString(R.string.rssi), rssi));
 
-        tv = (TextView) convertView.findViewById(R.id.tv_macaddr);
+        tv = convertView.findViewById(R.id.tv_macaddr);
         if (address != null && address.length() > 0) {
             tv.setText(device.getAddress());
         }
         else {
-            tv.setText("No Address");
+            tv.setText(res.getString(R.string.noAddress));
         }
 
         return convertView;

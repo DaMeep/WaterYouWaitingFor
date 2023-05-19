@@ -11,14 +11,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
      // variable for our array list and context
-    private final ArrayList<drinkListHandler> drinkArrayList;
-    final int layoutResourceID;
-    final Activity activity;
+    private final ArrayList<drinkListHandler> drinkArrayList; // array list of consumption entries
+    final int layoutResourceID; // resource for each entry
+    final Activity activity; // activity of the adapter
 
 
     // constructor
@@ -41,11 +40,15 @@ public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
 
         Resources res = activity.getResources();
 
+        // Get values for the given entry
+
         drinkListHandler dlh = drinkArrayList.get(position);
         String time =  dlh.getTime();
         String amount = dlh.getAmtConsumed();
         String totals = dlh.getDailyTotals();
         String date =  dlh.getDate();
+
+        // Fill up the list item with the entry's information
 
         TextView tv = convertView.findViewById(R.id.timeTV);
         if (time != null && time.length()>0){
@@ -55,30 +58,32 @@ public class drinkRVAdapter extends ArrayAdapter<drinkListHandler> {
             tv.setText(res.getString(R.string.noTime));
         }
 
-        tv = (TextView) convertView.findViewById(R.id.amtConsumedTV);
-            if (amount != null && amount.length()>0){
-                tv.setText(String.format(res.getString(R.string.amountConsumed), dlh.getAmtConsumed()));
-            }
-            else {
-                tv.setText(res.getString(R.string.noneConsumed));
-            }
-        tv = (TextView) convertView.findViewById(R.id.dailyTotalTV);
-            if (totals != null && totals.length()>0){
-                tv.setText(String.format(res.getString(R.string.dailyTotal), dlh.getDailyTotals()));
-            }
-            else {
-                tv.setText(res.getString(R.string.noTotal));
-            }
-        tv = (TextView) convertView.findViewById(R.id.dateTV);
-            if (date != null && date.length()>0){
-                tv.setText(String.format(res.getString(R.string.dateText), dlh.getDate()));
-            }
-            else {
-                tv.setText(res.getString(R.string.noDateText));
-            }
-            return convertView;
+        tv = convertView.findViewById(R.id.amtConsumedTV);
+        if (amount != null && amount.length()>0){
+            tv.setText(String.format(res.getString(R.string.amountConsumed), dlh.getAmtConsumed()));
+        }
+        else {
+            tv.setText(res.getString(R.string.noneConsumed));
+        }
+
+        tv = convertView.findViewById(R.id.dailyTotalTV);
+        if (totals != null && totals.length()>0){
+            tv.setText(String.format(res.getString(R.string.dailyTotal), dlh.getDailyTotals()));
+        }
+        else {
+            tv.setText(res.getString(R.string.noTotal));
+        }
+
+        tv = convertView.findViewById(R.id.dateTV);
+        if (date != null && date.length()>0){
+            tv.setText(String.format(res.getString(R.string.dateText), dlh.getDate()));
+        }
+        else {
+            tv.setText(res.getString(R.string.noDateText));
+        }
+        return convertView;
     }
-    }
+}
 
 
 

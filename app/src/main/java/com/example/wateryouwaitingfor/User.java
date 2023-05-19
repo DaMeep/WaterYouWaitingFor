@@ -1,6 +1,5 @@
 package com.example.wateryouwaitingfor;
 
-import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,6 @@ public class User {
 
     /**
      * Adds points to the User
-     *
      * @param points the number of points to be added
      */
     public void addPoints(int points){
@@ -43,7 +41,6 @@ public class User {
     /**
      * Moves the specified User ID from the PendingFriendsList
      * to the AcceptedFriendsList
-     *
      * @param friendID the target User ID
      */
     public void acceptFriend(String friendID){
@@ -57,7 +54,6 @@ public class User {
 
     /**
      * Deletes the specific User ID from the PendingFriendsList
-     *
      * @param friendID the target User ID
      */
     public void denyFriend(String friendID){
@@ -70,7 +66,6 @@ public class User {
 
     /**
      * Deletes the specific User ID from the AcceptedFriendsList
-     *
      * @param friendID the target User ID
      */
     public void deleteFriend(String friendID){

@@ -8,15 +8,15 @@ import android.view.View;
 import android.widget.Button;
 
 public class GetStarted extends AppCompatActivity {
-    Button startButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_started);
 
-        startButton = findViewById(R.id.startButton);
+        // initialize button
+        Button startButton = findViewById(R.id.startButton);
 
+        // start Onboarding page on click
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

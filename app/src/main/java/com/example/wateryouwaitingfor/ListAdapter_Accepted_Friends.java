@@ -2,7 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,38 +45,45 @@ public class ListAdapter_Accepted_Friends extends ArrayAdapter<User> {
             convertView = inflater.inflate(layoutResourceID, parent, false);
         }
 
+        // Get information of the User
+
         User friend = friendsList.get(position);
         String name = friend.username;
         String userID = userIDs.get(position);
         int userScore = friend.points;
 
-        TextView tv = null;
+        // Populate the list item with the data
 
-        tv = (TextView) convertView.findViewById(R.id.acceptedFriendName);
+        TextView tv;
+        Resources res = activity.getResources();
+
+        tv = convertView.findViewById(R.id.acceptedFriendName);
         if (name != null && name.length() > 0) {
             tv.setText(name);
         }
         else {
-            tv.setText("User");
+            tv.setText(res.getString(R.string.usernameDefault));
         }
 
-        tv = (TextView) convertView.findViewById(R.id.acceptedFriendID);
+        tv = convertView.findViewById(R.id.acceptedFriendID);
         if (userID != null && userID.length() > 0) {
             tv.setText(userID);
         }
         else {
-            tv.setText("UserID");
+            tv.setText(res.getString(R.string.user_id));
         }
 
-        tv = (TextView) convertView.findViewById(R.id.friendScoreText);
+        tv = convertView.findViewById(R.id.friendScoreText);
         tv.setText(String.valueOf(userScore));
 
-        ImageButton deleteFriendButton = (ImageButton) convertView.findViewById(R.id.deleteFriendButton);
+        // Pair & Set the delete button
+
+        ImageButton deleteFriendButton = convertView.findViewById(R.id.deleteFriendButton);
 
         FriendsFragment friendsFragment = (FriendsFragment)((MainActivity)activity).getSupportFragmentManager().findFragmentByTag("FriendsFragment");
         if (friendsFragment != null && friendsFragment.isVisible()) {
             deleteFriendButton.setOnClickListener(friendsFragment);
-            deleteFriendButton.setTag(new String(userID));
+            deleteFriendButton.setTag(userID);
         }
 
         return convertView;

@@ -2,12 +2,10 @@ package com.example.wateryouwaitingfor;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -53,19 +51,19 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == (ConstraintLayout) object;
+        return view == object;
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.slider_screen,container,false);
 
-        ImageView sliderImage = (ImageView) view.findViewById(R.id.sliderImage);
-        TextView sliderTitle = (TextView) view.findViewById(R.id.sliderTitle);
-        TextView sliderDesc = (TextView) view.findViewById(R.id.sliderDesc);
+        ImageView sliderImage = view.findViewById(R.id.sliderImage);
+        TextView sliderTitle = view.findViewById(R.id.sliderTitle);
+        TextView sliderDesc = view.findViewById(R.id.sliderDesc);
 
         sliderImage.setImageResource(sliderAllImages[position]);
         sliderTitle.setText(this.sliderAllTitle[position]);

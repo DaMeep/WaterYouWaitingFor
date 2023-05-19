@@ -1,24 +1,24 @@
 <resources>
     <string name="app_name">WaterYouWaitingFor</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="settingsTitle">Settings</string>
-    <string name="CLIENT_CHARACTERISTIC_CONFIG" />
+
     <string name="Average_Water_Intake">Average Water Intake Is: </string>
-    <string name="Week">Week: </string>
+<!--    <string name="Week">Week: </string>-->
+
+<!--    Contamination Menu Text -->
     <string name="contamination">Contamination</string>
-    <string name="change_device">Change Device</string>
     <string name="stringContaminate">Contaminations</string>
     <string name="con2">contaminant 2</string>
     <string name="con1">Contaminant 1</string>
     <string name="con3">Contaminant 3</string>
     <string name="con4">Contaminant 4</string>
-    <string name="welcome">Welcome back, %1$s!</string>
-    <string name="update_last">Last Updated:</string>
     <string name="water_image">Image of Water</string>
-    <string name="timestamp">Enter the Time</string>
+
+<!--    Stats Menu Text -->
     <string name="amtConsume">How many ounces were consumed?</string>
     <string name="newDrink">Add Drink</string>
+
+<!--    Settings Menu Text -->
+    <string name="settingsTitle">Settings</string>
     <string name="activity_level">Activity Level:</string>
     <string name="notifications">Notifications</string>
     <string name="generalSettingsTitle">General</string>
@@ -30,24 +30,40 @@
     <string name="unitSettingsText">Units:</string>
     <string name="imperialUnitsToggle">IMPERIAL</string>
     <string name="metricUnitsToggle">METRIC</string>
-    <string name="user_id">User ID</string>
+    <string name="waterReminderText">Remind Me Every</string>
+    <string name="disabledText">[Disabled]</string>
+
+<!--    Friends Menu Text -->
     <string name="friendsTitleText">Friends</string>
     <string name="name_Input">Name</string>
     <string name="add_user_friends">Send Friend Request</string>
-    <string name="goal">NAME</string>
-    <string name="backToHomeText">Back To Home</string>
+    <string name="user_id">User ID</string>
+    <string name="usernameDefault">User</string>
+<!--    <string name="goal">NAME</string>-->
+
+<!--    Notification Strings-->
     <string name="channel_name">NOTIFICATION_CHANNEL</string>
     <string name="channel_description">NOTIFICATION_CHANNEL_DESC</string>
-    <string name="waterReminderText">Remind Me Every</string>
-    <string name="disabledText">[Disabled]</string>
+
     <string name="userPointsText">%1$d Points</string>
+    <string name="percentage">%1$d%%</string>
+
+<!--    Home Menu Text-->
+    <string name="welcome">Welcome back, %1$s!</string>
     <string name="totalAmountConsumed">Total Amount Consumed: %1$.2f oz</string>
     <string name="goalText">Goal: %1$.2f oz</string>
     <string name="lastUpdatedText">Last Updated: %1$s</string>
+    <string name="change_device">Change Device</string>
 
+<!--    Device Listing Text -->
+    <string name="noName">No Name</string>
+    <string name="rssi">RSSI: %1$d</string>
+    <string name="noAddress">No Address</string>
+    <string name="backToHomeText">Back To Home</string>
+    <string name="currentDeviceNameText">Current Device: %1$s</string>
+    <string name="currentDeviceAddressText">Device Address: %1$s</string>
 
-
-<!--    Consumption Listing -->
+<!--    Consumption Listing Text -->
     <string name="time">Time: %1$s</string>
     <string name="noTime">No Time</string>
     <string name="amountConsumed">Amount Consumed: %1$s oz</string>
@@ -56,8 +72,6 @@
     <string name="noTotal">No Total</string>
     <string name="dateText">Date: %1$s</string>
     <string name="noDateText">No Date</string>
-
-
 
 <!--    Arrays -->
     <string-array name="activityLevels">
@@ -73,7 +87,7 @@
         <item>1 Hour</item>
     </string-array>
 
-<!--    Onboarding-->
+<!--    Onboarding Text -->
     <string name="Water_you_waiting_for">Onboarding Practice</string>
     <string name="screen1">Enter Your Name</string>
     <string name="screen2">Enter Your Weight</string>
@@ -88,5 +102,8 @@
     <string name="startScreen">Water you waiting for??</string>
     <string name="startDesc">To help us track your hydration, tell us a little about yourself</string>
     <string name="what_is_your_name">What is your name?</string>
+    <string name="nextText">Next</string>
+    <string name="backText">Back</string>
+    <string name="finishText">Finish</string>
 
 </resources>

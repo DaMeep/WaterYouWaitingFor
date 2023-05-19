@@ -1,29 +1,39 @@
 package com.example.wateryouwaitingfor;
 
-import static com.example.wateryouwaitingfor.StatsFragment.waterTot;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+
+/*
+    SQLite Database code was created with the help of:
+    https://www.geeksforgeeks.org/how-to-read-data-from-sqlite-database-in-android/
+    https://www.geeksforgeeks.org/how-to-create-and-add-data-to-sqlite-database-in-android/
+    https://stackoverflow.com/questions/17441927/android-sqlite-issue-table-has-no-column-named
+
+    LocalDate help:
+    https://stackoverflow.com/questions/28177370/how-to-format-localdate-to-string
+    https://stackoverflow.com/questions/2735023/convert-string-to-java-util-date
+ */
 
 public class DBHandler extends SQLiteOpenHelper {
 
     // creating a constant variables for our database.
     // below variable is for our database name.
     private static final String DB_NAME = "WaterConsumed";
+
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // below int is our database version
     private static final int DB_VERSION = 4;
@@ -46,20 +56,14 @@ public class DBHandler extends SQLiteOpenHelper {
     // below variable is for our daily total column.
     private static final String DAYTOT_COL = "DailyTotals";
 
-    private double dataStore = 0;
 
-    public LocalDate localDate;
-
-
-
+    //daily total ounces of water
     public static double dailyTot = 0;
 
     // creating a constructor for our database handler.
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
-
-    public static Integer totWater = 5;
 
 
     // below method is for creating a database by running a sqlite query
@@ -83,7 +87,10 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    // this method is used to add new drinks to our sqlite database.
+    /**
+     * Adds a new drink into the SQLite Database
+     * @param Consumed the amount of water consumed by the user
+     */
     public void addNewDrink(double Consumed) {
         DecimalFormat decForm = new DecimalFormat("0.00");
         // on below line we are creating a variable for
@@ -104,21 +111,18 @@ public class DBHandler extends SQLiteOpenHelper {
         Consumed = Double.parseDouble(consume);
         dailyTot += Consumed;
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate ld = LocalDate.now();
 
 
         // inputting the local variables and the consumed parameter into our table
         values.put(TIME_COL, LocalTime.now().withNano(0).toString());
         values.put(AMOUNT_COL, Consumed);
-        values.put(DATE_COL, ld.format(dtf));
+        values.put(DATE_COL, ld.format(DATE_FORMATTER));
         values.put(DAYTOT_COL, dailyTot);
 
         // after adding all values we are passing
         // content values to our table.
         db.insert(TABLE_NAME, null, values);
-        // method call for updating the bar chart
-        //setDataToDates();
 
         // closing the database
 
@@ -131,11 +135,6 @@ public class DBHandler extends SQLiteOpenHelper {
         // this method is called to check if the table exists already.
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
-    }
-
-    // stores the variable for the daily totals of a date for the bar chart in the stats fragment
-    public double getDataStore() {
-        return dataStore;
     }
 
     // we have created a new method for reading all the drink data in the database.
@@ -177,7 +176,11 @@ public class DBHandler extends SQLiteOpenHelper {
         cursor.close();
         return courseModalArrayList;
     }
-    // Get total consumed per day
+
+    /**
+     * Gets the water total of the day
+     * @return the current day's water total
+     */
     @SuppressLint("Range")
     public double getDailyTot() {
         // on below line we are creating a
@@ -194,22 +197,33 @@ public class DBHandler extends SQLiteOpenHelper {
                 = new ArrayList<>();
 
         int amtConsumind;
+        int dateIndex;
         double amtConsumed = 0;
 
-        // moving our cursor to first position.
-        if (cursor.moveToFirst()) {
+        String curDate = LocalDate.now().format(DATE_FORMATTER);
+
+        // moving our cursor to the newest position.
+        if (cursor.moveToLast()) {
             do {
 
                 amtConsumind = cursor.getColumnIndex(AMOUNT_COL);
-                amtConsumed = amtConsumed + cursor.getDouble(amtConsumind);
-                Log.i("Amount consumed: ", " " + amtConsumed);
-                // on below line we are adding the data from
-                // cursor to our array list.
-                waterLog.add(new drinkListHandler(
-                        cursor.getDouble(amtConsumind)));
-                // cursor.getDouble(3)));
-            } while (cursor.moveToNext());
-            // moving our cursor to next.
+                dateIndex = cursor.getColumnIndex(DATE_COL);
+
+                // if the current date equals the entry date
+                if (curDate.equals(cursor.getString(dateIndex))){
+                    amtConsumed = amtConsumed + cursor.getDouble(amtConsumind);
+                    Log.i("Amount consumed: ", " " + amtConsumed);
+                    // on below line we are adding the data from
+                    // cursor to our array list.
+                    waterLog.add(new drinkListHandler(
+                            cursor.getDouble(amtConsumind)));
+                }
+                else{
+                    break;
+                }
+
+            } while (cursor.moveToPrevious());
+            // moving our cursor to the previous entry.
         }
         // at last closing our cursor
         // and returning our array list.
@@ -251,7 +265,9 @@ public class DBHandler extends SQLiteOpenHelper {
             } while(cursor.moveToPrevious() && counter >= 0); // while not at end of table or < 7 entries
         }
 
-
+        // at last closing our cursor
+        // and returning our array.
+        cursor.close();
         return weekData;
     }
 }

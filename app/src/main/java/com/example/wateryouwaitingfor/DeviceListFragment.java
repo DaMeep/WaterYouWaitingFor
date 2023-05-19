@@ -2,6 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,11 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Objects;
 /**
  * A {@link Fragment} subclass for displaying
  * scanned Bluetooth Devices
@@ -25,6 +24,8 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     private SharedPreferences sharedpreferences; // Shared Preferences Reference
     private TextView currentDeviceName; // Name of the Connected Device
     private TextView currentDeviceAddress; // Address of the Connected Device
+
+    private Resources res; // Reference to Application Resources
 
     public DeviceListFragment() {
         // Required empty public constructor
@@ -48,17 +49,21 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
 
-        ListView listView = (ListView) view.findViewById(R.id.deviceListView);
+        res = getResources();
+
+        ListView listView = view.findViewById(R.id.deviceListView);
         listView.setAdapter(((MainActivity) getActivity()).getAdapter());
         listView.setOnItemClickListener(this);
 
-        currentDeviceName = (TextView) view.findViewById(R.id.curDeviceNameText);
-        currentDeviceAddress = (TextView) view.findViewById(R.id.curDeviceAddressText);
+        currentDeviceName = view.findViewById(R.id.curDeviceNameText);
+        currentDeviceAddress = view.findViewById(R.id.curDeviceAddressText);
 
-        currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
-        currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));
+        currentDeviceName.setText(String.format(res.getString(R.string.currentDeviceNameText), sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName())));
+        currentDeviceAddress.setText(String.format(res.getString(R.string.currentDeviceAddressText), sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress())));
 
-        ((Button) view.findViewById(R.id.backToHomeButton)).setOnClickListener(this);
+
+
+        view.findViewById(R.id.backToHomeButton).setOnClickListener(this);
     }
 
 
@@ -66,8 +71,8 @@ public class DeviceListFragment extends Fragment implements AdapterView.OnItemCl
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ((MainActivity) getActivity()).onItemClick(adapterView, view, i, l);
 
-        currentDeviceName.setText("Current Device: " + sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName()));
-        currentDeviceAddress.setText("Device Address: " + sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress()));
+        currentDeviceName.setText(String.format(res.getString(R.string.currentDeviceNameText), sharedpreferences.getString("currentDeviceName", ((MainActivity)getActivity()).getDeviceName())));
+        currentDeviceAddress.setText(String.format(res.getString(R.string.currentDeviceAddressText), sharedpreferences.getString("currentDeviceAddress", ((MainActivity)getActivity()).getDeviceAddress())));
     }
 
     @Override

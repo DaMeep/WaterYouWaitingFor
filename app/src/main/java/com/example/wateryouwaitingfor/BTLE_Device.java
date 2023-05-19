@@ -53,7 +53,6 @@ public class BTLE_Device extends android.content.Context {
 
     /**
      * Gets the address of the Device
-     *
      * @return The address of the BTLE_Device
      */
     public String getAddress() {
@@ -62,7 +61,6 @@ public class BTLE_Device extends android.content.Context {
 
     /**
      * Gets the name of the Device
-     *
      * @return The name of the BTLE_Device
      */
     public String getName() {
@@ -79,7 +77,6 @@ public class BTLE_Device extends android.content.Context {
 
     /**
      * Sets the RSSI for the Device
-     *
      * @param rssi RSSI of the BTLE_Device
      */
     public void setRSSI(int rssi) {
@@ -88,7 +85,6 @@ public class BTLE_Device extends android.content.Context {
 
     /**
      * Gets the RSSI for the Device
-     *
      * @return The RSSI of the BTLE_Device
      */
     public int getRSSI() {

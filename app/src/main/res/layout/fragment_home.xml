@@ -68,7 +68,7 @@
         android:fontFamily="@font/poppins"
         android:includeFontPadding="true"
         android:paddingLeft="20dp"
-        android:text="@string/update_last"
+        android:text="@string/lastUpdatedText"
         android:textSize="20sp" />
 
     <!--Add ProgressBar. Main Attribute used here are

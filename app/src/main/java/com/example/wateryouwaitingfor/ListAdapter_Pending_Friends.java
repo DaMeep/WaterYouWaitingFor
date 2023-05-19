@@ -2,7 +2,7 @@ package com.example.wateryouwaitingfor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,37 +46,42 @@ public class ListAdapter_Pending_Friends extends ArrayAdapter<User> {
             convertView = inflater.inflate(layoutResourceID, parent, false);
         }
 
+        // Get information of the User
+
         User pendingFriend = pendingFriendsList.get(position);
         String name = pendingFriend.username;
         String userID = userIDs.get(position);
 
-        TextView tv = null;
+        // Populate the list item with the data
 
-        tv = (TextView) convertView.findViewById(R.id.pendingFriendName);
+        TextView tv;
+        Resources res = activity.getResources();
+
+        tv = convertView.findViewById(R.id.pendingFriendName);
         if (name != null && name.length() > 0) {
             tv.setText(name);
         }
         else {
-            tv.setText("User");
+            tv.setText(res.getString(R.string.usernameDefault));
         }
 
-        tv = (TextView) convertView.findViewById(R.id.pendingFriendID);
+        tv = convertView.findViewById(R.id.pendingFriendID);
         if (userID != null && userID.length() > 0) {
             tv.setText(userID);
         }
         else {
-            tv.setText("UserID");
+            tv.setText(res.getString(R.string.user_id));
         }
 
-        ImageButton acceptRequestButton = (ImageButton) convertView.findViewById(R.id.acceptFriendButton);
-        ImageButton denyRequestButton = (ImageButton) convertView.findViewById(R.id.denyFriendButton);
+        ImageButton acceptRequestButton = convertView.findViewById(R.id.acceptFriendButton);
+        ImageButton denyRequestButton = convertView.findViewById(R.id.denyFriendButton);
 
         PendingFriendsFragment pendingFriendsFragment = (PendingFriendsFragment)((MainActivity)activity).getSupportFragmentManager().findFragmentByTag("PendingFriendsFragment");
         if (pendingFriendsFragment != null && pendingFriendsFragment.isVisible()) {
             acceptRequestButton.setOnClickListener(pendingFriendsFragment);
-            acceptRequestButton.setTag(new String(userID));
+            acceptRequestButton.setTag(userID);
             denyRequestButton.setOnClickListener(pendingFriendsFragment);
-            denyRequestButton.setTag(new String(userID));
+            denyRequestButton.setTag(userID);
         }
 
 

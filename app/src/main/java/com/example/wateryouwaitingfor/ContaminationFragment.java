@@ -24,7 +24,7 @@ import java.util.ArrayList;
  */
 public class ContaminationFragment extends Fragment {
 
-        public ContaminationFragment() {
+    public ContaminationFragment() {
         // Required empty public constructor
     }
 
@@ -41,6 +41,7 @@ public class ContaminationFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contamination, container, false);
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
 
         PieChart pieChart = view.findViewById(R.id.pieChart);

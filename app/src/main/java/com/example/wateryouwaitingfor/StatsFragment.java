@@ -23,11 +23,12 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.hadiidbouk.charts.Bar;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+/*
+    Bar Chart library: https://github.com/PhilJay/MPAndroidChart
+ */
 
 /**
  * A {@link Fragment} to display Water
@@ -35,9 +36,7 @@ import java.util.ArrayList;
  */
 public class StatsFragment extends Fragment implements View.OnClickListener {
 
-    ArrayList barArrayList;
-
-    private String time ;
+    private ArrayList<BarEntry> barArrayList;
 
     public static double waterTot;
 
@@ -62,7 +61,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("Ashwina", "In StatsFragment: onCreateView");
         View myView = inflater.inflate(R.layout.fragment_stats, container, false);
-        Button waterButton = (Button) myView.findViewById(R.id.btnAddWater);
+        Button waterButton = myView.findViewById(R.id.btnAddWater);
         waterButton.setOnClickListener(this);
         consumedEditText = myView.findViewById(R.id.AmtConsumedEdt);
         Button readDrinkButton = myView.findViewById(R.id.btnReadDrink);
@@ -76,13 +75,11 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
         float[] weekData = db.getWeekData();
 
         //Create a bar entry for the totals in the last week
-        barArrayList = new ArrayList();
+        barArrayList = new ArrayList<>();
         for(int i=0; i<7; i++){
             barArrayList.add(new BarEntry(i, weekData[i]));
         }
     }
-
-   final DBHandler dbHandler = new DBHandler(getContext());
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
@@ -104,6 +101,7 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    @Override
     @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
         Log.d("Ashwina", "In StatsFragment: onClick");
@@ -114,25 +112,31 @@ public class StatsFragment extends Fragment implements View.OnClickListener {
                 Log.d("Ashwina", "In StatsFragment: onClick: btnAddWater");
 
                 // below line is to get data from all edit text fields.
-
-               // time = timeEditText.getText().toString();
                 String consumed = consumedEditText.getText().toString();
 
-                // validating if the text fields are empty or not.
+                //reset edit text field
+                consumedEditText.setText("");
+
+                // validating if the text fields are positive numbers.
                 if (consumed.isEmpty()) {
-                    Toast.makeText(getContext(), "Please enter all the data..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please enter all the data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if(!MainActivity.isValidDouble(consumed)){
+                    Toast.makeText(getContext(), "Please enter a valid number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if(Double.parseDouble(consumed) <= 0){
+                    Toast.makeText(getContext(), "Please enter a positive value", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 // on below line we are calling a method to add new
                 // course to sqlite data and pass all our values to it.
                 db.addNewDrink(Double.parseDouble(consumed));
-              //  updateData();
 
                 // after adding the data we are displaying a toast message.
                 Toast.makeText(getContext(), "Drink has been added.", Toast.LENGTH_SHORT).show();
-              //  timeEditText.setText("");
-                consumedEditText.setText("");
 
                 Toast.makeText(getContext(), "Total Water Intake is: " + db.getDailyTot(), Toast.LENGTH_SHORT).show();
 

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     private ListAdapter_Accepted_Friends adapter; // Adapter for ListView display of friends
 
-    private TextView userPoints;
+    private TextView userPoints; // Text displaying the current User's points
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -52,6 +51,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+
         mUsersReference = ((MainActivity)getActivity()).getUserReference();
 
         listOfUsers = ((MainActivity)getActivity()).getUsers();
@@ -62,7 +62,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         friendIDs = new ArrayList<>();
 
         adapter = new ListAdapter_Accepted_Friends(getActivity(), R.layout.accepted_friends_item, friendList, friendIDs);
-        ListView friendView = (ListView) view.findViewById(R.id.friendsView);
+        ListView friendView = view.findViewById(R.id.friendsView);
         friendView.setAdapter(adapter);
 
         updateFriendList();
